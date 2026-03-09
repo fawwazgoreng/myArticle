@@ -1,0 +1,1 @@
+import{_ as o}from"./DlAUqK2U.js";import{c as e,o as t}from"./DX783BTj.js";const r=route.params.id();console.log(r);const c={};function s(n,a,p,_,i,d){return t(),e("div")}const l=o(c,[["render",s]]);export{l as default};

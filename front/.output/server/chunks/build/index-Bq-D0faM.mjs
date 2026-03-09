@@ -1,0 +1,2 @@
+import{ssrRenderAttrs as e}from"vue/server-renderer";import{useSSRContext as r}from"vue";import{_ as o}from"./_plugin-vue_export-helper-1tPrXgE0.mjs";const t=route.params.id();console.log(t);const s={};const n=s.setup;s.setup=(e,o)=>{const t=r();return(t.modules||(t.modules=new Set)).add("pages/article/index.vue"),n?n(e,o):void 0};const u=o(s,[["ssrRender",function(r,o,t,s,n,u,d,i){o(`<div${e(s)}></div>`)}]]);export{u as default};
+//# sourceMappingURL=index-Bq-D0faM.mjs.map

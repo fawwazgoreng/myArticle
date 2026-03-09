@@ -1,0 +1,2 @@
+import{mergeProps as e,useSSRContext as t}from"vue";import{ssrRenderAttrs as r}from"vue/server-renderer";import{_ as s}from"./_plugin-vue_export-helper-1tPrXgE0.mjs";const o={};const n=o.setup;o.setup=(e,r)=>{const s=t();return(s.modules||(s.modules=new Set)).add("pages/notfound.vue"),n?n(e,r):void 0};const u=s(o,[["ssrRender",function(t,s,o,n){s(`<div${r(e({class:"w-full h-full flex items-center justofy-center"},n))}><h1 class="text-center text-4xl font-semibold">Halaman tidak ditemukan</h1></div>`)}]]);export{u as default};
+//# sourceMappingURL=notfound-C5-6jSQ9.mjs.map

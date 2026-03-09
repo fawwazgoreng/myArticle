@@ -1,0 +1,1 @@
+import{_ as t}from"./DlAUqK2U.js";import{c as o,a as s,o as n}from"./DX783BTj.js";const a={},r={class:"w-full h-full flex items-center justofy-center"};function c(l,e){return n(),o("div",r,[...e[0]||(e[0]=[s("h1",{class:"text-center text-4xl font-semibold"},"Halaman tidak ditemukan",-1)])])}const i=t(a,[["render",c]]);export{i as default};

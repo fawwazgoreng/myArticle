@@ -1,0 +1,26 @@
+{
+  "name": "front",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "NODE_OPTIONS='--max-old-space-size=1200 --expose-gc' &  nuxt dev",
+    "clean" : "rm -rf node_modules/.cache",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.11.3",
+    "nuxt": "^4.3.1",
+    "pinia": "^3.0.4",
+    "vue": "^3.5.28",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@vue/language-server": "^3.2.5",
+    "install": "^0.13.0",
+    "typescript": "^5.9.3"
+  }
+}
