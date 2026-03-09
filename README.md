@@ -1,2 +1,2 @@
 # myArticle
-create article webiste with hone and nuxt
+create News website with hone and nuxt
