@@ -19,7 +19,7 @@ const app = new Hono();
 app.use(
   "*",
   cors({
-    origin: process.env["FRONT_END_URL"] ?? "http://localhost:3001",
+    origin: process.env["FRONT_END_URL"] ?? "http://localhost:3000",
     allowHeaders: ["Content-Type", "Authorization"],
     allowMethods: ["POST", "GET", "PUT", "DELETE" , "OPTIONS"],
     exposeHeaders: ["Content-Length"],
@@ -33,7 +33,7 @@ app.use("*", prettyJSON());
 app.use(
   "*",
   csrf({
-    origin: process.env["FRONT_END_URL"] ?? "http://localhost:3001",
+    origin: process.env["FRONT_END_URL"] ?? "http://localhost:3000",
   }),
 );
 
@@ -72,4 +72,11 @@ app.get("/", async (c) => {
   return c.json(redis);
 });
 app.route("/article" ,index).route('/category' , category)
-export default app;
+export default {
+    port: 2000,
+    fetch: app.fetch,
+    tls: {
+       cert: Bun.file('./cert.pem'),
+       key: Bun.file('./key.pem'),
+    }
+};
