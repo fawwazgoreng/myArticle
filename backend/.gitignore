@@ -4,3 +4,5 @@ node_modules/
 /src/generated/prisma
 logs
 /src/public/image
+cert.pem
+key.pem
