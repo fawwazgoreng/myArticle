@@ -22,7 +22,12 @@ export type order = {
 
 export type articleRedis = {
   id: RedisKey,
-  value: string | number | null
+  value: {
+      title: string,
+      content: string,
+      image: string,
+      base_views?: number
+  }
 }
 
 export interface articleArrayResponse extends globalResponse {

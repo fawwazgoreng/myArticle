@@ -4,6 +4,8 @@ import { articleRedis } from "../types/article";
 import articleModel from "../model/article";
 import { logger } from "../infrastructure/logger/log";
 
+const ttl = 60 * 60 * 24;
+
 export default class WriteRedis {
   increment = async (id: RedisKey) => {
     const res = await redis.incr(id);
@@ -13,15 +15,18 @@ export default class WriteRedis {
     return res;
   };
 
-  newArticle = async (req: articleRedis) => {
-    const res = await redis.set(req.id, String(req.value));
+    newArticle = async (req: articleRedis) => {
+    const res = await redis.setex(`article:` + req.id, ttl, JSON.stringify(req.value));
+    await redis.set(req.id, req.value.base_views ?? 0);
     if (!res) {
       return 404;
     }
     return res;
   };
 
-  delete = async (id: RedisKey) => {
+
+    delete = async (id: RedisKey) => {
+    await redis.del("article:" + id);
     const res = await redis.del(id);
     if (!res) {
       return 404;

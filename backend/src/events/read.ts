@@ -9,7 +9,8 @@ export class ReadRedis {
     return res;
   }
   readShow = async (req : articleRedis) => {
-    const res = await redis.get(req.id);
+      const res = await redis.get(req.id);
+      if ()
     if (!res) {
       const result = await redis.set(req.id, String(req.value));
       return result
