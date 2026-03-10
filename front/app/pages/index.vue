@@ -19,6 +19,7 @@ const { data: articleData, pending: loading } = await useAsyncData('home-article
 
 // 3. Dynamic SEO Meta
 // Since this is a landing page, we create an engaging description for search engines
+watchEffect(() => {
 useSeoMeta({
     title: 'MYArticle - Trusted & Latest News Portal',
     ogTitle: 'MYArticle - Trusted News Portal',
@@ -27,6 +28,7 @@ useSeoMeta({
     ogImage: articleData.value?.all[0]?.image || '/default-og.jpg',
     twitterCard: 'summary_large_image',
 });
+})
 
 // 4. JSON-LD (Schema Markup) - Highly recommended for Google indexing
 useHead({

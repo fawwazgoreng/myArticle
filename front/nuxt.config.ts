@@ -3,7 +3,16 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: process.env.NODE_ENV == "development" },
   modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt"],
-  runtimeConfig: {
+    app: {
+        head: {
+            titleTemplate: `%s - MyArticle`,
+            meta: [
+                { charset: "utf-8" },
+                {name: "viewport" , content: "device-width, initial-scale=1"}
+            ]
+        }
+    },
+    runtimeConfig: {
     public: {  
       apiBaseUrl: process.env.NUXT_PUBLIC_API_BASEURL || "http://localhost:3000"
     }

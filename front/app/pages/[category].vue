@@ -1,18 +1,10 @@
 <script setup>
-import { ref, watch, reactive } from "vue";
-import {useRoute } from "vue-router"
-
-const article = reactive({
-    data: [],
-    meta: [],
-    populer: []
-});
+import { ref } from "vue";
+import { useRoute } from "vue-router"
 
 const route = useRoute();
 const category = route.params.category;
 
-const loading = ref(true);
-const menu = ref(false);
 const config = useRuntimeConfig();
 const search = ref([]);
 
@@ -22,36 +14,20 @@ for (let i = 0; i < 8; i++) {
     loadingRender.push(i + 1);
 }
 
-const changeMenu = () => {
-    menu.value = !menu.value;
-};
+const { data: article , pending : loading , error } = await useFetch(`${config.public.apiBaseUrl}/article?category=${route.params.category}` , { lazy: true});
 
-watch(menu, () => {
-    console.log("dropdown visible:", menu.value);
+// Sebelumnya, article.value.article[0].image diakses langsung → crash karena
+// saat lazy:true, data belum tersedia di SSR/awal render (article.value masih null).
+watchEffect(() => {
+    useSeoMeta({
+        title: 'MYArticle - Trusted & Latest News Portal',
+        ogTitle: 'MYArticle - Trusted News Portal',
+        description: 'Get the latest news today from politics, technology, and lifestyle categories only at MYArticle.',
+        ogDescription: 'A trusted news portal providing accurate and balanced information.',
+        ogImage: article.value?.article?.[0]?.image || '/placeholder.jpg',
+        twitterCard: 'summary_large_image',
+    });
 });
-
-const init = async () => {
-    try {
-        loading.value = true;
-        const res = await $fetch(`${config.public.apiBaseUrl}/article?category${category}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-        });
-        article.data = res.article;
-        article.meta = res.article.meta;
-        const populer = await $fetch(`${config.public.apiBaseUrl}/article?populer=true`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-        });
-      article.populer = populer.article;
-    } catch (error) {
-        console.error(error);
-    } finally {
-        loading.value = false;
-    }
-};
-init();
-
 
 // format tanggal ke format Indonesia
 const formatDate = (dateStr) => {
@@ -71,7 +47,7 @@ const formatDate = (dateStr) => {
         <div class="bg-red-600 text-white text-sm py-2 overflow-hidden">
             <div class="max-w-7xl mx-auto px-6 flex items-center gap-4">
                 <span class="shrink-0 font-bold bg-white text-red-600 px-2 py-0.5 rounded text-xs uppercase tracking-wide">Breaking</span>
-                <p class="truncate">Selamat datang di MYArticle - Portal berita terpercaya dan terkini untuk Anda.</p>
+                <p class="truncate">Welcome to MYArticle - Your trusted source for the latest news and updates.</p>
             </div>
         </div>
 
@@ -105,47 +81,52 @@ const formatDate = (dateStr) => {
             </section>
 
             <!-- konten artikel setelah data siap -->
-            <section v-if="!loading && article.data.length > 0">
+            <!-- FIX 2: Tambah optional chaining article.value?.article -->
+            <section v-if="!loading && article.value?.article.length > 0">
 
                 <!-- Hero section: artikel utama + artikel sekunder -->
                 <div class="grid grid-cols-12 gap-6 mb-10">
 
                     <!-- artikel utama (hero besar) -->
                     <NuxtLink
-                        :to="`/article/${article.data[0]?.slug}`"
+                        :to="`/article/${article.value?.article[0]?.id}`"
                         class="col-span-12 md:col-span-7 relative rounded-2xl overflow-hidden group no-underline block h-96"
                     >
                         <img
-                            :src="article.data[0]?.thumbnail || '/placeholder.jpg'"
-                            :alt="article.data[0]?.title"
+                            :src="article.value?.article[0]?.image || '/placeholder.jpg'"
+                            :alt="article.value?.article[0]?.title"
                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                         <!-- overlay gradient -->
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                         <div class="absolute bottom-0 left-0 p-6 text-white">
                             <span class="text-xs bg-red-600 px-2 py-1 rounded font-semibold uppercase tracking-wide mb-2 inline-block">
-                                {{ article.data[0]?.category || "Berita" }}
+                                <!-- FIX 3: Syntax error utama diperbaiki -->
+                                <!-- Sebelum: article[0].category[0.category.name  → parser baca "0.category" sebagai float literal -->
+                                <!-- Sesudah: article[0].category[0]?.name         → akses index [0] lalu property .name -->
+                                {{ article.value?.article[0]?.category?.[0]?.name || "Berita" }}
                             </span>
-                            <h2 class="text-2xl font-bold leading-snug mb-1 line-clamp-3">{{ article.data[0]?.title }}</h2>
-                            <p class="text-xs text-gray-300">{{ formatDate(article.data[0]?.created_at) }}</p>
+                            <h2 class="text-2xl font-bold leading-snug mb-1 line-clamp-3">{{ article.value?.article[0]?.title }}</h2>
+                            <p class="text-xs text-gray-300">{{ formatDate(article.value?.article[0]?.created_at) }}</p>
                         </div>
                     </NuxtLink>
 
                     <!-- artikel sekunder di samping hero -->
                     <div class="col-span-12 md:col-span-5 flex flex-col gap-4">
                         <NuxtLink
-                            v-for="(item, index) in article.data.slice(1, 4)"
+                            v-for="(item, index) in article.value?.article.slice(1, 4)"
                             :key="index"
-                            :to="`/article/${item.slug}`"
+                            :to="`/article/${item.id}`"
                             class="flex gap-4 items-start group no-underline"
                         >
                             <img
-                                :src="item.thumbnail || '/placeholder.jpg'"
+                                :src="item.image || '/placeholder.jpg'"
                                 :alt="item.title"
                                 class="w-28 h-20 object-cover rounded-xl bg-gray-200 shrink-0 group-hover:opacity-90 transition-opacity"
                             />
                             <div>
-                                <span class="text-xs text-red-600 font-semibold uppercase tracking-wide">{{ item.category || "Berita" }}</span>
+                                <!-- FIX 5: item.category adalah array of objects, akses .name dari index [0] -->
+                                <span class="text-xs text-red-600 font-semibold uppercase tracking-wide">{{ item.category?.[0]?.name || "Berita" }}</span>
                                 <h3 class="text-sm font-semibold text-gray-800 leading-snug mt-1 line-clamp-3 group-hover:text-red-600 transition-colors">
                                     {{ item.title }}
                                 </h3>
@@ -162,22 +143,23 @@ const formatDate = (dateStr) => {
                 </div>
 
                 <!-- grid artikel menengah -->
+                <!-- FIX 6: article.data.slice → article.value?.article.slice -->
                 <div class="grid grid-cols-12 gap-6 mb-10">
                     <NuxtLink
-                        v-for="(item, index) in article.data.slice(4, 7)"
+                        v-for="(item, index) in article.value?.article.slice(4, 7)"
                         :key="index"
-                        :to="`/article/${item.slug}`"
+                        :to="`/article/${item.id}`"
                         class="col-span-12 sm:col-span-6 md:col-span-4 group no-underline"
                     >
                         <div class="rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
                             <div class="relative overflow-hidden h-44">
                                 <img
-                                    :src="item.thumbnail || '/placeholder.jpg'"
+                                    :src="item.image || '/placeholder.jpg'"
                                     :alt="item.title"
                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
                                 <span class="absolute top-3 left-3 text-xs bg-red-600 text-white px-2 py-0.5 rounded font-semibold uppercase">
-                                    {{ item.category || "Berita" }}
+                                    {{ item.category?.[0]?.name || "Berita" }}
                                 </span>
                             </div>
                             <div class="p-4 flex flex-col gap-2 flex-1">
@@ -200,19 +182,20 @@ const formatDate = (dateStr) => {
                             <div class="flex-1 h-px bg-gray-200"></div>
                         </div>
 
+                        <!-- FIX 7: article.data.slice → article.value?.article.slice -->
                         <NuxtLink
-                            v-for="(item, index) in article.data.slice(7, 15)"
+                            v-for="(item, index) in article.value?.article.slice(7, 15)"
                             :key="index"
-                            :to="`/article/${item.slug}`"
+                            :to="`/article/${item.id}`"
                             class="flex gap-4 items-start group no-underline border-b border-gray-100 pb-5 last:border-none"
                         >
                             <img
-                                :src="item.thumbnail || '/placeholder.jpg'"
+                                :src="item.image || '/placeholder.jpg'"
                                 :alt="item.title"
                                 class="w-36 h-24 object-cover rounded-xl bg-gray-200 shrink-0 group-hover:opacity-90 transition-opacity"
                             />
                             <div class="flex flex-col gap-1">
-                                <span class="text-xs text-red-600 font-semibold uppercase tracking-wide">{{ item.category || "Berita" }}</span>
+                                <span class="text-xs text-red-600 font-semibold uppercase tracking-wide">{{ item.category?.[0]?.name || "Berita" }}</span>
                                 <h3 class="text-base font-semibold text-gray-800 leading-snug line-clamp-2 group-hover:text-red-600 transition-colors">
                                     {{ item.title }}
                                 </h3>
@@ -231,11 +214,12 @@ const formatDate = (dateStr) => {
                             </div>
 
                             <!-- daftar artikel populer dengan nomor urut -->
+                            <!-- FIX 8: article.data.slice → article.value?.article.slice -->
                             <div class="flex flex-col gap-4">
                                 <NuxtLink
-                                    v-for="(item, index) in article.data.slice(0, 5)"
+                                    v-for="(item, index) in article.value?.article.slice(0, 5)"
                                     :key="index"
-                                    :to="`/article/${item.slug}`"
+                                    :to="`/article/${item.id}`"
                                     class="flex gap-3 items-start group no-underline"
                                 >
                                     <span class="text-3xl font-extrabold text-gray-100 leading-none shrink-0 w-8 text-center">{{ index + 1 }}</span>
@@ -248,7 +232,7 @@ const formatDate = (dateStr) => {
                                 </NuxtLink>
                             </div>
 
-                            <!-- banner iklan atau promosi -->
+                            <!-- banner newsletter -->
                             <div class="mt-8 bg-red-600 rounded-2xl p-6 text-white text-center">
                                 <p class="text-xs font-bold uppercase tracking-widest mb-1">Newsletter</p>
                                 <h3 class="text-lg font-extrabold mb-2">Dapatkan Berita Terkini</h3>
@@ -268,7 +252,7 @@ const formatDate = (dateStr) => {
             </section>
 
             <!-- state kosong jika tidak ada artikel -->
-            <div v-if="!loading && article.data.length === 0" class="flex flex-col items-center justify-center py-32 text-gray-400">
+            <div v-if="!loading && article.value?.article.length === 0" class="flex flex-col items-center justify-center py-32 text-gray-400">
                 <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
