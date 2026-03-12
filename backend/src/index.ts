@@ -20,7 +20,7 @@ app.use(
   "*",
   cors({
     origin: process.env["FRONT_END_URL"] ?? "http://localhost:3000",
-    allowHeaders: ["Content-Type", "Authorization"],
+    allowHeaders: ["Content-Type", "Authorization" , "Access-Control-Allow-Origin"],
     allowMethods: ["POST", "GET", "PUT", "DELETE" , "OPTIONS"],
     exposeHeaders: ["Content-Length"],
     maxAge: 600,
@@ -74,9 +74,28 @@ app.get("/", async (c) => {
 app.route("/article" ,index).route('/category' , category)
 export default {
     port: 2000,
-    fetch: app.fetch,
+    fetch(req : any) {
+        
+        if (req.method === "OPTIONS") {
+              return new Response(null, {
+                headers: {
+                  "Access-Control-Allow-Origin": process.env["FRONT_END_URL"] ?? "http://localhost:3000", 
+                  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+                },
+              });
+            }
+        
+            // 2. Tangani Request Utama
+            return new Response("Halo dari Server Aman!", {
+              headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json",
+              },
+            });        
+    },
     tls: {
-       cert: Bun.file('./cert.pem'),
-       key: Bun.file('./key.pem'),
+       cert: Bun.file('./localhost.pem'),
+       key: Bun.file('./localhost-key.pem'),
     }
 };

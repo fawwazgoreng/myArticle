@@ -15,7 +15,7 @@ const { data: articleData, pending: loading } = await useAsyncData('home-article
         popular: popular.article || [],
         meta: articles.article?.meta || {}
     };
-});
+} );
 
 // 3. Dynamic SEO Meta
 // Since this is a landing page, we create an engaging description for search engines
@@ -29,7 +29,6 @@ useSeoMeta({
     twitterCard: 'summary_large_image',
 });
 })
-
 // 4. JSON-LD (Schema Markup) - Highly recommended for Google indexing
 useHead({
     script: [
@@ -45,6 +44,7 @@ useHead({
     ]
 });
 
+
 // Helper: Format date to English format
 const formatDate = (dateStr) => {
     if (!dateStr) return "";
@@ -54,10 +54,11 @@ const formatDate = (dateStr) => {
         year: "numeric",
     });
 };
+
 </script>
 
 <template>
-    <div class="min-h-screen bg-gray-50 font-sans">
+     <div class="min-h-screen bg-gray-50 font-sans">
 
         <div class="bg-red-600 text-white text-sm py-2 overflow-hidden">
             <div class="max-w-7xl mx-auto px-6 flex items-center gap-4">
@@ -250,7 +251,7 @@ const formatDate = (dateStr) => {
             </div>
         </main>
     </div>
-    
+     
 </template>
 
 <style scoped>

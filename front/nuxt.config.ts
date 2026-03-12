@@ -1,8 +1,15 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: process.env.NODE_ENV == "development" },
+    devtools: { enabled: process.env.NODE_ENV == "development" },
   modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt"],
+    devServer: {
+        https: {
+            key: "./localhost-key.pem",
+            cert: "./localhost.pem"
+        },
+        port: 3000
+    },
     app: {
         head: {
             titleTemplate: `%s - MyArticle`,
@@ -14,7 +21,7 @@ export default defineNuxtConfig({
     },
     runtimeConfig: {
     public: {  
-      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASEURL || "http://localhost:3000"
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASEURL || "https://localhost:2000"
     }
   },
   telemetry: false,
