@@ -41,7 +41,7 @@ const handleChange = (e) => {
                 MY<span class="text-gray-900">Article</span>
             </NuxtLink>
 
-            <ul class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
+            <ul class="hidden md:flex gap-6 justify-start items-start text-sm font-medium text-gray-600">
                 <li>
                     <NuxtLink
                         to="/"

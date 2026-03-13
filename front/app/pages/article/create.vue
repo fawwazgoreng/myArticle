@@ -74,13 +74,13 @@ const handleSubmit = async (e) => {
     try {
         const data = await $fetch(`${config.public.apiBaseUrl}/article`, {
             method: "POST",
-            body: form,
+            body: form
         });
         showFlash("success", "article published!");
         console.log(data);
     } catch (error) {
-        showFlash("error", "failed publish article. Coba lagi.");
-        console.error(error);
+        const errorData = error.response._data;
+        showFlash("error", errorData.message || "failed publish article. Coba lagi.");
     } finally {
         isSubmitting.value = false;
     }

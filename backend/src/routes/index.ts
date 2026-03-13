@@ -130,32 +130,5 @@ index
       throw new HTTPException(res.status, res);
     }
   });
-index.onError(async (error: any, c) => {
-  logger.error(
-    {
-      path: c.req.path,
-      method: c.req.method,
-      status: error.status || 500,
-      stack: Number(error.status) == 500 ? error.stack : "validate error",
-    },
-    error.message,
-  );
-  if (error instanceof HTTPException) {
-    const res = error.getResponse();
-    const body =
-      (await res
-        .clone()
-        .json()
-        .catch(() => null)) || (await res.clone().text());
-    c.status((Number(body.status) as StatusCode) || 500);
-    return c.json(body);
-  }
-  c.status((Number(error.status) as StatusCode) || 500);
-  return c.json({
-    status: error.status || 500,
-    message: error.message || "internal server error",
-    error: error.error || "",
-  });
-});
 
 export default index;
