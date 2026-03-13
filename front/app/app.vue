@@ -9,6 +9,8 @@ await useAsyncData('categories-data', () => categoryStore.mount());
 const { category } = storeToRefs(categoryStore);
 let debounceTimer;
 
+console.log(category.value);
+
 const handleChange = (e) => {
     const value = e.target.value;
     clearTimeout(debounceTimer);

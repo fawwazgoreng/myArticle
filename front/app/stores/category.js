@@ -1,17 +1,24 @@
 import { defineStore } from "pinia"
 
-export const useCategoryStore = defineStore('category',{
+// stores/category.js
+export const useCategoryStore = defineStore('category', {
   state: () => ({
-    category:[],
-    load:false
+    category: [],
+    isLoaded: false
   }),
   actions: {
-    async mount () {
+    async mount() {
+      if (this.isLoaded) return;
+
       const config = useRuntimeConfig();
-      if (this.category.length > 1 || this.load == true) return;
-      const res = await $fetch(`${config.public.apiBaseUrl}/category`)
-      this.category = res.category;
-      this.load = true;
+      try {
+        const res = await $fetch(`${config.public.apiBaseUrl}/category`)
+        // Pastikan format response backend sesuai
+        this.category = res.category || res; 
+        this.isLoaded = true;
+      } catch (error) {
+        console.error("Gagal mengambil kategori:", error);
+      }
     }
   }
 })
