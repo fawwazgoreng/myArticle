@@ -5,7 +5,7 @@ export class writeFile {
   constructor(public direct : string) {}
   write = async (file: File) => {
     try {
-      const fileDir = path.join(process.cwd(), `src/public/image/${this.direct}`);
+      const fileDir = path.join(process.cwd(), `public/image/${this.direct}`);
       if (!fs.existsSync(fileDir)) {
         fs.mkdirSync(fileDir, { recursive: true });
       }
@@ -25,7 +25,7 @@ export class writeFile {
   };
   update = (lastFile: string, file?: File) => {
     try {
-      const fileDir = path.join(process.cwd(), `src/public/image/${this.direct}`);
+      const fileDir = path.join(process.cwd(), `public/image/${this.direct}`);
       if (!fs.existsSync(fileDir)) {
         fs.mkdirSync(fileDir, { recursive: true });
       }

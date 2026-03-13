@@ -1,8 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { csrf } from "hono/csrf";
-import { some } from "hono/combine";
-import { serveStatic } from "hono/bun";
+import { getConnInfo, serveStatic } from "hono/bun";
 import { rateLimiter } from "hono-rate-limiter";
 import { prettyJSON } from "hono/pretty-json";
 import { logger } from "./infrastructure/logger/log";
@@ -41,7 +40,7 @@ app.use(
 app.use(
   rateLimiter({
     windowMs: 15 * 60 * 1000,
-    limit: 1,
+    limit: 200,
     keyGenerator: (c) => {
       const key =
         c.req.header("x-forwarded-for") ?? c.req.header("cf-connecting-ip");
@@ -72,7 +71,7 @@ app.get("/", async (c) => {
     logger.info(redis);
     return c.json(redis);
 });
-app.route("/article", index).route("/category", category).use('/static/*', serveStatic({root : "./public"}));
+app.route("/article", index).route("/category", category).use('/static/*', serveStatic({root : "./public" , rewriteRequestPath: (path) => path.replace(/^\/static/ , '')}));
 export default {
     port: 2000,
     fetch: app.fetch,
