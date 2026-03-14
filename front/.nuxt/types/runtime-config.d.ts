@@ -16,6 +16,8 @@ import { RuntimeConfig as UserRuntimeConfig, PublicRuntimeConfig as UserPublicRu
   }
   interface SharedPublicRuntimeConfig {
    apiBaseUrl: string,
+
+   imageBaseUrl: string,
   }
 declare module '@nuxt/schema' {
   interface RuntimeConfig extends UserRuntimeConfig {}

@@ -21,7 +21,8 @@ export default defineNuxtConfig({
     },
     runtimeConfig: {
     public: {  
-      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASEURL || "https://localhost:2000"
+            apiBaseUrl: process.env.NUXT_PUBLIC_API_BASEURL || "https://localhost:2000",
+            imageBaseUrl: process.env.NUXT_PUBLIC_BASE_IMAGE|| "https://localhost:2000/static"
     }
   },
   telemetry: false,

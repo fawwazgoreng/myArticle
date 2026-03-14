@@ -30,7 +30,7 @@ export default class WriteArticle {
         image: url,
         category: validated.category
       };
-      const article = await this.articleModel.create(payload);
+        const article = await this.articleModel.create(payload);
       return {
         status: 201,
         message: "success create new article",

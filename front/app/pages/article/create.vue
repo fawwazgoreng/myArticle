@@ -77,7 +77,15 @@ const handleSubmit = async (e) => {
             body: form
         });
         showFlash("success", "article published!");
-        console.log(data);
+        if (data.status == 201) {
+            payload.title = "";
+            payload.content = "";
+            payload.category = [];
+            if (preview) {
+                URL.revokeObjectURL(preview);
+                preview.value = null; 
+            }
+        }
     } catch (error) {
         const errorData = error.response._data;
         showFlash("error", errorData.message || "failed publish article. Coba lagi.");

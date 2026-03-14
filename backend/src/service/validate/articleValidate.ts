@@ -3,7 +3,7 @@ import * as z from "zod";
 const writeValidate = z.object({
   title : z.string().min(3).max(150),
   content: z.string().min(3).max(400),
-  image: z.file().mime(['image/jpeg' , 'image/png']).max(2000).nullable(),
+  image: z.file().mime(['image/jpeg' , 'image/png']).max(2000000).nullable(),
   category: z.array(z.string())
 });
 

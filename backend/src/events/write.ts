@@ -1,6 +1,6 @@
 import { RedisKey } from "ioredis";
 import redis, { prfix } from "../config/redis";
-import { articleRedis } from "../types/article";
+import { articleMeta, articleRedis } from "../types/article";
 import articleModel from "../model/article";
 import { logger } from "../infrastructure/logger/log";
 
@@ -14,7 +14,6 @@ export default class WriteRedis {
     }
     return res;
   };
-
     newArticle = async (req: articleRedis) => {
     const res = await redis.setex(`article:` + req.id, ttl, JSON.stringify(req.value));
     await redis.set(req.id, req.value.base_views ?? 0);
@@ -24,6 +23,9 @@ export default class WriteRedis {
     return res;
   };
 
+  cacheSearch = async (key : string , val : articleMeta) => {
+      await redis.setex(key, ttl, JSON.stringify(val));
+  }
 
     delete = async (id: RedisKey) => {
     await redis.del("article:" + id);

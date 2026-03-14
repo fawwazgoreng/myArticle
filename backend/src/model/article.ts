@@ -1,5 +1,5 @@
 import prisma from "../infrastructure/database/prisma/prisma";
-import { articleModelPayload, articlePayload, order } from "../types/article";
+import { article, articleMeta, articleModelPayload, articlePayload, order } from "../types/article";
 import { PrismaClientKnownRequestError, Sql } from "../infrastructure/database/generated/prisma/runtime/client";
 import { findPage } from "../service/findPage";
 import { meta } from "../types/global";
@@ -53,8 +53,8 @@ export default class articleModel {
         lastPage: Math.ceil(count / take),
         count
       }
-      const res = {
-        article,
+      const res : articleMeta = {
+        article: article as unknown as article[],
         meta
       };
       return res;
@@ -198,7 +198,7 @@ export default class articleModel {
           data: {
             title: req.title,
             content: req.content,
-            image: req.image,
+              image: req.image,
           },
         })
       ]);

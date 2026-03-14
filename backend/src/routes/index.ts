@@ -2,7 +2,6 @@ import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { StatusCode } from "hono/utils/http-status";
 import WriteArticle from "../write/article";
-import { logger } from "../infrastructure/logger/log";
 import ReadArticle from "../read/article";
 import WriteRedis from "../events/write";
 import { article, articlePayload, articleRedis } from "../types/article";
@@ -51,7 +50,7 @@ index
       const res = await writeArticle.create(payload);
       const redisPayload: articleRedis = {
         id: res.article.id as unknown as RedisKey,
-        value: res.article.base_views,
+        value: res.article,
       };
       const redis = await writeRedis.newArticle(redisPayload);
       if (redis == 404) {

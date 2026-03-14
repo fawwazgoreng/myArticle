@@ -25,7 +25,7 @@ useSeoMeta({
     ogTitle: 'MYArticle - Trusted News Portal',
     description: 'Get the latest news today from politics, technology, and lifestyle categories only at MYArticle.',
     ogDescription: 'A trusted news portal providing accurate and balanced information.',
-    ogImage: articleData.value?.all[0]?.image || '/default-og.jpg',
+    ogImage: String(config.public.imageBaseUrl) + String(articleData.value?.all[0]?.image) || '/default-og.jpg',
     twitterCard: 'summary_large_image',
 });
 })
@@ -101,7 +101,7 @@ const formatDate = (dateStr) => {
                         class="col-span-12 md:col-span-7 relative rounded-2xl overflow-hidden group no-underline block h-96"
                     >
                         <img
-                            :src="articleData.all[0]?.image || `https://source.unsplash.com/random/?${articleData.all[0].category.category.name}&1` "
+                            :src="String(config.public.imageBaseUrl) + articleData.all[0]?.image || `https://source.unsplash.com/random/?${articleData.all[0].category.category.name}&1` "
                             :alt="articleData.all[0]?.title"
                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
@@ -123,7 +123,7 @@ const formatDate = (dateStr) => {
                             class="flex gap-4 items-start group no-underline"
                         >
                             <img
-                                :src="item.image || '/placeholder.jpg'"
+                                :src=" String(config.public.imageBaseUrl) + item.image || '/placeholder.jpg'"
                                 :alt="item.title"
                                 class="w-28 h-20 object-cover rounded-xl bg-gray-200 shrink-0 group-hover:opacity-90 transition-opacity"
                             />
@@ -153,7 +153,7 @@ const formatDate = (dateStr) => {
                         <div class="rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
                             <div class="relative overflow-hidden h-44">
                                 <img
-                                    :src="item.image || '/placeholder.jpg'"
+                                    :src="String(config.public.imageBaseUrl) + item.image || '/placeholder.jpg'"
                                     :alt="item.title"
                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
@@ -186,7 +186,7 @@ const formatDate = (dateStr) => {
                             class="flex gap-4 items-start group no-underline border-b border-gray-100 pb-5 last:border-none"
                         >
                             <img
-                                :src="item.image || '/placeholder.jpg'"
+                                :src=" String(config.public.imageBaseUrl) + item.image || '/placeholder.jpg'"
                                 :alt="item.title"
                                 class="w-36 h-24 object-cover rounded-xl bg-gray-200 shrink-0 group-hover:opacity-90 transition-opacity"
                             />

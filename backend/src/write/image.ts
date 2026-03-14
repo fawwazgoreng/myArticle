@@ -13,8 +13,9 @@ export class writeFile {
         fileDir,
         Math.random().toString(15).substring(2, 7) + file.name,
       );
-      Bun.write(url, file);
-      const finalUrl = url.split(process.cwd());
+        Bun.write(url, file);
+        const splitUrl = path.join(process.cwd() , 'public')
+      const finalUrl = url.split(splitUrl);
       return finalUrl[1];
     } catch (error: any) {
       throw {
@@ -38,8 +39,9 @@ export class writeFile {
         fileDir,
         Math.random().toString(15).substring(2, 7) + file.name,
       );
-      Bun.write(url, file);
-      const finalUrl = url.split(process.cwd());
+        Bun.write(url, file);
+        const splitUrl = path.join(process.cwd() , 'public')
+      const finalUrl = url.split(splitUrl);
       return finalUrl[1];
     } catch (error: any) {
       throw {
