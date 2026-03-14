@@ -6,18 +6,21 @@ import {
   articleModelPayload,
   articlePayload,
   articleResponse,
-} from "../types/article";
-import { globalResponse } from "../types/global";
+} from "../service/types/article";
+import { globalResponse } from "../service/types/global";
 import { writeFile } from "./image";
+import WriteRedis from "./writeRedis";
 
 export default class WriteArticle {
   private articleValidate;
   private articleModel;
-  private articleImage;
+    private articleImage;
+    private writeRedis;
   constructor() {
     this.articleValidate = new articleValidate();
     this.articleModel = new articleModel();
-    this.articleImage = new writeFile('article');
+      this.articleImage = new writeFile('article');
+      this.writeRedis = new WriteRedis();
   }
   create = async (req: articlePayload) => {
     try {
@@ -31,6 +34,7 @@ export default class WriteArticle {
         category: validated.category
       };
         const article = await this.articleModel.create(payload);
+        await this.writeRedis.newArticle(article);
       return {
         status: 201,
         message: "success create new article",
@@ -51,50 +55,50 @@ export default class WriteArticle {
       } as globalResponse;
     }
   };
-  update = async (id: number, req: articlePayload) => {
-    try {
-      const validated = await this.articleValidate.update(req);
-      const lastImg = await this.articleModel.findImage(id).then(data => data?.image) || "";
-      const url = this.articleImage.update(lastImg, req.image);
-      const payload : articleModelPayload = {
-        title: validated.title,
-        content: validated.content,
-        image: url,
-        category: validated.category
-      }
-      const article = await this.articleModel.update(id, payload);
-      const res : articleResponse = {
-        status: 200,
-        message: "succes update article",
-        article: article[2]
-      }
-      return res;
-    } catch (error: any) {
-      if (error instanceof ZodError) {
-        throw {
-          status: 422,
-          message: error.issues[0].message,
-          error: error.issues,
-        } as globalResponse;
-      }
-      throw {
-        status: error.status || 500,
-        message: error.message || "internal server error",
-        error: error,
-      } as globalResponse;
-    }
-  };
-  delete = async (id: number) => {
-    try {
-      const article = await this.articleModel.delete(id);
-      if (article.image) this.articleImage.update(article.image);
-    } catch (error: any) {
-      const res: globalResponse = {
-        status: error.status || 500,
-        message: error.message || "internal server error",
-        error: error.error,
-      };
-      throw res;
-    }
-  };
+  // update = async (id: number, req: articlePayload) => {
+  //   try {
+  //     const validated = await this.articleValidate.update(req);
+  //     const lastImg = await this.articleModel.findImage(id).then(data => data?.image) || "";
+  //     const url = this.articleImage.update(lastImg, req.image);
+  //     const payload : articleModelPayload = {
+  //       title: validated.title,
+  //       content: validated.content,
+  //       image: url,
+  //       category: validated.category
+  //     }
+  //     const article = await this.articleModel.update(id, payload);
+  //     const res : articleResponse = {
+  //       status: 200,
+  //       message: "succes update article",
+  //       article: article[2]
+  //     }
+  //     return res;
+  //   } catch (error: any) {
+  //     if (error instanceof ZodError) {
+  //       throw {
+  //         status: 422,
+  //         message: error.issues[0].message,
+  //         error: error.issues,
+  //       } as globalResponse;
+  //     }
+  //     throw {
+  //       status: error.status || 500,
+  //       message: error.message || "internal server error",
+  //       error: error,
+  //     } as globalResponse;
+  //   }
+  // };
+  // delete = async (id: number) => {
+  //   try {
+  //     const article = await this.articleModel.delete(id);
+  //     if (article.image) this.articleImage.update(article.image);
+  //   } catch (error: any) {
+  //     const res: globalResponse = {
+  //       status: error.status || 500,
+  //       message: error.message || "internal server error",
+  //       error: error.error,
+  //     };
+  //     throw res;
+  //   }
+  // };
 }

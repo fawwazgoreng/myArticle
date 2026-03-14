@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
-import { globalResponse } from "../types/global";
-import { category, categoryResponse } from "../types/category";
+import { globalResponse } from "../service/types/global";
+import { category, categoryResponse } from "../service/types/category";
 import categoryModel from "../model/category";
 import { categoryValidate } from "../service/validate/categoryValidate";
 

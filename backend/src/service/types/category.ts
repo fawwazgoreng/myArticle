@@ -1,6 +1,6 @@
-import category from "../routes/category";
 import { article } from "./article";
 import { globalResponse } from "./global";
+import category from "../routes/category";
 
 export interface categoryOnArticle {
   category_id : number,

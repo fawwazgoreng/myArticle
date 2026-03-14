@@ -1,7 +1,7 @@
-import { ReadRedis } from "../events/read";
+import { ReadRedis } from "./readRedis";
 import { logger } from "../infrastructure/logger/log";
 import categoryModel from "../model/category";
-import { categoryResponse, categoryResponses } from "../types/category";
+import { categoryResponse, categoryResponses } from "../service/types/category";
 
 export default class ReadCategory {
   private categoryModel;

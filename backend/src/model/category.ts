@@ -3,8 +3,8 @@ import { PrismaClientKnownRequestError } from "../infrastructure/database/genera
 import { Prisma } from "../infrastructure/database/generated/prisma";
 import { logger } from "../infrastructure/logger/log";
 import { findPage } from "../service/findPage";
-import { meta } from "../types/global";
-import { categoryResponse } from "../types/category";
+import { meta } from "../service/types/global";
+import { categoryResponse } from "../service/types/category";
 
 export default class categoryModel {
   show = async () => {

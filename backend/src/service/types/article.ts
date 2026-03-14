@@ -1,7 +1,7 @@
 import { RedisKey } from "ioredis";
 import { globalResponse, meta } from "./global";
-import { Prisma } from "../infrastructure/database/generated/prisma";
 import { category } from "./category";
+import { Prisma } from "../../infrastructure/database/generated/prisma";
 
 export type article = {
   id: number,
@@ -22,15 +22,7 @@ export type order = {
 
 export type articleRedis = {
   id: RedisKey,
-    value: {
-      id: number,
-      title: string,
-      content: string,
-      image: string | null,
-      base_views: number,
-      created_at?: Date,
-      updated_at?: Date,
-  }
+    value: article
 }
 
 export interface articleArrayResponse extends globalResponse {

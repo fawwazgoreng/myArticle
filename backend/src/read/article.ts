@@ -1,8 +1,8 @@
-import { ReadRedis } from "../events/read";
-import WriteRedis from "../events/write";
+import { ReadRedis } from "./readRedis";
+import WriteRedis from "../write/writeRedis";
 import { logger } from "../infrastructure/logger/log";
 import articleModel from "../model/article";
-import { articleArrayResponse, articleMeta } from "../types/article";
+import { article, articleArrayResponse, articleMeta } from "../service/types/article";
 
 export default class ReadArticle {
     private articleModel;
@@ -74,8 +74,10 @@ export default class ReadArticle {
 
     find = async (id: number) => {
         try {
+            const redisCache = await this.readRedis.readShow(id);
+            if (redisCache) return redisCache;
             const article = await new articleModel().find(id);
-            return article;
+            return article as  unknown as article;
         } catch (error: any) {
             logger.info(error);
             throw {

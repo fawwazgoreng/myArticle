@@ -1,6 +1,6 @@
 import { RedisKey } from "ioredis";
-import redis, { prfix } from "../config/redis";
-import { articleMeta, articleRedis } from "../types/article";
+import redis, { prfix } from "../infrastructure/redis/redis";
+import { article, articleMeta, articleRedis } from "../service/types/article";
 import articleModel from "../model/article";
 import { logger } from "../infrastructure/logger/log";
 
@@ -14,9 +14,9 @@ export default class WriteRedis {
     }
     return res;
   };
-    newArticle = async (req: articleRedis) => {
-    const res = await redis.setex(`article:` + req.id, ttl, JSON.stringify(req.value));
-    await redis.set(req.id, req.value.base_views ?? 0);
+    newArticle = async (req: article) => {
+    const res = await redis.setex(`article:` + req.id, ttl, JSON.stringify(req));
+    await redis.set(String(req.id), req.base_views ?? 0);
     if (!res) {
       return 404;
     }

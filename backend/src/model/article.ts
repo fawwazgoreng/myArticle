@@ -1,8 +1,8 @@
 import prisma from "../infrastructure/database/prisma/prisma";
-import { article, articleMeta, articleModelPayload, articlePayload, order } from "../types/article";
+import { article, articleMeta, articleModelPayload, articlePayload, order } from "../service/types/article";
 import { PrismaClientKnownRequestError, Sql } from "../infrastructure/database/generated/prisma/runtime/client";
 import { findPage } from "../service/findPage";
-import { meta } from "../types/global";
+import { meta } from "../service/types/global";
 import { Prisma } from "../infrastructure/database/generated/prisma";
 import { logger } from "../infrastructure/logger/log";
 
@@ -91,7 +91,7 @@ export default class articleModel {
           }
         },
       });
-      return article;
+      return article as unknown as article;
     } catch (error: any) {
       if (error instanceof PrismaClientKnownRequestError) {
         throw {
