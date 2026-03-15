@@ -12,11 +12,14 @@ import WriteRedis from "./write/writeRedis";
 import { HTTPException } from "hono/http-exception";
 import { StatusCode } from "hono/utils/http-status";
 
+// Initialize Redis writer for sync jobs
 const writeRedis = new WriteRedis();
 
+// Initialize Hono application
 const app = new Hono();
 
-// set up cors
+
+// Enable CORS for frontend communication
 app.use(
     "*",
     cors({
@@ -29,10 +32,12 @@ app.use(
     }),
 );
 
-// make all request be PrettyJson
+
+// Format all responses as pretty JSON (dev readability)
 app.use("*", prettyJSON());
 
-// csrf set up
+
+// Protect routes against CSRF attacks
 app.use(
     "*",
     csrf({
@@ -40,30 +45,37 @@ app.use(
     }),
 );
 
-// rate limiting
+
+// Limit request rate per client IP
 app.use(
     rateLimiter({
-        // limit 200 request / 15 minutes
-        windowMs: 15 * 60 * 1000,
-        limit: 200,
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        limit: 200, // max 200 requests
 
-        // get identity and make anonymous when identity not found
+        // Identify client IP
         keyGenerator: (c) => {
             const key =
                 c.req.header("x-forwarded-for") ??
                 c.req.header("cf-connecting-ip");
+
             if (key) return key;
+
             const info = getConnInfo(c);
             return info.remote.address || "anonymous";
         },
     }),
 );
 
+
+// Log every request with unique request id
 app.use("*", async (c, next) => {
-    // make uniqueId every request
+
+    // Generate request identifier
     const requestId = crypto.randomUUID();
+
     await next();
-    // log every request
+
+    // Log request metadata
     logger.info({
         requestId,
         method: c.req.method,
@@ -71,22 +83,29 @@ app.use("*", async (c, next) => {
         status: c.res.status,
     });
 });
-// make schedule every 5 minutes
+
+
+// Schedule Redis view counter sync every 5 minutes
 const job = schedule.scheduleJob("*/5 * * * *", async () => {
+
     const redis = await writeRedis.syncData();
+
     logger.info(redis);
 });
 
-// base api end point
+
+// Root health endpoint
 app.get("/", async (c) => {
     c.status(200);
     return c.json({ message: "hello from server" });
 });
 
-// connect routes to main route
+
+// Register API routes and static file server
 app.route("/article", index)
     .route("/category", category)
-    // api end point to get static file
+
+    // Serve static files from /public directory
     .use(
         "/static/*",
         serveStatic({
@@ -95,9 +114,11 @@ app.route("/article", index)
         }),
     );
 
-// error handling
+
+// Global error handler
 app.onError(async (error: any, c) => {
-    // log every error
+
+    // Log error with request metadata
     logger.error(
         {
             path: c.req.path,
@@ -107,26 +128,34 @@ app.onError(async (error: any, c) => {
         },
         error.message,
     );
-    // set header response to avoid cors blocked
+
+    // Set CORS header for error responses
     c.res.headers.set(
         "Access-Control-Allow-Origin",
         process.env["FRONT_END_URL"] ?? "https://localhost:3000",
     );
 
-    // return custom error data if exist
+
+    // Handle Hono HTTPException
     if (error instanceof HTTPException) {
+
         const res = error.getResponse();
+
         const body =
             (await res
                 .clone()
                 .json()
                 .catch(() => null)) || (await res.clone().text());
+
         c.status((Number(body.status) as StatusCode) || 500);
+
         return c.json(body);
     }
 
-    // default error response
+
+    // Default error response
     c.status((Number(error.status) as StatusCode) || 500);
+
     return c.json({
         status: error.status || 500,
         message: error.message || "internal server error",
@@ -134,6 +163,8 @@ app.onError(async (error: any, c) => {
     });
 });
 
+
+// Start Bun server with TLS
 export default {
     port: 2000,
     fetch: app.fetch,
