@@ -1,31 +1,43 @@
 # MyArticle
 
-> web application built with **nuxt** (Frontend) + **Hono** (Backend API) + **Redis** (Messaging)
-
-## Notes 
-
-```
-i recomended start backend first before frontend
-```
+> A modern blog platform built with **Nuxt 3** (Frontend) and **Hono** (Backend API).  
+> Uses **PostgreSQL** as the main database and **Redis** for caching and view counters.
 
 ---
 
 ## 🛠️ Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
-| Frontend | Nuxt 3  |
+|------|-------------|
+| Frontend | Nuxt 3 |
 | Styling | Tailwind CSS |
 | Backend | Hono (REST API) |
 | Database | PostgreSQL |
+| Cache | Redis |
+| Runtime | Bun / Node.js |
+
+---
+
+## ✨ Features
+
+- Article management (CRUD)
+- Category management
+- Redis-based view counter
+- Image upload support
+- Rate limiting
+- CSRF protection
+- Structured logging
+- RESTful API design
 
 ---
 
 ## 📁 Project Structure
 
 ```
-├── front/        # vite App
-└── backend/         # Laravel API
+.
+├── front/        # Nuxt 3 frontend application
+├── backend/      # Hono REST API server
+└── README.md
 ```
 
 ---
@@ -34,15 +46,16 @@ i recomended start backend first before frontend
 
 Make sure you have these installed:
 
-- **Node.js** v18+ & **npm** / **bun**
+- **Node.js** v18+
+- **npm** or **bun**
 - **PostgreSQL**
 - **Redis**
 
 ---
 
-## 🖥️ Frontend — Nuxt
+# 🖥️ Frontend — Nuxt
 
-### Setup
+## Setup
 
 ```bash
 cd front
@@ -51,23 +64,33 @@ npm install
 bun install
 ```
 
-### Environment
+## Environment Setup
 
 ```bash
 cp .env.example .env
 ```
 
-### Run Development Server
+Example `.env`
+
+```env
+NUXT_PUBLIC_API_URL=http://localhost:3000
+```
+
+## Run Development Server
 
 ```bash
 npm run dev
 # or
-bun dev
+bun run dev
 ```
 
-Open [http://localhost:3001](http://localhost:3001) in your browser.
+Open in browser:
 
-### Build for Production
+```
+http://localhost:3001
+```
+
+## Build for Production
 
 ```bash
 npm run build
@@ -76,9 +99,9 @@ npm run start
 
 ---
 
-## 🔧 Backend — Hono
+# 🔧 Backend — Hono
 
-### Setup
+## Setup
 
 ```bash
 cd backend
@@ -87,53 +110,112 @@ npm install
 bun install
 ```
 
-### Environment
+## Environment Setup
 
 ```bash
-  cp .env.example .env
+cp .env.example .env
 ```
+
+Example `.env`
 
 ```env
-
+DATABASE_URL="postgresql://postgres:root@localhost:5432/myarticle"
+DATABASE_POST=5432
+DATABASE_PASSWORD="root"
+DATABASE_USER="postgres"
+DATABASE_NAME="myarticle"
+NODE_ENV="development"
+APP_NAME="article"
+REDIS_PORT=6379
+REDIS_DB=0
+REDIS_HOST='127.0.0.1'
+REDIS_PASSWORD=
+FRONT_END_URL="https://localhost:3000"
 ```
 
-### Database Migration
+---
+
+## Database Migration
 
 ```bash
-bunx / npmx prisma migrate dev
+# using bun
+bunx prisma migrate dev
+
+# using npm
+npx prisma migrate dev
 ```
 
-### Run Development Server
+---
+
+## Run Development Server
 
 ```bash
-bun run dev 
-or
+bun run dev
+# or
 npm run dev
 ```
 
-API will be available at [http://localhost:3000](http://localhost:3000)
+API will be available at:
+
+```
+http://localhost:3000
+```
 
 ---
 
 ## 🔗 API Endpoints
 
-Base URL: `http://localhost:3000`
+Base URL:
+
+```
+http://localhost:3000
+```
+
+| Method | Endpoint | Description |
+|------|---------|-------------|
+| GET | /article | Get articles |
+| GET | /article/:id | Get single article |
+| POST | /article | Create article |
+| PUT | /article/:id | Update article |
+| DELETE | /article/:id | Delete article |
+| GET | /category | Get categories |
 
 ---
 
 ## 🤝 Contributing
 
 1. Fork this repository
-2. Create your feature branch: `git checkout -b feat/your-feature`
-3. Commit your changes: `git commit -m 'feat: add your feature'`
-4. Push to the branch: `git push origin feat/your-feature`
+2. Create a feature branch
+
+```bash
+git checkout -b feat/your-feature
+```
+
+3. Commit your changes
+
+```bash
+git commit -m "feat: add your feature"
+```
+
+4. Push to the branch
+
+```bash
+git push origin feat/your-feature
+```
+
 5. Open a Pull Request
 
 ---
 
 ## 📄 License
+
+This project is licensed under the MIT License.
+
 ---
 
 <div align="center">
-  Made with ❤️ by <a href="https://github.com/fawwazalmumtaz">Muhammad Fawwaz Almumtaz</a>
+
+Made with ❤️ by  
+**Muhammad Fawwaz Almumtaz**
+
 </div>
