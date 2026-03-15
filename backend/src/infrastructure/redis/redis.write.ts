@@ -1,8 +1,8 @@
 import { RedisKey } from "ioredis";
-import redis, { prfix } from "../infrastructure/redis/redis";
-import { article, articleMeta } from "../service/types/article";
-import articleModel from "../model/article";
-import { logger } from "../infrastructure/logger/log";
+import redis, { prfix } from "./redis";
+import { article, articleMeta } from "../../article/article.type";
+import articleModel from "../../article/article.model";
+import { logger } from "../logger/log";
 
 const ttl = 60 * 60 * 24; // Cache expiration time (24 hours)
 

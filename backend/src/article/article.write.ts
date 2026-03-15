@@ -1,14 +1,14 @@
 import { ZodError } from "zod";
-import articleModel from "../model/article";
-import { articleValidate } from "../service/validate/articleValidate";
+import articleModel from "./article.model";
+import { articleValidate } from "./article.validate";
 import {
   articleModelPayload,
   articlePayload,
   articleResponse,
-} from "../service/types/article";
-import { globalResponse } from "../service/types/global";
-import { writeFile } from "./image";
-import WriteRedis from "./writeRedis";
+} from "./article.type";
+import { globalResponse } from "../utils/global.type";
+import { writeFile } from "../utils/image.write";
+import WriteRedis from "../infrastructure/redis/redis.write";
 
 // Service responsible for writing article data
 export default class WriteArticle {

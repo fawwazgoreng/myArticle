@@ -1,12 +1,12 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { StatusCode } from "hono/utils/http-status";
-import { logger } from "../../infrastructure/logger/log";
-import WriteCategory from "../../write/category";
-import ReadCategory from "../../read/category";
-import { ReadRedis } from "../../read/readRedis";
-import { category, categoryResponse } from "../types/category";
-import { meta } from "../types/global";
+import { logger } from "../infrastructure/logger/log";
+import WriteCategory from "./category.write";
+import ReadCategory from "./category.read";
+import { ReadRedis } from "../infrastructure/redis/redis.read";
+import { category, categoryResponse } from "./category.type";
+import { meta } from "../utils/global.type";
 
 // Create a new Hono router instance for category endpoints
 const category = new Hono();

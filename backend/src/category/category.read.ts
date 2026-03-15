@@ -1,8 +1,8 @@
-import { ReadRedis } from "./readRedis";
+import { ReadRedis } from "../infrastructure/redis/redis.read";
 import { logger } from "../infrastructure/logger/log";
-import categoryModel from "../model/category";
-import { category, categoryResponse, categoryResponses } from "../service/types/category";
-import { meta } from "../service/types/global";
+import categoryModel from "./category.model";
+import { category, categoryResponse, categoryResponses } from "./category.type";
+import { meta } from "../utils/global.type";
 
 // Service responsible for reading category data
 export default class ReadCategory {

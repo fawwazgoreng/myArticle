@@ -5,10 +5,10 @@ import { getConnInfo, serveStatic } from "hono/bun";
 import { rateLimiter } from "hono-rate-limiter";
 import { prettyJSON } from "hono/pretty-json";
 import { logger } from "./infrastructure/logger/log";
-import category from "./service/routes/category";
-import index from "./service/routes";
+import category from "./category/category.route";
+import index from "./article/article.route";
 import schedule from "node-schedule";
-import WriteRedis from "./write/writeRedis";
+import WriteRedis from "./infrastructure/redis/redis.write";
 import { HTTPException } from "hono/http-exception";
 import { StatusCode } from "hono/utils/http-status";
 

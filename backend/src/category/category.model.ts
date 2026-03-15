@@ -2,8 +2,8 @@ import prisma from "../infrastructure/database/prisma/prisma";
 import { PrismaClientKnownRequestError } from "../infrastructure/database/generated/prisma/runtime/client";
 import { Prisma } from "../infrastructure/database/generated/prisma";
 import { logger } from "../infrastructure/logger/log";
-import { findPage } from "../service/findPage";
-import { meta } from "../service/types/global";
+import { findPage } from "../utils/findPage";
+import { meta } from "../utils/global.type";
 
 // Category model responsible for database operations related to categories
 export default class categoryModel {

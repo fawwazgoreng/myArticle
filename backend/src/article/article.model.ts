@@ -1,8 +1,8 @@
 import prisma from "../infrastructure/database/prisma/prisma";
-import { article, articleMeta, articleModelPayload } from "../service/types/article";
+import { article, articleMeta, articleModelPayload } from "./article.type";
 import { PrismaClientKnownRequestError, Sql } from "../infrastructure/database/generated/prisma/runtime/client";
-import { findPage } from "../service/findPage";
-import { meta } from "../service/types/global";
+import { findPage } from "../utils/findPage";
+import { meta } from "../utils/global.type";
 import { Prisma } from "../infrastructure/database/generated/prisma";
 import { logger } from "../infrastructure/logger/log";
 

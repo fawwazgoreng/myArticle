@@ -1,5 +1,5 @@
-import { article } from "./article";
-import { globalResponse } from "./global";
+import { article } from "../article/article.type";
+import { globalResponse } from "../utils/global.type";
 
 export interface categoryOnArticle {
   category_id : number,

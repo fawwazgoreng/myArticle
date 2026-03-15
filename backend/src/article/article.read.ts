@@ -1,8 +1,8 @@
-import { ReadRedis } from "./readRedis";
-import WriteRedis from "../write/writeRedis";
+import { ReadRedis } from "../infrastructure/redis/redis.read";
+import WriteRedis from "../infrastructure/redis/redis.write";
 import { logger } from "../infrastructure/logger/log";
-import articleModel from "../model/article";
-import { article, articleArrayResponse, articleMeta } from "../service/types/article";
+import articleModel from "./article.model";
+import { article, articleArrayResponse, articleMeta } from "./article.type";
 
 // Service responsible for reading articles with Redis caching
 export default class ReadArticle {
