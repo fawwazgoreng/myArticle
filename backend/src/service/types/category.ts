@@ -1,6 +1,5 @@
 import { article } from "./article";
 import { globalResponse } from "./global";
-import category from "../routes/category";
 
 export interface categoryOnArticle {
   category_id : number,
@@ -11,7 +10,7 @@ export interface categoryOnArticle {
 export type category = {
   id: number,
   name: string
-  article?: article[] | null
+  article?: { id: number; title: string; content: string; image: string | null; base_views: number; created_at: Date; updated_at: Date; }[] | null
 }
 export interface categoryResponse extends globalResponse {
   category?: category

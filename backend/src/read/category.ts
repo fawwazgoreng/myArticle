@@ -1,7 +1,8 @@
 import { ReadRedis } from "./readRedis";
 import { logger } from "../infrastructure/logger/log";
 import categoryModel from "../model/category";
-import { categoryResponse, categoryResponses } from "../service/types/category";
+import { category, categoryResponse, categoryResponses } from "../service/types/category";
+import { meta } from "../service/types/global";
 
 export default class ReadCategory {
   private categoryModel;
@@ -29,7 +30,6 @@ export default class ReadCategory {
   find = async (req : {id: number , page: number, title: string , time: 'newest' | 'oldest' , populer: boolean}) => {
     try {
       const res = await this.categoryModel.find(req);
-      return res;
       if (res.meta.count < 1) return {
         status: 200,
         message: "success get data",
@@ -42,7 +42,7 @@ export default class ReadCategory {
           ids.push(String(id));
         }
       })
-      const redisValue = await new ReadRedis().readAll(ids);
+      const redisValue = await new ReadRedis().readViews(ids);
       for (const [key , value] of Object.entries(redisValue)) {
         if (!value) continue;
         const findable = res.category.article.find(item => item?.id == Number(key));
@@ -50,10 +50,11 @@ export default class ReadCategory {
           findable.base_views = Number(value);
         }
       }
-      const result: categoryResponse = {
-        status: 200,
-        message: 'success get article',
-        category: res.category,
+        const result: {
+            category: category,
+            meta : meta
+        } = {
+        category: res.category as category,
         meta: res.meta
       };
       return result;

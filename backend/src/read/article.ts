@@ -77,7 +77,7 @@ export default class ReadArticle {
             const redisCache = await this.readRedis.readShow(id);
             if (redisCache) return redisCache;
             const article = await new articleModel().find(id);
-            return article as  unknown as article;
+            return article as article;
         } catch (error: any) {
             logger.info(error);
             throw {

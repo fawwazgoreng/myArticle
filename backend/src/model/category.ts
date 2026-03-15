@@ -4,7 +4,6 @@ import { Prisma } from "../infrastructure/database/generated/prisma";
 import { logger } from "../infrastructure/logger/log";
 import { findPage } from "../service/findPage";
 import { meta } from "../service/types/global";
-import { categoryResponse } from "../service/types/category";
 
 export default class categoryModel {
   show = async () => {

@@ -5,7 +5,8 @@ import { logger } from "../../infrastructure/logger/log";
 import WriteCategory from "../../write/category";
 import ReadCategory from "../../read/category";
 import { ReadRedis } from "../../read/readRedis";
-import { categoryResponse } from "../types/category";
+import { category, categoryResponse } from "../types/category";
+import { meta } from "../types/global";
 
 // Create a new Hono router instance for category endpoints
 const category = new Hono();
@@ -118,7 +119,7 @@ category
       };
 
       // Fetch category data
-      const res: categoryResponse = await readCategory.find(payload);
+        const res = await readCategory.find(payload);
 
       c.status(200);
       return c.json({

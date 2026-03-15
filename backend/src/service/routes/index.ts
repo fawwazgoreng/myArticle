@@ -4,7 +4,7 @@ import { StatusCode } from "hono/utils/http-status";
 import WriteArticle from "../../write/article";
 import ReadArticle from "../../read/article";
 import WriteRedis from "../../write/writeRedis";
-import { article, articlePayload, articleRedis } from "../types/article";
+import { article, articlePayload } from "../types/article";
 import { RedisKey } from "ioredis";
 
 // Create router instance for article endpoints

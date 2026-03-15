@@ -1,1 +1,0 @@
-../../infrastructure/logger/log../../write/category../../read/category../../read/readRedis../types/category

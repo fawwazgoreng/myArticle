@@ -24,7 +24,7 @@ export class writeFile {
       };
     }
   };
-  update = (lastFile: string, file?: File) => {
+  update = (lastFile: string, file?: File | null) => {
     try {
       const fileDir = path.join(process.cwd(), `public/image/${this.direct}`);
       if (!fs.existsSync(fileDir)) {

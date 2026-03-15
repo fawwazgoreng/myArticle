@@ -54,7 +54,7 @@ export default class articleModel {
         count
       }
       const res : articleMeta = {
-        article: article as unknown as article[],
+        article: article as article[],
         meta
       };
       return res;
@@ -88,10 +88,21 @@ export default class articleModel {
           image: req.image,
           category: {
             create: category
+          },
+          },
+          select: {
+              id: true,
+              title: true,
+              content: true,
+              image: true,
+              category: {
+                  select: {
+                      category: true
+                  }
+              }
           }
-        },
       });
-      return article as unknown as article;
+      return article as article;
     } catch (error: any) {
       if (error instanceof PrismaClientKnownRequestError) {
         throw {
@@ -199,7 +210,24 @@ export default class articleModel {
             title: req.title,
             content: req.content,
               image: req.image,
-          },
+            },
+            select: {
+                id: true,
+                title: true,
+                content: true,
+                image: true,
+                base_views: true,
+                category: {
+                    select: {
+                        category: {
+                            select: {
+                                id: true,
+                                name: true
+                            }
+                        }
+                    }
+                }
+            }
         })
       ]);
       if (!article?.[2].id) {
@@ -208,7 +236,7 @@ export default class articleModel {
           message: "article id " + id + " not found",
         };
       }
-      return article;
+      return article[2] as article;
     } catch (error : any) {
       throw {
         status: 500,

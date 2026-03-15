@@ -55,50 +55,50 @@ export default class WriteArticle {
       } as globalResponse;
     }
   };
-  // update = async (id: number, req: articlePayload) => {
-  //   try {
-  //     const validated = await this.articleValidate.update(req);
-  //     const lastImg = await this.articleModel.findImage(id).then(data => data?.image) || "";
-  //     const url = this.articleImage.update(lastImg, req.image);
-  //     const payload : articleModelPayload = {
-  //       title: validated.title,
-  //       content: validated.content,
-  //       image: url,
-  //       category: validated.category
-  //     }
-  //     const article = await this.articleModel.update(id, payload);
-  //     const res : articleResponse = {
-  //       status: 200,
-  //       message: "succes update article",
-  //       article: article[2]
-  //     }
-  //     return res;
-  //   } catch (error: any) {
-  //     if (error instanceof ZodError) {
-  //       throw {
-  //         status: 422,
-  //         message: error.issues[0].message,
-  //         error: error.issues,
-  //       } as globalResponse;
-  //     }
-  //     throw {
-  //       status: error.status || 500,
-  //       message: error.message || "internal server error",
-  //       error: error,
-  //     } as globalResponse;
-  //   }
-  // };
-  // delete = async (id: number) => {
-  //   try {
-  //     const article = await this.articleModel.delete(id);
-  //     if (article.image) this.articleImage.update(article.image);
-  //   } catch (error: any) {
-  //     const res: globalResponse = {
-  //       status: error.status || 500,
-  //       message: error.message || "internal server error",
-  //       error: error.error,
-  //     };
-  //     throw res;
-  //   }
-  // };
+  update = async (id: number, req: articlePayload) => {
+    try {
+      const validated = await this.articleValidate.update(req);
+      const lastImg = await this.articleModel.findImage(id).then(data => data?.image) || "";
+      const url = this.articleImage.update(lastImg, req.image);
+      const payload : articleModelPayload = {
+        title: validated.title,
+        content: validated.content,
+        image: url,
+        category: validated.category
+      }
+      const article = await this.articleModel.update(id, payload);
+      const res : articleResponse = {
+        status: 200,
+        message: "succes update article",
+        article: article
+      }
+      return res;
+    } catch (error: any) {
+      if (error instanceof ZodError) {
+        throw {
+          status: 422,
+          message: error.issues[0].message,
+          error: error.issues,
+        } as globalResponse;
+      }
+      throw {
+        status: error.status || 500,
+        message: error.message || "internal server error",
+        error: error,
+      } as globalResponse;
+    }
+  };
+  delete = async (id: number) => {
+    try {
+        const article = await this.articleModel.delete(id);
+      if (article.image) this.articleImage.update(article.image);
+    } catch (error: any) {
+      const res: globalResponse = {
+        status: error.status || 500,
+        message: error.message || "internal server error",
+        error: error.error,
+      };
+      throw res;
+    }
+  };
 }

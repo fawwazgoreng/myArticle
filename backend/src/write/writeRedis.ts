@@ -1,6 +1,6 @@
 import { RedisKey } from "ioredis";
 import redis, { prfix } from "../infrastructure/redis/redis";
-import { article, articleMeta, articleRedis } from "../service/types/article";
+import { article, articleMeta } from "../service/types/article";
 import articleModel from "../model/article";
 import { logger } from "../infrastructure/logger/log";
 
@@ -34,7 +34,7 @@ export default class WriteRedis {
       return 404;
     }
     return res;
-  };
+    };  
   
   syncData = async () => {
     try {
