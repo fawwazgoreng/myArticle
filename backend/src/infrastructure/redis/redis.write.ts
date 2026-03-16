@@ -36,7 +36,7 @@ export default class WriteRedis {
     return res;
   };
 
-  // Cache search result for article listing
+    // Cache search result for article listing
   cacheSearch = async (key : string , val : articleMeta) => {
     await redis.setex(key, ttl, JSON.stringify(val));
   };
