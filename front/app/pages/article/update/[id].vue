@@ -2,6 +2,9 @@
 import { ref, reactive } from "vue";
 import { storeToRefs } from "pinia";
 
+const route = useRoute();
+
+
 const categoryStore = useCategoryStore();
 const { category } = storeToRefs(categoryStore);
 
@@ -11,11 +14,20 @@ const isDragging = ref(false);
 const isSubmitting = ref(false);
 const flash = reactive({ show: false, type: "", message: "" });
 
+
 const payload = reactive({
     image: "",
     title: "",
     content: "",
     category: [],
+});
+
+const { pending: loading } = useAsyncData('initial-payload', async () => {
+    const data = await $fetch(`${config.public.apiBaseUrl}/article/${route.params.id}`).then(data => data.article);
+    payload.title = data.title;
+    payload.content = data.content;
+    payload.image = data.image;
+    payload.category = data.category.map(value => value.category.name);
 });
 
 const showFlash = (type, message) => {
@@ -44,7 +56,7 @@ const inputImage = (e) => {
 };
 
 watch(payload, () => {
-    console.log(payload);
+    console.log(payload.value);
 });
 
 const handleDrop = (e) => {
@@ -58,7 +70,7 @@ const handleDrop = (e) => {
 
 const handleSubmit = async (e) => {
     e.preventDefault();
-    const { title, content, category , image } = payload;
+    const { title, content, category } = payload;
     if (title.length < 3)
         return showFlash("error", "Title minimal 3 charackter.");
     if (content.length < 3)
@@ -72,15 +84,15 @@ const handleSubmit = async (e) => {
     form.append("category", category);
     isSubmitting.value = true;
     try {
-        const data = await $fetch(`${config.public.apiBaseUrl}/article`, {
-            method: "POST",
+        const data = await $fetch(`${config.public.apiBaseUrl}/article/${Number(route.params.id)}`, {
+            method: "PUT",
             body: form,
         });
-        showFlash("success", "article published!");
+        showFlash("success", "article Updated!");
         console.log(data);
     } catch (error) {
-        showFlash("error", "failed publish article. Coba lagi.");
-        console.error(error);
+        const errorData = error.response._data;
+        showFlash("error", errorData.message || "failed publish article. Try again.");
     } finally {
         isSubmitting.value = false;
     }
@@ -88,7 +100,7 @@ const handleSubmit = async (e) => {
 </script>
 
 <template>
-    <div class="min-h-screen px-6 py-12 max-w-6xl mx-auto">
+    <div class="min-h-screen px-6 py-12 max-w-6xl mx-auto" v-if="!loading">
         <!-- Flash Message -->
         <Transition
             enter-active-class="transition duration-300 ease-out"
@@ -121,9 +133,9 @@ const handleSubmit = async (e) => {
 
         <!-- Header -->
         <div class="mb-10">
-            <h1 class="text-3xl font-semibold text-gray-800">Create Article</h1>
+            <h1 class="text-3xl font-semibold text-gray-800">Update Article</h1>
             <p class="text-sm text-gray-400 mt-1">
-                Fill in the details below to publish your article.
+                Fill in the details below to update your article.
             </p>
         </div>
 
@@ -155,16 +167,12 @@ const handleSubmit = async (e) => {
                         alt="preview"
                         class="w-full h-full object-cover"
                     />
-                    <div
+                    <img
                         v-else
-                        class="w-full h-full flex flex-col items-center justify-center gap-2 pointer-events-none"
-                    >
-                        <span class="text-2xl text-gray-300">⬆</span>
-                        <p class="text-sm text-gray-400 font-medium">
-                            Drop image here
-                        </p>
-                        <p class="text-xs text-gray-300">or click to browse</p>
-                    </div>
+                        :src="config.public.imageBaseUrl + payload.image"
+                        alt="preview"
+                        class="w-full h-full object-cover"
+                    />
                 </div>
 
                 <!-- Category -->
@@ -230,6 +238,7 @@ const handleSubmit = async (e) => {
                         type="text"
                         spellcheck="false"
                         placeholder="Write title article..."
+                        v-model="payload.title"
                         @input="(e) => (payload.title = e.target.value)"
                         class="w-full border border-gray-200 rounded-xl text-gray-800 text-xl px-4 py-3 outline-none focus:border-blue-400 transition-colors placeholder:text-gray-300"
                     />
@@ -246,6 +255,7 @@ const handleSubmit = async (e) => {
                         id="content"
                         spellcheck="false"
                         placeholder="Write content article..."
+                        v-model="payload.content"
                         @input="(e) => (payload.content = e.target.value)"
                         class="w-full border border-gray-200 rounded-xl text-gray-800 text-base leading-relaxed px-4 py-3 outline-none focus:border-blue-400 transition-colors placeholder:text-gray-300 resize-none min-h-64"
                     />
@@ -282,7 +292,7 @@ const handleSubmit = async (e) => {
                             d="M4 12a8 8 0 018-8v8z"
                         />
                     </svg>
-                    {{ isSubmitting ? "Publishing..." : "Publish Article →" }}
+                    {{ isSubmitting ? "Updateng..." : "Update Article →" }}
                 </button>
             </div>
         </form>

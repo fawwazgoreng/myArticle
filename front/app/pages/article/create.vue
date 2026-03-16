@@ -58,7 +58,7 @@ const handleDrop = (e) => {
 
 const handleSubmit = async (e) => {
     e.preventDefault();
-    const { title, content, category , image } = payload;
+    const { title, content, category } = payload;
     if (title.length < 3)
         return showFlash("error", "Title minimal 3 charackter.");
     if (content.length < 3)
@@ -88,7 +88,7 @@ const handleSubmit = async (e) => {
         }
     } catch (error) {
         const errorData = error.response._data;
-        showFlash("error", errorData.message || "failed publish article. Coba lagi.");
+        showFlash("error", errorData.message || "failed publish article. Try again.");
     } finally {
         isSubmitting.value = false;
     }

@@ -134,9 +134,16 @@ index
   // PUT /article/:id
   // Update an existing article (currently commented out)
   .put("/:id" , async (c) => {
-    try {
-      const request = await c.req.json();
-      const id = Number(c.req.param("id"));
+      try {
+          const body = await c.req.parseBody({ all: true });
+          const categoryBody: string[] = (Array.isArray(body["category"]) ? body['category'] : body['category'] ? String(body['category']) : []) as string[];
+          const id = Number(c.req.param("id"));
+          const request : articlePayload = {
+              title: String(body['title']) || "",
+              content: String(body['content']) || "",
+              image: body['image'] as File || null,
+              category: categoryBody
+          };
       const res = await writeArticle.update(id , request);
       c.status(res.status as StatusCode);
       return c.json(res);
