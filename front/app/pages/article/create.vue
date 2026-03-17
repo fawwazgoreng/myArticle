@@ -76,6 +76,7 @@ const handleSubmit = async (e) => {
             method: "POST",
             body: form
         });
+        console.log(data);
         showFlash("success", "article published!");
         if (data.status == 201) {
             payload.title = "";

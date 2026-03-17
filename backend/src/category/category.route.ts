@@ -7,6 +7,7 @@ import ReadCategory from "./category.read";
 import { ReadRedis } from "../infrastructure/redis/redis.read";
 import { category, categoryResponse } from "./category.type";
 import { meta } from "../utils/global.type";
+import { checkToken } from "../utils/jwtauth";
 
 // Create a new Hono router instance for category endpoints
 const category = new Hono();
@@ -14,7 +15,6 @@ const category = new Hono();
 // Initialize service classes for write and read operations
 const writeCategori = new WriteCategory();
 const readCategory = new ReadCategory();
-const readRedis = new ReadRedis();
 
 category
   // GET /category
@@ -41,8 +41,53 @@ category
       throw new HTTPException(error.status, { res });
     }
   })
+    
+  // GET /category/:id
+  // Retrieve a specific category with filters and pagination
+  .get("/:id", async (c) => {
+    try {
+      // Extract query parameters
+      const { page, title, oldest, populer } = c.req.query();
 
-  // POST /category
+      // Convert id param to number
+      const id = Number(c.req.param("id"));
+
+      // Determine sorting order
+      const time: "newest" | "oldest" =
+        typeof oldest == "string" ? "oldest" : "newest";
+
+      // Prepare payload for query
+      let payload = {
+        id: id,
+        page: Number(page) || 1,
+        title,
+        time,
+        populer: Boolean(populer),
+      };
+
+      // Fetch category data
+        const res = await readCategory.find(payload);
+
+      c.status(200);
+      return c.json({
+        status: 200,
+        message: "succes get category",
+        category: res,
+      });
+    } catch (error: any) {
+      const res = c.json({
+        status: error.status,
+        message: error.message,
+        error: error.error,
+      });
+
+      throw new HTTPException(error.status, { res });
+    }
+  })
+    
+  .use('/' , checkToken)
+
+    // POST /category
   // Create a new category
   .post("/", async (c) => {
     try {
@@ -95,49 +140,6 @@ category
     }
   })
 
-  // GET /category/:id
-  // Retrieve a specific category with filters and pagination
-  .get("/:id", async (c) => {
-    try {
-      // Extract query parameters
-      const { page, title, oldest, populer } = c.req.query();
-
-      // Convert id param to number
-      const id = Number(c.req.param("id"));
-
-      // Determine sorting order
-      const time: "newest" | "oldest" =
-        typeof oldest == "string" ? "oldest" : "newest";
-
-      // Prepare payload for query
-      let payload = {
-        id: id,
-        page: Number(page) || 1,
-        title,
-        time,
-        populer: Boolean(populer),
-      };
-
-      // Fetch category data
-        const res = await readCategory.find(payload);
-
-      c.status(200);
-      return c.json({
-        status: 200,
-        message: "succes get category",
-        category: res,
-      });
-    } catch (error: any) {
-      const res = c.json({
-        status: error.status,
-        message: error.message,
-        error: error.error,
-      });
-
-      throw new HTTPException(error.status, { res });
-    }
-  })
-
   // DELETE /category/:id
   // Delete a category by its ID
   .delete("/:id", async (c) => {
@@ -162,40 +164,5 @@ category
       throw new HTTPException(res.status, res);
     }
   });
-
-// Global error handler for this router
-category.onError(async (error: any, c) => {
-  // Log error information for debugging and monitoring
-  logger.error(
-    {
-      path: c.req.path,
-      method: c.req.method,
-      status: error.status || 500,
-      stack: Number(error.status) == 500 ? error.stack : "validate error",
-    },
-    error.message,
-  );
-
-  // Handle HTTPException separately
-  if (error instanceof HTTPException) {
-    const res = error.getResponse();
-
-    // Attempt to extract response body
-    const body =
-      (await res.clone().json().catch(() => null)) ||
-      (await res.clone().text());
-
-    c.status((Number(body.status) as StatusCode) || 500);
-    return c.json(body);
-  }
-
-  // Default error response
-  c.status((Number(error.status) as StatusCode) || 500);
-  return c.json({
-    status: error.status || 500,
-    message: error.message || "internal server error",
-    error: error.error || "",
-  });
-});
 
 export default category;

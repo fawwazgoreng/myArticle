@@ -6,6 +6,7 @@ import ReadArticle from "./article.read";
 import WriteRedis from "../infrastructure/redis/redis.write";
 import { article, articlePayload } from "./article.type";
 import { RedisKey } from "ioredis";
+import { checkToken } from "../utils/jwtauth";
 
 // Create router instance for article endpoints
 const index = new Hono();
@@ -51,6 +52,43 @@ index
             throw new HTTPException(error.status, { res });
         }
     })
+    
+    // GET /article/:id
+    // Retrieve a single article by ID and increment view counter in Redis
+    .get("/:id", async (c) => {
+        try {
+            const id = c.req.param("id");
+
+            // Fetch article data from database
+            const res: article = await readArticle.find(Number(id));
+
+            // Increment view counter in Redis
+            const incr = await writeRedis.increment(String(res.id) as RedisKey);
+
+            // Update article view count with Redis value
+            res.base_views = incr;
+
+            c.status(200);
+
+            return c.json({
+                status: 200,
+                message: "succes get article",
+                article: res,
+            });
+        } catch (error: any) {
+            const res = c.json({
+                status: error.status,
+                message: error.message,
+                error: error.error,
+            });
+
+            throw new HTTPException(error.status, { res });
+        }
+    })
+    
+    // USE middleware
+    // check access token
+    .use('/', checkToken)
 
     // POST /article
     // Create a new article with optional image upload and category relations
@@ -58,7 +96,6 @@ index
         try {
             // Parse multipart/form-data body
             const body = await c.req.parseBody({ all: true });
-
             // Normalize category input to always be an array
             const categoryBody: string[] = (
                 Array.isArray(body["category"])
@@ -87,39 +124,6 @@ index
             }
 
             return c.json(res);
-        } catch (error: any) {
-            const res = c.json({
-                status: error.status,
-                message: error.message,
-                error: error.error,
-            });
-
-            throw new HTTPException(error.status, { res });
-        }
-    })
-
-    // GET /article/:id
-    // Retrieve a single article by ID and increment view counter in Redis
-    .get("/:id", async (c) => {
-        try {
-            const id = c.req.param("id");
-
-            // Fetch article data from database
-            const res: article = await readArticle.find(Number(id));
-
-            // Increment view counter in Redis
-            const incr = await writeRedis.increment(String(res.id) as RedisKey);
-
-            // Update article view count with Redis value
-            res.base_views = incr;
-
-            c.status(200);
-
-            return c.json({
-                status: 200,
-                message: "succes get article",
-                article: res,
-            });
         } catch (error: any) {
             const res = c.json({
                 status: error.status,
