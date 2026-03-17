@@ -24,6 +24,16 @@ export type Article = $Result.DefaultSelection<Prisma.$ArticlePayload>
  */
 export type Category = $Result.DefaultSelection<Prisma.$CategoryPayload>
 /**
+ * Model Admin
+ * 
+ */
+export type Admin = $Result.DefaultSelection<Prisma.$AdminPayload>
+/**
+ * Model Session_audit_trail
+ * 
+ */
+export type Session_audit_trail = $Result.DefaultSelection<Prisma.$Session_audit_trailPayload>
+/**
  * Model CategoryOnArticle
  * 
  */
@@ -165,6 +175,26 @@ export class PrismaClient<
     * ```
     */
   get category(): Prisma.CategoryDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.admin`: Exposes CRUD operations for the **Admin** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Admins
+    * const admins = await prisma.admin.findMany()
+    * ```
+    */
+  get admin(): Prisma.AdminDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.session_audit_trail`: Exposes CRUD operations for the **Session_audit_trail** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Session_audit_trails
+    * const session_audit_trails = await prisma.session_audit_trail.findMany()
+    * ```
+    */
+  get session_audit_trail(): Prisma.Session_audit_trailDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.categoryOnArticle`: Exposes CRUD operations for the **CategoryOnArticle** model.
@@ -611,6 +641,8 @@ export namespace Prisma {
   export const ModelName: {
     Article: 'Article',
     Category: 'Category',
+    Admin: 'Admin',
+    Session_audit_trail: 'Session_audit_trail',
     CategoryOnArticle: 'CategoryOnArticle'
   };
 
@@ -627,7 +659,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "article" | "category" | "categoryOnArticle"
+      modelProps: "article" | "category" | "admin" | "session_audit_trail" | "categoryOnArticle"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -776,6 +808,154 @@ export namespace Prisma {
           count: {
             args: Prisma.CategoryCountArgs<ExtArgs>
             result: $Utils.Optional<CategoryCountAggregateOutputType> | number
+          }
+        }
+      }
+      Admin: {
+        payload: Prisma.$AdminPayload<ExtArgs>
+        fields: Prisma.AdminFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AdminFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AdminFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          findFirst: {
+            args: Prisma.AdminFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AdminFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          findMany: {
+            args: Prisma.AdminFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>[]
+          }
+          create: {
+            args: Prisma.AdminCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          createMany: {
+            args: Prisma.AdminCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AdminCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>[]
+          }
+          delete: {
+            args: Prisma.AdminDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          update: {
+            args: Prisma.AdminUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          deleteMany: {
+            args: Prisma.AdminDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AdminUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AdminUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>[]
+          }
+          upsert: {
+            args: Prisma.AdminUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdminPayload>
+          }
+          aggregate: {
+            args: Prisma.AdminAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAdmin>
+          }
+          groupBy: {
+            args: Prisma.AdminGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AdminGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AdminCountArgs<ExtArgs>
+            result: $Utils.Optional<AdminCountAggregateOutputType> | number
+          }
+        }
+      }
+      Session_audit_trail: {
+        payload: Prisma.$Session_audit_trailPayload<ExtArgs>
+        fields: Prisma.Session_audit_trailFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.Session_audit_trailFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Session_audit_trailPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.Session_audit_trailFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Session_audit_trailPayload>
+          }
+          findFirst: {
+            args: Prisma.Session_audit_trailFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Session_audit_trailPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.Session_audit_trailFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Session_audit_trailPayload>
+          }
+          findMany: {
+            args: Prisma.Session_audit_trailFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Session_audit_trailPayload>[]
+          }
+          create: {
+            args: Prisma.Session_audit_trailCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Session_audit_trailPayload>
+          }
+          createMany: {
+            args: Prisma.Session_audit_trailCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.Session_audit_trailCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Session_audit_trailPayload>[]
+          }
+          delete: {
+            args: Prisma.Session_audit_trailDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Session_audit_trailPayload>
+          }
+          update: {
+            args: Prisma.Session_audit_trailUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Session_audit_trailPayload>
+          }
+          deleteMany: {
+            args: Prisma.Session_audit_trailDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.Session_audit_trailUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.Session_audit_trailUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Session_audit_trailPayload>[]
+          }
+          upsert: {
+            args: Prisma.Session_audit_trailUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$Session_audit_trailPayload>
+          }
+          aggregate: {
+            args: Prisma.Session_audit_trailAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSession_audit_trail>
+          }
+          groupBy: {
+            args: Prisma.Session_audit_trailGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Session_audit_trailGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.Session_audit_trailCountArgs<ExtArgs>
+            result: $Utils.Optional<Session_audit_trailCountAggregateOutputType> | number
           }
         }
       }
@@ -963,6 +1143,8 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     article?: ArticleOmit
     category?: CategoryOmit
+    admin?: AdminOmit
+    session_audit_trail?: Session_audit_trailOmit
     categoryOnArticle?: CategoryOnArticleOmit
   }
 
@@ -1098,6 +1280,37 @@ export namespace Prisma {
    */
   export type CategoryCountOutputTypeCountArticleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CategoryOnArticleWhereInput
+  }
+
+
+  /**
+   * Count Type AdminCountOutputType
+   */
+
+  export type AdminCountOutputType = {
+    authlogs: number
+  }
+
+  export type AdminCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    authlogs?: boolean | AdminCountOutputTypeCountAuthlogsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AdminCountOutputType without action
+   */
+  export type AdminCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdminCountOutputType
+     */
+    select?: AdminCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AdminCountOutputType without action
+   */
+  export type AdminCountOutputTypeCountAuthlogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: Session_audit_trailWhereInput
   }
 
 
@@ -2262,16 +2475,22 @@ export namespace Prisma {
   export type CategoryMinAggregateOutputType = {
     id: number | null
     name: string | null
+    created_at: Date | null
+    updated_at: Date | null
   }
 
   export type CategoryMaxAggregateOutputType = {
     id: number | null
     name: string | null
+    created_at: Date | null
+    updated_at: Date | null
   }
 
   export type CategoryCountAggregateOutputType = {
     id: number
     name: number
+    created_at: number
+    updated_at: number
     _all: number
   }
 
@@ -2287,16 +2506,22 @@ export namespace Prisma {
   export type CategoryMinAggregateInputType = {
     id?: true
     name?: true
+    created_at?: true
+    updated_at?: true
   }
 
   export type CategoryMaxAggregateInputType = {
     id?: true
     name?: true
+    created_at?: true
+    updated_at?: true
   }
 
   export type CategoryCountAggregateInputType = {
     id?: true
     name?: true
+    created_at?: true
+    updated_at?: true
     _all?: true
   }
 
@@ -2389,6 +2614,8 @@ export namespace Prisma {
   export type CategoryGroupByOutputType = {
     id: number
     name: string
+    created_at: Date
+    updated_at: Date
     _count: CategoryCountAggregateOutputType | null
     _avg: CategoryAvgAggregateOutputType | null
     _sum: CategorySumAggregateOutputType | null
@@ -2413,6 +2640,8 @@ export namespace Prisma {
   export type CategorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    created_at?: boolean
+    updated_at?: boolean
     article?: boolean | Category$articleArgs<ExtArgs>
     _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["category"]>
@@ -2420,19 +2649,25 @@ export namespace Prisma {
   export type CategorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    created_at?: boolean
+    updated_at?: boolean
   }, ExtArgs["result"]["category"]>
 
   export type CategorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    created_at?: boolean
+    updated_at?: boolean
   }, ExtArgs["result"]["category"]>
 
   export type CategorySelectScalar = {
     id?: boolean
     name?: boolean
+    created_at?: boolean
+    updated_at?: boolean
   }
 
-  export type CategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name", ExtArgs["result"]["category"]>
+  export type CategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "created_at" | "updated_at", ExtArgs["result"]["category"]>
   export type CategoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     article?: boolean | Category$articleArgs<ExtArgs>
     _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
@@ -2448,6 +2683,8 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       name: string
+      created_at: Date
+      updated_at: Date
     }, ExtArgs["result"]["category"]>
     composites: {}
   }
@@ -2874,6 +3111,8 @@ export namespace Prisma {
   interface CategoryFieldRefs {
     readonly id: FieldRef<"Category", 'Int'>
     readonly name: FieldRef<"Category", 'String'>
+    readonly created_at: FieldRef<"Category", 'DateTime'>
+    readonly updated_at: FieldRef<"Category", 'DateTime'>
   }
     
 
@@ -3305,6 +3544,2239 @@ export namespace Prisma {
 
 
   /**
+   * Model Admin
+   */
+
+  export type AggregateAdmin = {
+    _count: AdminCountAggregateOutputType | null
+    _min: AdminMinAggregateOutputType | null
+    _max: AdminMaxAggregateOutputType | null
+  }
+
+  export type AdminMinAggregateOutputType = {
+    id: string | null
+    email: string | null
+    password: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type AdminMaxAggregateOutputType = {
+    id: string | null
+    email: string | null
+    password: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type AdminCountAggregateOutputType = {
+    id: number
+    email: number
+    password: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type AdminMinAggregateInputType = {
+    id?: true
+    email?: true
+    password?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type AdminMaxAggregateInputType = {
+    id?: true
+    email?: true
+    password?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type AdminCountAggregateInputType = {
+    id?: true
+    email?: true
+    password?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type AdminAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Admin to aggregate.
+     */
+    where?: AdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Admins
+    **/
+    _count?: true | AdminCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AdminMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AdminMaxAggregateInputType
+  }
+
+  export type GetAdminAggregateType<T extends AdminAggregateArgs> = {
+        [P in keyof T & keyof AggregateAdmin]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAdmin[P]>
+      : GetScalarType<T[P], AggregateAdmin[P]>
+  }
+
+
+
+
+  export type AdminGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdminWhereInput
+    orderBy?: AdminOrderByWithAggregationInput | AdminOrderByWithAggregationInput[]
+    by: AdminScalarFieldEnum[] | AdminScalarFieldEnum
+    having?: AdminScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AdminCountAggregateInputType | true
+    _min?: AdminMinAggregateInputType
+    _max?: AdminMaxAggregateInputType
+  }
+
+  export type AdminGroupByOutputType = {
+    id: string
+    email: string
+    password: string | null
+    created_at: Date
+    updated_at: Date
+    _count: AdminCountAggregateOutputType | null
+    _min: AdminMinAggregateOutputType | null
+    _max: AdminMaxAggregateOutputType | null
+  }
+
+  type GetAdminGroupByPayload<T extends AdminGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AdminGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AdminGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AdminGroupByOutputType[P]>
+            : GetScalarType<T[P], AdminGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AdminSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    password?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    authlogs?: boolean | Admin$authlogsArgs<ExtArgs>
+    _count?: boolean | AdminCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["admin"]>
+
+  export type AdminSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    password?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }, ExtArgs["result"]["admin"]>
+
+  export type AdminSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    email?: boolean
+    password?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }, ExtArgs["result"]["admin"]>
+
+  export type AdminSelectScalar = {
+    id?: boolean
+    email?: boolean
+    password?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type AdminOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "created_at" | "updated_at", ExtArgs["result"]["admin"]>
+  export type AdminInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    authlogs?: boolean | Admin$authlogsArgs<ExtArgs>
+    _count?: boolean | AdminCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type AdminIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type AdminIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $AdminPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Admin"
+    objects: {
+      authlogs: Prisma.$Session_audit_trailPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      email: string
+      password: string | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["admin"]>
+    composites: {}
+  }
+
+  type AdminGetPayload<S extends boolean | null | undefined | AdminDefaultArgs> = $Result.GetResult<Prisma.$AdminPayload, S>
+
+  type AdminCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AdminFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AdminCountAggregateInputType | true
+    }
+
+  export interface AdminDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Admin'], meta: { name: 'Admin' } }
+    /**
+     * Find zero or one Admin that matches the filter.
+     * @param {AdminFindUniqueArgs} args - Arguments to find a Admin
+     * @example
+     * // Get one Admin
+     * const admin = await prisma.admin.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AdminFindUniqueArgs>(args: SelectSubset<T, AdminFindUniqueArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Admin that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AdminFindUniqueOrThrowArgs} args - Arguments to find a Admin
+     * @example
+     * // Get one Admin
+     * const admin = await prisma.admin.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AdminFindUniqueOrThrowArgs>(args: SelectSubset<T, AdminFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Admin that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminFindFirstArgs} args - Arguments to find a Admin
+     * @example
+     * // Get one Admin
+     * const admin = await prisma.admin.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AdminFindFirstArgs>(args?: SelectSubset<T, AdminFindFirstArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Admin that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminFindFirstOrThrowArgs} args - Arguments to find a Admin
+     * @example
+     * // Get one Admin
+     * const admin = await prisma.admin.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AdminFindFirstOrThrowArgs>(args?: SelectSubset<T, AdminFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Admins that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Admins
+     * const admins = await prisma.admin.findMany()
+     * 
+     * // Get first 10 Admins
+     * const admins = await prisma.admin.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const adminWithIdOnly = await prisma.admin.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AdminFindManyArgs>(args?: SelectSubset<T, AdminFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Admin.
+     * @param {AdminCreateArgs} args - Arguments to create a Admin.
+     * @example
+     * // Create one Admin
+     * const Admin = await prisma.admin.create({
+     *   data: {
+     *     // ... data to create a Admin
+     *   }
+     * })
+     * 
+     */
+    create<T extends AdminCreateArgs>(args: SelectSubset<T, AdminCreateArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Admins.
+     * @param {AdminCreateManyArgs} args - Arguments to create many Admins.
+     * @example
+     * // Create many Admins
+     * const admin = await prisma.admin.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AdminCreateManyArgs>(args?: SelectSubset<T, AdminCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Admins and returns the data saved in the database.
+     * @param {AdminCreateManyAndReturnArgs} args - Arguments to create many Admins.
+     * @example
+     * // Create many Admins
+     * const admin = await prisma.admin.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Admins and only return the `id`
+     * const adminWithIdOnly = await prisma.admin.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AdminCreateManyAndReturnArgs>(args?: SelectSubset<T, AdminCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Admin.
+     * @param {AdminDeleteArgs} args - Arguments to delete one Admin.
+     * @example
+     * // Delete one Admin
+     * const Admin = await prisma.admin.delete({
+     *   where: {
+     *     // ... filter to delete one Admin
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AdminDeleteArgs>(args: SelectSubset<T, AdminDeleteArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Admin.
+     * @param {AdminUpdateArgs} args - Arguments to update one Admin.
+     * @example
+     * // Update one Admin
+     * const admin = await prisma.admin.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AdminUpdateArgs>(args: SelectSubset<T, AdminUpdateArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Admins.
+     * @param {AdminDeleteManyArgs} args - Arguments to filter Admins to delete.
+     * @example
+     * // Delete a few Admins
+     * const { count } = await prisma.admin.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AdminDeleteManyArgs>(args?: SelectSubset<T, AdminDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Admins.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Admins
+     * const admin = await prisma.admin.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AdminUpdateManyArgs>(args: SelectSubset<T, AdminUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Admins and returns the data updated in the database.
+     * @param {AdminUpdateManyAndReturnArgs} args - Arguments to update many Admins.
+     * @example
+     * // Update many Admins
+     * const admin = await prisma.admin.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Admins and only return the `id`
+     * const adminWithIdOnly = await prisma.admin.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AdminUpdateManyAndReturnArgs>(args: SelectSubset<T, AdminUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Admin.
+     * @param {AdminUpsertArgs} args - Arguments to update or create a Admin.
+     * @example
+     * // Update or create a Admin
+     * const admin = await prisma.admin.upsert({
+     *   create: {
+     *     // ... data to create a Admin
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Admin we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AdminUpsertArgs>(args: SelectSubset<T, AdminUpsertArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Admins.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminCountArgs} args - Arguments to filter Admins to count.
+     * @example
+     * // Count the number of Admins
+     * const count = await prisma.admin.count({
+     *   where: {
+     *     // ... the filter for the Admins we want to count
+     *   }
+     * })
+    **/
+    count<T extends AdminCountArgs>(
+      args?: Subset<T, AdminCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AdminCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Admin.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AdminAggregateArgs>(args: Subset<T, AdminAggregateArgs>): Prisma.PrismaPromise<GetAdminAggregateType<T>>
+
+    /**
+     * Group by Admin.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdminGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AdminGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AdminGroupByArgs['orderBy'] }
+        : { orderBy?: AdminGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AdminGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdminGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Admin model
+   */
+  readonly fields: AdminFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Admin.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AdminClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    authlogs<T extends Admin$authlogsArgs<ExtArgs> = {}>(args?: Subset<T, Admin$authlogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Session_audit_trailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Admin model
+   */
+  interface AdminFieldRefs {
+    readonly id: FieldRef<"Admin", 'String'>
+    readonly email: FieldRef<"Admin", 'String'>
+    readonly password: FieldRef<"Admin", 'String'>
+    readonly created_at: FieldRef<"Admin", 'DateTime'>
+    readonly updated_at: FieldRef<"Admin", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Admin findUnique
+   */
+  export type AdminFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter, which Admin to fetch.
+     */
+    where: AdminWhereUniqueInput
+  }
+
+  /**
+   * Admin findUniqueOrThrow
+   */
+  export type AdminFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter, which Admin to fetch.
+     */
+    where: AdminWhereUniqueInput
+  }
+
+  /**
+   * Admin findFirst
+   */
+  export type AdminFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter, which Admin to fetch.
+     */
+    where?: AdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Admins.
+     */
+    cursor?: AdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Admins.
+     */
+    distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
+  }
+
+  /**
+   * Admin findFirstOrThrow
+   */
+  export type AdminFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter, which Admin to fetch.
+     */
+    where?: AdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Admins.
+     */
+    cursor?: AdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Admins.
+     */
+    distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
+  }
+
+  /**
+   * Admin findMany
+   */
+  export type AdminFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter, which Admins to fetch.
+     */
+    where?: AdminWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Admins to fetch.
+     */
+    orderBy?: AdminOrderByWithRelationInput | AdminOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Admins.
+     */
+    cursor?: AdminWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Admins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Admins.
+     */
+    skip?: number
+    distinct?: AdminScalarFieldEnum | AdminScalarFieldEnum[]
+  }
+
+  /**
+   * Admin create
+   */
+  export type AdminCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Admin.
+     */
+    data: XOR<AdminCreateInput, AdminUncheckedCreateInput>
+  }
+
+  /**
+   * Admin createMany
+   */
+  export type AdminCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Admins.
+     */
+    data: AdminCreateManyInput | AdminCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Admin createManyAndReturn
+   */
+  export type AdminCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * The data used to create many Admins.
+     */
+    data: AdminCreateManyInput | AdminCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Admin update
+   */
+  export type AdminUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Admin.
+     */
+    data: XOR<AdminUpdateInput, AdminUncheckedUpdateInput>
+    /**
+     * Choose, which Admin to update.
+     */
+    where: AdminWhereUniqueInput
+  }
+
+  /**
+   * Admin updateMany
+   */
+  export type AdminUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Admins.
+     */
+    data: XOR<AdminUpdateManyMutationInput, AdminUncheckedUpdateManyInput>
+    /**
+     * Filter which Admins to update
+     */
+    where?: AdminWhereInput
+    /**
+     * Limit how many Admins to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Admin updateManyAndReturn
+   */
+  export type AdminUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * The data used to update Admins.
+     */
+    data: XOR<AdminUpdateManyMutationInput, AdminUncheckedUpdateManyInput>
+    /**
+     * Filter which Admins to update
+     */
+    where?: AdminWhereInput
+    /**
+     * Limit how many Admins to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Admin upsert
+   */
+  export type AdminUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Admin to update in case it exists.
+     */
+    where: AdminWhereUniqueInput
+    /**
+     * In case the Admin found by the `where` argument doesn't exist, create a new Admin with this data.
+     */
+    create: XOR<AdminCreateInput, AdminUncheckedCreateInput>
+    /**
+     * In case the Admin was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AdminUpdateInput, AdminUncheckedUpdateInput>
+  }
+
+  /**
+   * Admin delete
+   */
+  export type AdminDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    /**
+     * Filter which Admin to delete.
+     */
+    where: AdminWhereUniqueInput
+  }
+
+  /**
+   * Admin deleteMany
+   */
+  export type AdminDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Admins to delete
+     */
+    where?: AdminWhereInput
+    /**
+     * Limit how many Admins to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Admin.authlogs
+   */
+  export type Admin$authlogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session_audit_trail
+     */
+    select?: Session_audit_trailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session_audit_trail
+     */
+    omit?: Session_audit_trailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Session_audit_trailInclude<ExtArgs> | null
+    where?: Session_audit_trailWhereInput
+    orderBy?: Session_audit_trailOrderByWithRelationInput | Session_audit_trailOrderByWithRelationInput[]
+    cursor?: Session_audit_trailWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Session_audit_trailScalarFieldEnum | Session_audit_trailScalarFieldEnum[]
+  }
+
+  /**
+   * Admin without action
+   */
+  export type AdminDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Session_audit_trail
+   */
+
+  export type AggregateSession_audit_trail = {
+    _count: Session_audit_trailCountAggregateOutputType | null
+    _avg: Session_audit_trailAvgAggregateOutputType | null
+    _sum: Session_audit_trailSumAggregateOutputType | null
+    _min: Session_audit_trailMinAggregateOutputType | null
+    _max: Session_audit_trailMaxAggregateOutputType | null
+  }
+
+  export type Session_audit_trailAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type Session_audit_trailSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type Session_audit_trailMinAggregateOutputType = {
+    id: number | null
+    admin_id: string | null
+    event_type: string | null
+    device_type: string | null
+    ip_address: string | null
+    success: boolean | null
+    failure_session: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type Session_audit_trailMaxAggregateOutputType = {
+    id: number | null
+    admin_id: string | null
+    event_type: string | null
+    device_type: string | null
+    ip_address: string | null
+    success: boolean | null
+    failure_session: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type Session_audit_trailCountAggregateOutputType = {
+    id: number
+    admin_id: number
+    event_type: number
+    device_type: number
+    ip_address: number
+    success: number
+    failure_session: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type Session_audit_trailAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type Session_audit_trailSumAggregateInputType = {
+    id?: true
+  }
+
+  export type Session_audit_trailMinAggregateInputType = {
+    id?: true
+    admin_id?: true
+    event_type?: true
+    device_type?: true
+    ip_address?: true
+    success?: true
+    failure_session?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type Session_audit_trailMaxAggregateInputType = {
+    id?: true
+    admin_id?: true
+    event_type?: true
+    device_type?: true
+    ip_address?: true
+    success?: true
+    failure_session?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type Session_audit_trailCountAggregateInputType = {
+    id?: true
+    admin_id?: true
+    event_type?: true
+    device_type?: true
+    ip_address?: true
+    success?: true
+    failure_session?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type Session_audit_trailAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Session_audit_trail to aggregate.
+     */
+    where?: Session_audit_trailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Session_audit_trails to fetch.
+     */
+    orderBy?: Session_audit_trailOrderByWithRelationInput | Session_audit_trailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: Session_audit_trailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Session_audit_trails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Session_audit_trails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Session_audit_trails
+    **/
+    _count?: true | Session_audit_trailCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Session_audit_trailAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Session_audit_trailSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Session_audit_trailMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Session_audit_trailMaxAggregateInputType
+  }
+
+  export type GetSession_audit_trailAggregateType<T extends Session_audit_trailAggregateArgs> = {
+        [P in keyof T & keyof AggregateSession_audit_trail]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSession_audit_trail[P]>
+      : GetScalarType<T[P], AggregateSession_audit_trail[P]>
+  }
+
+
+
+
+  export type Session_audit_trailGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: Session_audit_trailWhereInput
+    orderBy?: Session_audit_trailOrderByWithAggregationInput | Session_audit_trailOrderByWithAggregationInput[]
+    by: Session_audit_trailScalarFieldEnum[] | Session_audit_trailScalarFieldEnum
+    having?: Session_audit_trailScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Session_audit_trailCountAggregateInputType | true
+    _avg?: Session_audit_trailAvgAggregateInputType
+    _sum?: Session_audit_trailSumAggregateInputType
+    _min?: Session_audit_trailMinAggregateInputType
+    _max?: Session_audit_trailMaxAggregateInputType
+  }
+
+  export type Session_audit_trailGroupByOutputType = {
+    id: number
+    admin_id: string
+    event_type: string
+    device_type: string
+    ip_address: string
+    success: boolean
+    failure_session: string | null
+    created_at: Date
+    updated_at: Date
+    _count: Session_audit_trailCountAggregateOutputType | null
+    _avg: Session_audit_trailAvgAggregateOutputType | null
+    _sum: Session_audit_trailSumAggregateOutputType | null
+    _min: Session_audit_trailMinAggregateOutputType | null
+    _max: Session_audit_trailMaxAggregateOutputType | null
+  }
+
+  type GetSession_audit_trailGroupByPayload<T extends Session_audit_trailGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Session_audit_trailGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Session_audit_trailGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Session_audit_trailGroupByOutputType[P]>
+            : GetScalarType<T[P], Session_audit_trailGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type Session_audit_trailSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    admin_id?: boolean
+    event_type?: boolean
+    device_type?: boolean
+    ip_address?: boolean
+    success?: boolean
+    failure_session?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    admin?: boolean | Session_audit_trail$adminArgs<ExtArgs>
+  }, ExtArgs["result"]["session_audit_trail"]>
+
+  export type Session_audit_trailSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    admin_id?: boolean
+    event_type?: boolean
+    device_type?: boolean
+    ip_address?: boolean
+    success?: boolean
+    failure_session?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    admin?: boolean | Session_audit_trail$adminArgs<ExtArgs>
+  }, ExtArgs["result"]["session_audit_trail"]>
+
+  export type Session_audit_trailSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    admin_id?: boolean
+    event_type?: boolean
+    device_type?: boolean
+    ip_address?: boolean
+    success?: boolean
+    failure_session?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    admin?: boolean | Session_audit_trail$adminArgs<ExtArgs>
+  }, ExtArgs["result"]["session_audit_trail"]>
+
+  export type Session_audit_trailSelectScalar = {
+    id?: boolean
+    admin_id?: boolean
+    event_type?: boolean
+    device_type?: boolean
+    ip_address?: boolean
+    success?: boolean
+    failure_session?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type Session_audit_trailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "admin_id" | "event_type" | "device_type" | "ip_address" | "success" | "failure_session" | "created_at" | "updated_at", ExtArgs["result"]["session_audit_trail"]>
+  export type Session_audit_trailInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    admin?: boolean | Session_audit_trail$adminArgs<ExtArgs>
+  }
+  export type Session_audit_trailIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    admin?: boolean | Session_audit_trail$adminArgs<ExtArgs>
+  }
+  export type Session_audit_trailIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    admin?: boolean | Session_audit_trail$adminArgs<ExtArgs>
+  }
+
+  export type $Session_audit_trailPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Session_audit_trail"
+    objects: {
+      admin: Prisma.$AdminPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      admin_id: string
+      event_type: string
+      device_type: string
+      ip_address: string
+      success: boolean
+      failure_session: string | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["session_audit_trail"]>
+    composites: {}
+  }
+
+  type Session_audit_trailGetPayload<S extends boolean | null | undefined | Session_audit_trailDefaultArgs> = $Result.GetResult<Prisma.$Session_audit_trailPayload, S>
+
+  type Session_audit_trailCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<Session_audit_trailFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Session_audit_trailCountAggregateInputType | true
+    }
+
+  export interface Session_audit_trailDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Session_audit_trail'], meta: { name: 'Session_audit_trail' } }
+    /**
+     * Find zero or one Session_audit_trail that matches the filter.
+     * @param {Session_audit_trailFindUniqueArgs} args - Arguments to find a Session_audit_trail
+     * @example
+     * // Get one Session_audit_trail
+     * const session_audit_trail = await prisma.session_audit_trail.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends Session_audit_trailFindUniqueArgs>(args: SelectSubset<T, Session_audit_trailFindUniqueArgs<ExtArgs>>): Prisma__Session_audit_trailClient<$Result.GetResult<Prisma.$Session_audit_trailPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Session_audit_trail that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {Session_audit_trailFindUniqueOrThrowArgs} args - Arguments to find a Session_audit_trail
+     * @example
+     * // Get one Session_audit_trail
+     * const session_audit_trail = await prisma.session_audit_trail.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends Session_audit_trailFindUniqueOrThrowArgs>(args: SelectSubset<T, Session_audit_trailFindUniqueOrThrowArgs<ExtArgs>>): Prisma__Session_audit_trailClient<$Result.GetResult<Prisma.$Session_audit_trailPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Session_audit_trail that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Session_audit_trailFindFirstArgs} args - Arguments to find a Session_audit_trail
+     * @example
+     * // Get one Session_audit_trail
+     * const session_audit_trail = await prisma.session_audit_trail.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends Session_audit_trailFindFirstArgs>(args?: SelectSubset<T, Session_audit_trailFindFirstArgs<ExtArgs>>): Prisma__Session_audit_trailClient<$Result.GetResult<Prisma.$Session_audit_trailPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Session_audit_trail that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Session_audit_trailFindFirstOrThrowArgs} args - Arguments to find a Session_audit_trail
+     * @example
+     * // Get one Session_audit_trail
+     * const session_audit_trail = await prisma.session_audit_trail.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends Session_audit_trailFindFirstOrThrowArgs>(args?: SelectSubset<T, Session_audit_trailFindFirstOrThrowArgs<ExtArgs>>): Prisma__Session_audit_trailClient<$Result.GetResult<Prisma.$Session_audit_trailPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Session_audit_trails that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Session_audit_trailFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Session_audit_trails
+     * const session_audit_trails = await prisma.session_audit_trail.findMany()
+     * 
+     * // Get first 10 Session_audit_trails
+     * const session_audit_trails = await prisma.session_audit_trail.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const session_audit_trailWithIdOnly = await prisma.session_audit_trail.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends Session_audit_trailFindManyArgs>(args?: SelectSubset<T, Session_audit_trailFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Session_audit_trailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Session_audit_trail.
+     * @param {Session_audit_trailCreateArgs} args - Arguments to create a Session_audit_trail.
+     * @example
+     * // Create one Session_audit_trail
+     * const Session_audit_trail = await prisma.session_audit_trail.create({
+     *   data: {
+     *     // ... data to create a Session_audit_trail
+     *   }
+     * })
+     * 
+     */
+    create<T extends Session_audit_trailCreateArgs>(args: SelectSubset<T, Session_audit_trailCreateArgs<ExtArgs>>): Prisma__Session_audit_trailClient<$Result.GetResult<Prisma.$Session_audit_trailPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Session_audit_trails.
+     * @param {Session_audit_trailCreateManyArgs} args - Arguments to create many Session_audit_trails.
+     * @example
+     * // Create many Session_audit_trails
+     * const session_audit_trail = await prisma.session_audit_trail.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends Session_audit_trailCreateManyArgs>(args?: SelectSubset<T, Session_audit_trailCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Session_audit_trails and returns the data saved in the database.
+     * @param {Session_audit_trailCreateManyAndReturnArgs} args - Arguments to create many Session_audit_trails.
+     * @example
+     * // Create many Session_audit_trails
+     * const session_audit_trail = await prisma.session_audit_trail.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Session_audit_trails and only return the `id`
+     * const session_audit_trailWithIdOnly = await prisma.session_audit_trail.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends Session_audit_trailCreateManyAndReturnArgs>(args?: SelectSubset<T, Session_audit_trailCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Session_audit_trailPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Session_audit_trail.
+     * @param {Session_audit_trailDeleteArgs} args - Arguments to delete one Session_audit_trail.
+     * @example
+     * // Delete one Session_audit_trail
+     * const Session_audit_trail = await prisma.session_audit_trail.delete({
+     *   where: {
+     *     // ... filter to delete one Session_audit_trail
+     *   }
+     * })
+     * 
+     */
+    delete<T extends Session_audit_trailDeleteArgs>(args: SelectSubset<T, Session_audit_trailDeleteArgs<ExtArgs>>): Prisma__Session_audit_trailClient<$Result.GetResult<Prisma.$Session_audit_trailPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Session_audit_trail.
+     * @param {Session_audit_trailUpdateArgs} args - Arguments to update one Session_audit_trail.
+     * @example
+     * // Update one Session_audit_trail
+     * const session_audit_trail = await prisma.session_audit_trail.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends Session_audit_trailUpdateArgs>(args: SelectSubset<T, Session_audit_trailUpdateArgs<ExtArgs>>): Prisma__Session_audit_trailClient<$Result.GetResult<Prisma.$Session_audit_trailPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Session_audit_trails.
+     * @param {Session_audit_trailDeleteManyArgs} args - Arguments to filter Session_audit_trails to delete.
+     * @example
+     * // Delete a few Session_audit_trails
+     * const { count } = await prisma.session_audit_trail.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends Session_audit_trailDeleteManyArgs>(args?: SelectSubset<T, Session_audit_trailDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Session_audit_trails.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Session_audit_trailUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Session_audit_trails
+     * const session_audit_trail = await prisma.session_audit_trail.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends Session_audit_trailUpdateManyArgs>(args: SelectSubset<T, Session_audit_trailUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Session_audit_trails and returns the data updated in the database.
+     * @param {Session_audit_trailUpdateManyAndReturnArgs} args - Arguments to update many Session_audit_trails.
+     * @example
+     * // Update many Session_audit_trails
+     * const session_audit_trail = await prisma.session_audit_trail.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Session_audit_trails and only return the `id`
+     * const session_audit_trailWithIdOnly = await prisma.session_audit_trail.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends Session_audit_trailUpdateManyAndReturnArgs>(args: SelectSubset<T, Session_audit_trailUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Session_audit_trailPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Session_audit_trail.
+     * @param {Session_audit_trailUpsertArgs} args - Arguments to update or create a Session_audit_trail.
+     * @example
+     * // Update or create a Session_audit_trail
+     * const session_audit_trail = await prisma.session_audit_trail.upsert({
+     *   create: {
+     *     // ... data to create a Session_audit_trail
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Session_audit_trail we want to update
+     *   }
+     * })
+     */
+    upsert<T extends Session_audit_trailUpsertArgs>(args: SelectSubset<T, Session_audit_trailUpsertArgs<ExtArgs>>): Prisma__Session_audit_trailClient<$Result.GetResult<Prisma.$Session_audit_trailPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Session_audit_trails.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Session_audit_trailCountArgs} args - Arguments to filter Session_audit_trails to count.
+     * @example
+     * // Count the number of Session_audit_trails
+     * const count = await prisma.session_audit_trail.count({
+     *   where: {
+     *     // ... the filter for the Session_audit_trails we want to count
+     *   }
+     * })
+    **/
+    count<T extends Session_audit_trailCountArgs>(
+      args?: Subset<T, Session_audit_trailCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Session_audit_trailCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Session_audit_trail.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Session_audit_trailAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Session_audit_trailAggregateArgs>(args: Subset<T, Session_audit_trailAggregateArgs>): Prisma.PrismaPromise<GetSession_audit_trailAggregateType<T>>
+
+    /**
+     * Group by Session_audit_trail.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Session_audit_trailGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends Session_audit_trailGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: Session_audit_trailGroupByArgs['orderBy'] }
+        : { orderBy?: Session_audit_trailGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, Session_audit_trailGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSession_audit_trailGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Session_audit_trail model
+   */
+  readonly fields: Session_audit_trailFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Session_audit_trail.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__Session_audit_trailClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    admin<T extends Session_audit_trail$adminArgs<ExtArgs> = {}>(args?: Subset<T, Session_audit_trail$adminArgs<ExtArgs>>): Prisma__AdminClient<$Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Session_audit_trail model
+   */
+  interface Session_audit_trailFieldRefs {
+    readonly id: FieldRef<"Session_audit_trail", 'Int'>
+    readonly admin_id: FieldRef<"Session_audit_trail", 'String'>
+    readonly event_type: FieldRef<"Session_audit_trail", 'String'>
+    readonly device_type: FieldRef<"Session_audit_trail", 'String'>
+    readonly ip_address: FieldRef<"Session_audit_trail", 'String'>
+    readonly success: FieldRef<"Session_audit_trail", 'Boolean'>
+    readonly failure_session: FieldRef<"Session_audit_trail", 'String'>
+    readonly created_at: FieldRef<"Session_audit_trail", 'DateTime'>
+    readonly updated_at: FieldRef<"Session_audit_trail", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Session_audit_trail findUnique
+   */
+  export type Session_audit_trailFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session_audit_trail
+     */
+    select?: Session_audit_trailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session_audit_trail
+     */
+    omit?: Session_audit_trailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Session_audit_trailInclude<ExtArgs> | null
+    /**
+     * Filter, which Session_audit_trail to fetch.
+     */
+    where: Session_audit_trailWhereUniqueInput
+  }
+
+  /**
+   * Session_audit_trail findUniqueOrThrow
+   */
+  export type Session_audit_trailFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session_audit_trail
+     */
+    select?: Session_audit_trailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session_audit_trail
+     */
+    omit?: Session_audit_trailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Session_audit_trailInclude<ExtArgs> | null
+    /**
+     * Filter, which Session_audit_trail to fetch.
+     */
+    where: Session_audit_trailWhereUniqueInput
+  }
+
+  /**
+   * Session_audit_trail findFirst
+   */
+  export type Session_audit_trailFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session_audit_trail
+     */
+    select?: Session_audit_trailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session_audit_trail
+     */
+    omit?: Session_audit_trailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Session_audit_trailInclude<ExtArgs> | null
+    /**
+     * Filter, which Session_audit_trail to fetch.
+     */
+    where?: Session_audit_trailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Session_audit_trails to fetch.
+     */
+    orderBy?: Session_audit_trailOrderByWithRelationInput | Session_audit_trailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Session_audit_trails.
+     */
+    cursor?: Session_audit_trailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Session_audit_trails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Session_audit_trails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Session_audit_trails.
+     */
+    distinct?: Session_audit_trailScalarFieldEnum | Session_audit_trailScalarFieldEnum[]
+  }
+
+  /**
+   * Session_audit_trail findFirstOrThrow
+   */
+  export type Session_audit_trailFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session_audit_trail
+     */
+    select?: Session_audit_trailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session_audit_trail
+     */
+    omit?: Session_audit_trailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Session_audit_trailInclude<ExtArgs> | null
+    /**
+     * Filter, which Session_audit_trail to fetch.
+     */
+    where?: Session_audit_trailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Session_audit_trails to fetch.
+     */
+    orderBy?: Session_audit_trailOrderByWithRelationInput | Session_audit_trailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Session_audit_trails.
+     */
+    cursor?: Session_audit_trailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Session_audit_trails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Session_audit_trails.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Session_audit_trails.
+     */
+    distinct?: Session_audit_trailScalarFieldEnum | Session_audit_trailScalarFieldEnum[]
+  }
+
+  /**
+   * Session_audit_trail findMany
+   */
+  export type Session_audit_trailFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session_audit_trail
+     */
+    select?: Session_audit_trailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session_audit_trail
+     */
+    omit?: Session_audit_trailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Session_audit_trailInclude<ExtArgs> | null
+    /**
+     * Filter, which Session_audit_trails to fetch.
+     */
+    where?: Session_audit_trailWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Session_audit_trails to fetch.
+     */
+    orderBy?: Session_audit_trailOrderByWithRelationInput | Session_audit_trailOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Session_audit_trails.
+     */
+    cursor?: Session_audit_trailWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Session_audit_trails from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Session_audit_trails.
+     */
+    skip?: number
+    distinct?: Session_audit_trailScalarFieldEnum | Session_audit_trailScalarFieldEnum[]
+  }
+
+  /**
+   * Session_audit_trail create
+   */
+  export type Session_audit_trailCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session_audit_trail
+     */
+    select?: Session_audit_trailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session_audit_trail
+     */
+    omit?: Session_audit_trailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Session_audit_trailInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Session_audit_trail.
+     */
+    data: XOR<Session_audit_trailCreateInput, Session_audit_trailUncheckedCreateInput>
+  }
+
+  /**
+   * Session_audit_trail createMany
+   */
+  export type Session_audit_trailCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Session_audit_trails.
+     */
+    data: Session_audit_trailCreateManyInput | Session_audit_trailCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Session_audit_trail createManyAndReturn
+   */
+  export type Session_audit_trailCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session_audit_trail
+     */
+    select?: Session_audit_trailSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session_audit_trail
+     */
+    omit?: Session_audit_trailOmit<ExtArgs> | null
+    /**
+     * The data used to create many Session_audit_trails.
+     */
+    data: Session_audit_trailCreateManyInput | Session_audit_trailCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Session_audit_trailIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Session_audit_trail update
+   */
+  export type Session_audit_trailUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session_audit_trail
+     */
+    select?: Session_audit_trailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session_audit_trail
+     */
+    omit?: Session_audit_trailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Session_audit_trailInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Session_audit_trail.
+     */
+    data: XOR<Session_audit_trailUpdateInput, Session_audit_trailUncheckedUpdateInput>
+    /**
+     * Choose, which Session_audit_trail to update.
+     */
+    where: Session_audit_trailWhereUniqueInput
+  }
+
+  /**
+   * Session_audit_trail updateMany
+   */
+  export type Session_audit_trailUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Session_audit_trails.
+     */
+    data: XOR<Session_audit_trailUpdateManyMutationInput, Session_audit_trailUncheckedUpdateManyInput>
+    /**
+     * Filter which Session_audit_trails to update
+     */
+    where?: Session_audit_trailWhereInput
+    /**
+     * Limit how many Session_audit_trails to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Session_audit_trail updateManyAndReturn
+   */
+  export type Session_audit_trailUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session_audit_trail
+     */
+    select?: Session_audit_trailSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session_audit_trail
+     */
+    omit?: Session_audit_trailOmit<ExtArgs> | null
+    /**
+     * The data used to update Session_audit_trails.
+     */
+    data: XOR<Session_audit_trailUpdateManyMutationInput, Session_audit_trailUncheckedUpdateManyInput>
+    /**
+     * Filter which Session_audit_trails to update
+     */
+    where?: Session_audit_trailWhereInput
+    /**
+     * Limit how many Session_audit_trails to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Session_audit_trailIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Session_audit_trail upsert
+   */
+  export type Session_audit_trailUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session_audit_trail
+     */
+    select?: Session_audit_trailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session_audit_trail
+     */
+    omit?: Session_audit_trailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Session_audit_trailInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Session_audit_trail to update in case it exists.
+     */
+    where: Session_audit_trailWhereUniqueInput
+    /**
+     * In case the Session_audit_trail found by the `where` argument doesn't exist, create a new Session_audit_trail with this data.
+     */
+    create: XOR<Session_audit_trailCreateInput, Session_audit_trailUncheckedCreateInput>
+    /**
+     * In case the Session_audit_trail was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<Session_audit_trailUpdateInput, Session_audit_trailUncheckedUpdateInput>
+  }
+
+  /**
+   * Session_audit_trail delete
+   */
+  export type Session_audit_trailDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session_audit_trail
+     */
+    select?: Session_audit_trailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session_audit_trail
+     */
+    omit?: Session_audit_trailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Session_audit_trailInclude<ExtArgs> | null
+    /**
+     * Filter which Session_audit_trail to delete.
+     */
+    where: Session_audit_trailWhereUniqueInput
+  }
+
+  /**
+   * Session_audit_trail deleteMany
+   */
+  export type Session_audit_trailDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Session_audit_trails to delete
+     */
+    where?: Session_audit_trailWhereInput
+    /**
+     * Limit how many Session_audit_trails to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Session_audit_trail.admin
+   */
+  export type Session_audit_trail$adminArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Admin
+     */
+    select?: AdminSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Admin
+     */
+    omit?: AdminOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AdminInclude<ExtArgs> | null
+    where?: AdminWhereInput
+  }
+
+  /**
+   * Session_audit_trail without action
+   */
+  export type Session_audit_trailDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Session_audit_trail
+     */
+    select?: Session_audit_trailSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Session_audit_trail
+     */
+    omit?: Session_audit_trailOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Session_audit_trailInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model CategoryOnArticle
    */
 
@@ -3329,16 +5801,22 @@ export namespace Prisma {
   export type CategoryOnArticleMinAggregateOutputType = {
     category_id: number | null
     article_id: number | null
+    created_at: Date | null
+    updated_at: Date | null
   }
 
   export type CategoryOnArticleMaxAggregateOutputType = {
     category_id: number | null
     article_id: number | null
+    created_at: Date | null
+    updated_at: Date | null
   }
 
   export type CategoryOnArticleCountAggregateOutputType = {
     category_id: number
     article_id: number
+    created_at: number
+    updated_at: number
     _all: number
   }
 
@@ -3356,16 +5834,22 @@ export namespace Prisma {
   export type CategoryOnArticleMinAggregateInputType = {
     category_id?: true
     article_id?: true
+    created_at?: true
+    updated_at?: true
   }
 
   export type CategoryOnArticleMaxAggregateInputType = {
     category_id?: true
     article_id?: true
+    created_at?: true
+    updated_at?: true
   }
 
   export type CategoryOnArticleCountAggregateInputType = {
     category_id?: true
     article_id?: true
+    created_at?: true
+    updated_at?: true
     _all?: true
   }
 
@@ -3458,6 +5942,8 @@ export namespace Prisma {
   export type CategoryOnArticleGroupByOutputType = {
     category_id: number
     article_id: number
+    created_at: Date
+    updated_at: Date
     _count: CategoryOnArticleCountAggregateOutputType | null
     _avg: CategoryOnArticleAvgAggregateOutputType | null
     _sum: CategoryOnArticleSumAggregateOutputType | null
@@ -3482,6 +5968,8 @@ export namespace Prisma {
   export type CategoryOnArticleSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     category_id?: boolean
     article_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
     article?: boolean | CategoryOnArticle$articleArgs<ExtArgs>
     category?: boolean | CategoryOnArticle$categoryArgs<ExtArgs>
   }, ExtArgs["result"]["categoryOnArticle"]>
@@ -3489,6 +5977,8 @@ export namespace Prisma {
   export type CategoryOnArticleSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     category_id?: boolean
     article_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
     article?: boolean | CategoryOnArticle$articleArgs<ExtArgs>
     category?: boolean | CategoryOnArticle$categoryArgs<ExtArgs>
   }, ExtArgs["result"]["categoryOnArticle"]>
@@ -3496,6 +5986,8 @@ export namespace Prisma {
   export type CategoryOnArticleSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     category_id?: boolean
     article_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
     article?: boolean | CategoryOnArticle$articleArgs<ExtArgs>
     category?: boolean | CategoryOnArticle$categoryArgs<ExtArgs>
   }, ExtArgs["result"]["categoryOnArticle"]>
@@ -3503,9 +5995,11 @@ export namespace Prisma {
   export type CategoryOnArticleSelectScalar = {
     category_id?: boolean
     article_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
   }
 
-  export type CategoryOnArticleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"category_id" | "article_id", ExtArgs["result"]["categoryOnArticle"]>
+  export type CategoryOnArticleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"category_id" | "article_id" | "created_at" | "updated_at", ExtArgs["result"]["categoryOnArticle"]>
   export type CategoryOnArticleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     article?: boolean | CategoryOnArticle$articleArgs<ExtArgs>
     category?: boolean | CategoryOnArticle$categoryArgs<ExtArgs>
@@ -3528,6 +6022,8 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       category_id: number
       article_id: number
+      created_at: Date
+      updated_at: Date
     }, ExtArgs["result"]["categoryOnArticle"]>
     composites: {}
   }
@@ -3955,6 +6451,8 @@ export namespace Prisma {
   interface CategoryOnArticleFieldRefs {
     readonly category_id: FieldRef<"CategoryOnArticle", 'Int'>
     readonly article_id: FieldRef<"CategoryOnArticle", 'Int'>
+    readonly created_at: FieldRef<"CategoryOnArticle", 'DateTime'>
+    readonly updated_at: FieldRef<"CategoryOnArticle", 'DateTime'>
   }
     
 
@@ -4436,15 +6934,45 @@ export namespace Prisma {
 
   export const CategoryScalarFieldEnum: {
     id: 'id',
-    name: 'name'
+    name: 'name',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
   };
 
   export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
 
 
+  export const AdminScalarFieldEnum: {
+    id: 'id',
+    email: 'email',
+    password: 'password',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type AdminScalarFieldEnum = (typeof AdminScalarFieldEnum)[keyof typeof AdminScalarFieldEnum]
+
+
+  export const Session_audit_trailScalarFieldEnum: {
+    id: 'id',
+    admin_id: 'admin_id',
+    event_type: 'event_type',
+    device_type: 'device_type',
+    ip_address: 'ip_address',
+    success: 'success',
+    failure_session: 'failure_session',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type Session_audit_trailScalarFieldEnum = (typeof Session_audit_trailScalarFieldEnum)[keyof typeof Session_audit_trailScalarFieldEnum]
+
+
   export const CategoryOnArticleScalarFieldEnum: {
     category_id: 'category_id',
-    article_id: 'article_id'
+    article_id: 'article_id',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
   };
 
   export type CategoryOnArticleScalarFieldEnum = (typeof CategoryOnArticleScalarFieldEnum)[keyof typeof CategoryOnArticleScalarFieldEnum]
@@ -4518,6 +7046,13 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -4611,12 +7146,16 @@ export namespace Prisma {
     NOT?: CategoryWhereInput | CategoryWhereInput[]
     id?: IntFilter<"Category"> | number
     name?: StringFilter<"Category"> | string
+    created_at?: DateTimeFilter<"Category"> | Date | string
+    updated_at?: DateTimeFilter<"Category"> | Date | string
     article?: CategoryOnArticleListRelationFilter
   }
 
   export type CategoryOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
     article?: CategoryOnArticleOrderByRelationAggregateInput
   }
 
@@ -4626,12 +7165,16 @@ export namespace Prisma {
     OR?: CategoryWhereInput[]
     NOT?: CategoryWhereInput | CategoryWhereInput[]
     name?: StringFilter<"Category"> | string
+    created_at?: DateTimeFilter<"Category"> | Date | string
+    updated_at?: DateTimeFilter<"Category"> | Date | string
     article?: CategoryOnArticleListRelationFilter
   }, "id">
 
   export type CategoryOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
     _count?: CategoryCountOrderByAggregateInput
     _avg?: CategoryAvgOrderByAggregateInput
     _max?: CategoryMaxOrderByAggregateInput
@@ -4645,6 +7188,140 @@ export namespace Prisma {
     NOT?: CategoryScalarWhereWithAggregatesInput | CategoryScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Category"> | number
     name?: StringWithAggregatesFilter<"Category"> | string
+    created_at?: DateTimeWithAggregatesFilter<"Category"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"Category"> | Date | string
+  }
+
+  export type AdminWhereInput = {
+    AND?: AdminWhereInput | AdminWhereInput[]
+    OR?: AdminWhereInput[]
+    NOT?: AdminWhereInput | AdminWhereInput[]
+    id?: StringFilter<"Admin"> | string
+    email?: StringFilter<"Admin"> | string
+    password?: StringNullableFilter<"Admin"> | string | null
+    created_at?: DateTimeFilter<"Admin"> | Date | string
+    updated_at?: DateTimeFilter<"Admin"> | Date | string
+    authlogs?: Session_audit_trailListRelationFilter
+  }
+
+  export type AdminOrderByWithRelationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    password?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    authlogs?: Session_audit_trailOrderByRelationAggregateInput
+  }
+
+  export type AdminWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    email?: string
+    AND?: AdminWhereInput | AdminWhereInput[]
+    OR?: AdminWhereInput[]
+    NOT?: AdminWhereInput | AdminWhereInput[]
+    password?: StringNullableFilter<"Admin"> | string | null
+    created_at?: DateTimeFilter<"Admin"> | Date | string
+    updated_at?: DateTimeFilter<"Admin"> | Date | string
+    authlogs?: Session_audit_trailListRelationFilter
+  }, "id" | "email">
+
+  export type AdminOrderByWithAggregationInput = {
+    id?: SortOrder
+    email?: SortOrder
+    password?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: AdminCountOrderByAggregateInput
+    _max?: AdminMaxOrderByAggregateInput
+    _min?: AdminMinOrderByAggregateInput
+  }
+
+  export type AdminScalarWhereWithAggregatesInput = {
+    AND?: AdminScalarWhereWithAggregatesInput | AdminScalarWhereWithAggregatesInput[]
+    OR?: AdminScalarWhereWithAggregatesInput[]
+    NOT?: AdminScalarWhereWithAggregatesInput | AdminScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Admin"> | string
+    email?: StringWithAggregatesFilter<"Admin"> | string
+    password?: StringNullableWithAggregatesFilter<"Admin"> | string | null
+    created_at?: DateTimeWithAggregatesFilter<"Admin"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"Admin"> | Date | string
+  }
+
+  export type Session_audit_trailWhereInput = {
+    AND?: Session_audit_trailWhereInput | Session_audit_trailWhereInput[]
+    OR?: Session_audit_trailWhereInput[]
+    NOT?: Session_audit_trailWhereInput | Session_audit_trailWhereInput[]
+    id?: IntFilter<"Session_audit_trail"> | number
+    admin_id?: StringFilter<"Session_audit_trail"> | string
+    event_type?: StringFilter<"Session_audit_trail"> | string
+    device_type?: StringFilter<"Session_audit_trail"> | string
+    ip_address?: StringFilter<"Session_audit_trail"> | string
+    success?: BoolFilter<"Session_audit_trail"> | boolean
+    failure_session?: StringNullableFilter<"Session_audit_trail"> | string | null
+    created_at?: DateTimeFilter<"Session_audit_trail"> | Date | string
+    updated_at?: DateTimeFilter<"Session_audit_trail"> | Date | string
+    admin?: XOR<AdminNullableScalarRelationFilter, AdminWhereInput> | null
+  }
+
+  export type Session_audit_trailOrderByWithRelationInput = {
+    id?: SortOrder
+    admin_id?: SortOrder
+    event_type?: SortOrder
+    device_type?: SortOrder
+    ip_address?: SortOrder
+    success?: SortOrder
+    failure_session?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    admin?: AdminOrderByWithRelationInput
+  }
+
+  export type Session_audit_trailWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: Session_audit_trailWhereInput | Session_audit_trailWhereInput[]
+    OR?: Session_audit_trailWhereInput[]
+    NOT?: Session_audit_trailWhereInput | Session_audit_trailWhereInput[]
+    admin_id?: StringFilter<"Session_audit_trail"> | string
+    event_type?: StringFilter<"Session_audit_trail"> | string
+    device_type?: StringFilter<"Session_audit_trail"> | string
+    ip_address?: StringFilter<"Session_audit_trail"> | string
+    success?: BoolFilter<"Session_audit_trail"> | boolean
+    failure_session?: StringNullableFilter<"Session_audit_trail"> | string | null
+    created_at?: DateTimeFilter<"Session_audit_trail"> | Date | string
+    updated_at?: DateTimeFilter<"Session_audit_trail"> | Date | string
+    admin?: XOR<AdminNullableScalarRelationFilter, AdminWhereInput> | null
+  }, "id">
+
+  export type Session_audit_trailOrderByWithAggregationInput = {
+    id?: SortOrder
+    admin_id?: SortOrder
+    event_type?: SortOrder
+    device_type?: SortOrder
+    ip_address?: SortOrder
+    success?: SortOrder
+    failure_session?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: Session_audit_trailCountOrderByAggregateInput
+    _avg?: Session_audit_trailAvgOrderByAggregateInput
+    _max?: Session_audit_trailMaxOrderByAggregateInput
+    _min?: Session_audit_trailMinOrderByAggregateInput
+    _sum?: Session_audit_trailSumOrderByAggregateInput
+  }
+
+  export type Session_audit_trailScalarWhereWithAggregatesInput = {
+    AND?: Session_audit_trailScalarWhereWithAggregatesInput | Session_audit_trailScalarWhereWithAggregatesInput[]
+    OR?: Session_audit_trailScalarWhereWithAggregatesInput[]
+    NOT?: Session_audit_trailScalarWhereWithAggregatesInput | Session_audit_trailScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Session_audit_trail"> | number
+    admin_id?: StringWithAggregatesFilter<"Session_audit_trail"> | string
+    event_type?: StringWithAggregatesFilter<"Session_audit_trail"> | string
+    device_type?: StringWithAggregatesFilter<"Session_audit_trail"> | string
+    ip_address?: StringWithAggregatesFilter<"Session_audit_trail"> | string
+    success?: BoolWithAggregatesFilter<"Session_audit_trail"> | boolean
+    failure_session?: StringNullableWithAggregatesFilter<"Session_audit_trail"> | string | null
+    created_at?: DateTimeWithAggregatesFilter<"Session_audit_trail"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"Session_audit_trail"> | Date | string
   }
 
   export type CategoryOnArticleWhereInput = {
@@ -4653,6 +7330,8 @@ export namespace Prisma {
     NOT?: CategoryOnArticleWhereInput | CategoryOnArticleWhereInput[]
     category_id?: IntFilter<"CategoryOnArticle"> | number
     article_id?: IntFilter<"CategoryOnArticle"> | number
+    created_at?: DateTimeFilter<"CategoryOnArticle"> | Date | string
+    updated_at?: DateTimeFilter<"CategoryOnArticle"> | Date | string
     article?: XOR<ArticleNullableScalarRelationFilter, ArticleWhereInput> | null
     category?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
   }
@@ -4660,6 +7339,8 @@ export namespace Prisma {
   export type CategoryOnArticleOrderByWithRelationInput = {
     category_id?: SortOrder
     article_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
     article?: ArticleOrderByWithRelationInput
     category?: CategoryOrderByWithRelationInput
   }
@@ -4671,6 +7352,8 @@ export namespace Prisma {
     NOT?: CategoryOnArticleWhereInput | CategoryOnArticleWhereInput[]
     category_id?: IntFilter<"CategoryOnArticle"> | number
     article_id?: IntFilter<"CategoryOnArticle"> | number
+    created_at?: DateTimeFilter<"CategoryOnArticle"> | Date | string
+    updated_at?: DateTimeFilter<"CategoryOnArticle"> | Date | string
     article?: XOR<ArticleNullableScalarRelationFilter, ArticleWhereInput> | null
     category?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
   }, "category_id_article_id">
@@ -4678,6 +7361,8 @@ export namespace Prisma {
   export type CategoryOnArticleOrderByWithAggregationInput = {
     category_id?: SortOrder
     article_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
     _count?: CategoryOnArticleCountOrderByAggregateInput
     _avg?: CategoryOnArticleAvgOrderByAggregateInput
     _max?: CategoryOnArticleMaxOrderByAggregateInput
@@ -4691,6 +7376,8 @@ export namespace Prisma {
     NOT?: CategoryOnArticleScalarWhereWithAggregatesInput | CategoryOnArticleScalarWhereWithAggregatesInput[]
     category_id?: IntWithAggregatesFilter<"CategoryOnArticle"> | number
     article_id?: IntWithAggregatesFilter<"CategoryOnArticle"> | number
+    created_at?: DateTimeWithAggregatesFilter<"CategoryOnArticle"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"CategoryOnArticle"> | Date | string
   }
 
   export type ArticleCreateInput = {
@@ -4766,41 +7453,197 @@ export namespace Prisma {
 
   export type CategoryCreateInput = {
     name: string
+    created_at?: Date | string
+    updated_at?: Date | string
     article?: CategoryOnArticleCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryUncheckedCreateInput = {
     id?: number
     name: string
+    created_at?: Date | string
+    updated_at?: Date | string
     article?: CategoryOnArticleUncheckedCreateNestedManyWithoutCategoryInput
   }
 
   export type CategoryUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: CategoryOnArticleUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: CategoryOnArticleUncheckedUpdateManyWithoutCategoryNestedInput
   }
 
   export type CategoryCreateManyInput = {
     id?: number
     name: string
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type CategoryUpdateManyMutationInput = {
     name?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CategoryUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminCreateInput = {
+    id?: string
+    email: string
+    password?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    authlogs?: Session_audit_trailCreateNestedManyWithoutAdminInput
+  }
+
+  export type AdminUncheckedCreateInput = {
+    id?: string
+    email: string
+    password?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    authlogs?: Session_audit_trailUncheckedCreateNestedManyWithoutAdminInput
+  }
+
+  export type AdminUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    authlogs?: Session_audit_trailUpdateManyWithoutAdminNestedInput
+  }
+
+  export type AdminUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    authlogs?: Session_audit_trailUncheckedUpdateManyWithoutAdminNestedInput
+  }
+
+  export type AdminCreateManyInput = {
+    id?: string
+    email: string
+    password?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type AdminUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Session_audit_trailCreateInput = {
+    event_type: string
+    device_type: string
+    ip_address: string
+    success: boolean
+    failure_session?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    admin?: AdminCreateNestedOneWithoutAuthlogsInput
+  }
+
+  export type Session_audit_trailUncheckedCreateInput = {
+    id?: number
+    admin_id: string
+    event_type: string
+    device_type: string
+    ip_address: string
+    success: boolean
+    failure_session?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type Session_audit_trailUpdateInput = {
+    event_type?: StringFieldUpdateOperationsInput | string
+    device_type?: StringFieldUpdateOperationsInput | string
+    ip_address?: StringFieldUpdateOperationsInput | string
+    success?: BoolFieldUpdateOperationsInput | boolean
+    failure_session?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    admin?: AdminUpdateOneWithoutAuthlogsNestedInput
+  }
+
+  export type Session_audit_trailUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    admin_id?: StringFieldUpdateOperationsInput | string
+    event_type?: StringFieldUpdateOperationsInput | string
+    device_type?: StringFieldUpdateOperationsInput | string
+    ip_address?: StringFieldUpdateOperationsInput | string
+    success?: BoolFieldUpdateOperationsInput | boolean
+    failure_session?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Session_audit_trailCreateManyInput = {
+    id?: number
+    admin_id: string
+    event_type: string
+    device_type: string
+    ip_address: string
+    success: boolean
+    failure_session?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type Session_audit_trailUpdateManyMutationInput = {
+    event_type?: StringFieldUpdateOperationsInput | string
+    device_type?: StringFieldUpdateOperationsInput | string
+    ip_address?: StringFieldUpdateOperationsInput | string
+    success?: BoolFieldUpdateOperationsInput | boolean
+    failure_session?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Session_audit_trailUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    admin_id?: StringFieldUpdateOperationsInput | string
+    event_type?: StringFieldUpdateOperationsInput | string
+    device_type?: StringFieldUpdateOperationsInput | string
+    ip_address?: StringFieldUpdateOperationsInput | string
+    success?: BoolFieldUpdateOperationsInput | boolean
+    failure_session?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CategoryOnArticleCreateInput = {
+    created_at?: Date | string
+    updated_at?: Date | string
     article?: ArticleCreateNestedOneWithoutCategoryInput
     category?: CategoryCreateNestedOneWithoutArticleInput
   }
@@ -4808,9 +7651,13 @@ export namespace Prisma {
   export type CategoryOnArticleUncheckedCreateInput = {
     category_id: number
     article_id: number
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type CategoryOnArticleUpdateInput = {
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateOneWithoutCategoryNestedInput
     category?: CategoryUpdateOneWithoutArticleNestedInput
   }
@@ -4818,20 +7665,27 @@ export namespace Prisma {
   export type CategoryOnArticleUncheckedUpdateInput = {
     category_id?: IntFieldUpdateOperationsInput | number
     article_id?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CategoryOnArticleCreateManyInput = {
     category_id: number
     article_id: number
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type CategoryOnArticleUpdateManyMutationInput = {
-
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CategoryOnArticleUncheckedUpdateManyInput = {
     category_id?: IntFieldUpdateOperationsInput | number
     article_id?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -5010,6 +7864,8 @@ export namespace Prisma {
   export type CategoryCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type CategoryAvgOrderByAggregateInput = {
@@ -5019,15 +7875,115 @@ export namespace Prisma {
   export type CategoryMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type CategoryMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type CategorySumOrderByAggregateInput = {
     id?: SortOrder
+  }
+
+  export type Session_audit_trailListRelationFilter = {
+    every?: Session_audit_trailWhereInput
+    some?: Session_audit_trailWhereInput
+    none?: Session_audit_trailWhereInput
+  }
+
+  export type Session_audit_trailOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AdminCountOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    password?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type AdminMaxOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    password?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type AdminMinOrderByAggregateInput = {
+    id?: SortOrder
+    email?: SortOrder
+    password?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type AdminNullableScalarRelationFilter = {
+    is?: AdminWhereInput | null
+    isNot?: AdminWhereInput | null
+  }
+
+  export type Session_audit_trailCountOrderByAggregateInput = {
+    id?: SortOrder
+    admin_id?: SortOrder
+    event_type?: SortOrder
+    device_type?: SortOrder
+    ip_address?: SortOrder
+    success?: SortOrder
+    failure_session?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type Session_audit_trailAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type Session_audit_trailMaxOrderByAggregateInput = {
+    id?: SortOrder
+    admin_id?: SortOrder
+    event_type?: SortOrder
+    device_type?: SortOrder
+    ip_address?: SortOrder
+    success?: SortOrder
+    failure_session?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type Session_audit_trailMinOrderByAggregateInput = {
+    id?: SortOrder
+    admin_id?: SortOrder
+    event_type?: SortOrder
+    device_type?: SortOrder
+    ip_address?: SortOrder
+    success?: SortOrder
+    failure_session?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type Session_audit_trailSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type ArticleNullableScalarRelationFilter = {
@@ -5048,6 +8004,8 @@ export namespace Prisma {
   export type CategoryOnArticleCountOrderByAggregateInput = {
     category_id?: SortOrder
     article_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type CategoryOnArticleAvgOrderByAggregateInput = {
@@ -5058,11 +8016,15 @@ export namespace Prisma {
   export type CategoryOnArticleMaxOrderByAggregateInput = {
     category_id?: SortOrder
     article_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type CategoryOnArticleMinOrderByAggregateInput = {
     category_id?: SortOrder
     article_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type CategoryOnArticleSumOrderByAggregateInput = {
@@ -5172,6 +8134,68 @@ export namespace Prisma {
     update?: CategoryOnArticleUpdateWithWhereUniqueWithoutCategoryInput | CategoryOnArticleUpdateWithWhereUniqueWithoutCategoryInput[]
     updateMany?: CategoryOnArticleUpdateManyWithWhereWithoutCategoryInput | CategoryOnArticleUpdateManyWithWhereWithoutCategoryInput[]
     deleteMany?: CategoryOnArticleScalarWhereInput | CategoryOnArticleScalarWhereInput[]
+  }
+
+  export type Session_audit_trailCreateNestedManyWithoutAdminInput = {
+    create?: XOR<Session_audit_trailCreateWithoutAdminInput, Session_audit_trailUncheckedCreateWithoutAdminInput> | Session_audit_trailCreateWithoutAdminInput[] | Session_audit_trailUncheckedCreateWithoutAdminInput[]
+    connectOrCreate?: Session_audit_trailCreateOrConnectWithoutAdminInput | Session_audit_trailCreateOrConnectWithoutAdminInput[]
+    createMany?: Session_audit_trailCreateManyAdminInputEnvelope
+    connect?: Session_audit_trailWhereUniqueInput | Session_audit_trailWhereUniqueInput[]
+  }
+
+  export type Session_audit_trailUncheckedCreateNestedManyWithoutAdminInput = {
+    create?: XOR<Session_audit_trailCreateWithoutAdminInput, Session_audit_trailUncheckedCreateWithoutAdminInput> | Session_audit_trailCreateWithoutAdminInput[] | Session_audit_trailUncheckedCreateWithoutAdminInput[]
+    connectOrCreate?: Session_audit_trailCreateOrConnectWithoutAdminInput | Session_audit_trailCreateOrConnectWithoutAdminInput[]
+    createMany?: Session_audit_trailCreateManyAdminInputEnvelope
+    connect?: Session_audit_trailWhereUniqueInput | Session_audit_trailWhereUniqueInput[]
+  }
+
+  export type Session_audit_trailUpdateManyWithoutAdminNestedInput = {
+    create?: XOR<Session_audit_trailCreateWithoutAdminInput, Session_audit_trailUncheckedCreateWithoutAdminInput> | Session_audit_trailCreateWithoutAdminInput[] | Session_audit_trailUncheckedCreateWithoutAdminInput[]
+    connectOrCreate?: Session_audit_trailCreateOrConnectWithoutAdminInput | Session_audit_trailCreateOrConnectWithoutAdminInput[]
+    upsert?: Session_audit_trailUpsertWithWhereUniqueWithoutAdminInput | Session_audit_trailUpsertWithWhereUniqueWithoutAdminInput[]
+    createMany?: Session_audit_trailCreateManyAdminInputEnvelope
+    set?: Session_audit_trailWhereUniqueInput | Session_audit_trailWhereUniqueInput[]
+    disconnect?: Session_audit_trailWhereUniqueInput | Session_audit_trailWhereUniqueInput[]
+    delete?: Session_audit_trailWhereUniqueInput | Session_audit_trailWhereUniqueInput[]
+    connect?: Session_audit_trailWhereUniqueInput | Session_audit_trailWhereUniqueInput[]
+    update?: Session_audit_trailUpdateWithWhereUniqueWithoutAdminInput | Session_audit_trailUpdateWithWhereUniqueWithoutAdminInput[]
+    updateMany?: Session_audit_trailUpdateManyWithWhereWithoutAdminInput | Session_audit_trailUpdateManyWithWhereWithoutAdminInput[]
+    deleteMany?: Session_audit_trailScalarWhereInput | Session_audit_trailScalarWhereInput[]
+  }
+
+  export type Session_audit_trailUncheckedUpdateManyWithoutAdminNestedInput = {
+    create?: XOR<Session_audit_trailCreateWithoutAdminInput, Session_audit_trailUncheckedCreateWithoutAdminInput> | Session_audit_trailCreateWithoutAdminInput[] | Session_audit_trailUncheckedCreateWithoutAdminInput[]
+    connectOrCreate?: Session_audit_trailCreateOrConnectWithoutAdminInput | Session_audit_trailCreateOrConnectWithoutAdminInput[]
+    upsert?: Session_audit_trailUpsertWithWhereUniqueWithoutAdminInput | Session_audit_trailUpsertWithWhereUniqueWithoutAdminInput[]
+    createMany?: Session_audit_trailCreateManyAdminInputEnvelope
+    set?: Session_audit_trailWhereUniqueInput | Session_audit_trailWhereUniqueInput[]
+    disconnect?: Session_audit_trailWhereUniqueInput | Session_audit_trailWhereUniqueInput[]
+    delete?: Session_audit_trailWhereUniqueInput | Session_audit_trailWhereUniqueInput[]
+    connect?: Session_audit_trailWhereUniqueInput | Session_audit_trailWhereUniqueInput[]
+    update?: Session_audit_trailUpdateWithWhereUniqueWithoutAdminInput | Session_audit_trailUpdateWithWhereUniqueWithoutAdminInput[]
+    updateMany?: Session_audit_trailUpdateManyWithWhereWithoutAdminInput | Session_audit_trailUpdateManyWithWhereWithoutAdminInput[]
+    deleteMany?: Session_audit_trailScalarWhereInput | Session_audit_trailScalarWhereInput[]
+  }
+
+  export type AdminCreateNestedOneWithoutAuthlogsInput = {
+    create?: XOR<AdminCreateWithoutAuthlogsInput, AdminUncheckedCreateWithoutAuthlogsInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutAuthlogsInput
+    connect?: AdminWhereUniqueInput
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type AdminUpdateOneWithoutAuthlogsNestedInput = {
+    create?: XOR<AdminCreateWithoutAuthlogsInput, AdminUncheckedCreateWithoutAuthlogsInput>
+    connectOrCreate?: AdminCreateOrConnectWithoutAuthlogsInput
+    upsert?: AdminUpsertWithoutAuthlogsInput
+    disconnect?: AdminWhereInput | boolean
+    delete?: AdminWhereInput | boolean
+    connect?: AdminWhereUniqueInput
+    update?: XOR<XOR<AdminUpdateToOneWithWhereWithoutAuthlogsInput, AdminUpdateWithoutAuthlogsInput>, AdminUncheckedUpdateWithoutAuthlogsInput>
   }
 
   export type ArticleCreateNestedOneWithoutCategoryInput = {
@@ -5342,12 +8366,29 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type CategoryOnArticleCreateWithoutArticleInput = {
+    created_at?: Date | string
+    updated_at?: Date | string
     category?: CategoryCreateNestedOneWithoutArticleInput
   }
 
   export type CategoryOnArticleUncheckedCreateWithoutArticleInput = {
     category_id: number
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type CategoryOnArticleCreateOrConnectWithoutArticleInput = {
@@ -5382,14 +8423,20 @@ export namespace Prisma {
     NOT?: CategoryOnArticleScalarWhereInput | CategoryOnArticleScalarWhereInput[]
     category_id?: IntFilter<"CategoryOnArticle"> | number
     article_id?: IntFilter<"CategoryOnArticle"> | number
+    created_at?: DateTimeFilter<"CategoryOnArticle"> | Date | string
+    updated_at?: DateTimeFilter<"CategoryOnArticle"> | Date | string
   }
 
   export type CategoryOnArticleCreateWithoutCategoryInput = {
+    created_at?: Date | string
+    updated_at?: Date | string
     article?: ArticleCreateNestedOneWithoutCategoryInput
   }
 
   export type CategoryOnArticleUncheckedCreateWithoutCategoryInput = {
     article_id: number
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type CategoryOnArticleCreateOrConnectWithoutCategoryInput = {
@@ -5418,6 +8465,116 @@ export namespace Prisma {
     data: XOR<CategoryOnArticleUpdateManyMutationInput, CategoryOnArticleUncheckedUpdateManyWithoutCategoryInput>
   }
 
+  export type Session_audit_trailCreateWithoutAdminInput = {
+    event_type: string
+    device_type: string
+    ip_address: string
+    success: boolean
+    failure_session?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type Session_audit_trailUncheckedCreateWithoutAdminInput = {
+    id?: number
+    event_type: string
+    device_type: string
+    ip_address: string
+    success: boolean
+    failure_session?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type Session_audit_trailCreateOrConnectWithoutAdminInput = {
+    where: Session_audit_trailWhereUniqueInput
+    create: XOR<Session_audit_trailCreateWithoutAdminInput, Session_audit_trailUncheckedCreateWithoutAdminInput>
+  }
+
+  export type Session_audit_trailCreateManyAdminInputEnvelope = {
+    data: Session_audit_trailCreateManyAdminInput | Session_audit_trailCreateManyAdminInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type Session_audit_trailUpsertWithWhereUniqueWithoutAdminInput = {
+    where: Session_audit_trailWhereUniqueInput
+    update: XOR<Session_audit_trailUpdateWithoutAdminInput, Session_audit_trailUncheckedUpdateWithoutAdminInput>
+    create: XOR<Session_audit_trailCreateWithoutAdminInput, Session_audit_trailUncheckedCreateWithoutAdminInput>
+  }
+
+  export type Session_audit_trailUpdateWithWhereUniqueWithoutAdminInput = {
+    where: Session_audit_trailWhereUniqueInput
+    data: XOR<Session_audit_trailUpdateWithoutAdminInput, Session_audit_trailUncheckedUpdateWithoutAdminInput>
+  }
+
+  export type Session_audit_trailUpdateManyWithWhereWithoutAdminInput = {
+    where: Session_audit_trailScalarWhereInput
+    data: XOR<Session_audit_trailUpdateManyMutationInput, Session_audit_trailUncheckedUpdateManyWithoutAdminInput>
+  }
+
+  export type Session_audit_trailScalarWhereInput = {
+    AND?: Session_audit_trailScalarWhereInput | Session_audit_trailScalarWhereInput[]
+    OR?: Session_audit_trailScalarWhereInput[]
+    NOT?: Session_audit_trailScalarWhereInput | Session_audit_trailScalarWhereInput[]
+    id?: IntFilter<"Session_audit_trail"> | number
+    admin_id?: StringFilter<"Session_audit_trail"> | string
+    event_type?: StringFilter<"Session_audit_trail"> | string
+    device_type?: StringFilter<"Session_audit_trail"> | string
+    ip_address?: StringFilter<"Session_audit_trail"> | string
+    success?: BoolFilter<"Session_audit_trail"> | boolean
+    failure_session?: StringNullableFilter<"Session_audit_trail"> | string | null
+    created_at?: DateTimeFilter<"Session_audit_trail"> | Date | string
+    updated_at?: DateTimeFilter<"Session_audit_trail"> | Date | string
+  }
+
+  export type AdminCreateWithoutAuthlogsInput = {
+    id?: string
+    email: string
+    password?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type AdminUncheckedCreateWithoutAuthlogsInput = {
+    id?: string
+    email: string
+    password?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type AdminCreateOrConnectWithoutAuthlogsInput = {
+    where: AdminWhereUniqueInput
+    create: XOR<AdminCreateWithoutAuthlogsInput, AdminUncheckedCreateWithoutAuthlogsInput>
+  }
+
+  export type AdminUpsertWithoutAuthlogsInput = {
+    update: XOR<AdminUpdateWithoutAuthlogsInput, AdminUncheckedUpdateWithoutAuthlogsInput>
+    create: XOR<AdminCreateWithoutAuthlogsInput, AdminUncheckedCreateWithoutAuthlogsInput>
+    where?: AdminWhereInput
+  }
+
+  export type AdminUpdateToOneWithWhereWithoutAuthlogsInput = {
+    where?: AdminWhereInput
+    data: XOR<AdminUpdateWithoutAuthlogsInput, AdminUncheckedUpdateWithoutAuthlogsInput>
+  }
+
+  export type AdminUpdateWithoutAuthlogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdminUncheckedUpdateWithoutAuthlogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ArticleCreateWithoutCategoryInput = {
     title: string
     content: string
@@ -5444,11 +8601,15 @@ export namespace Prisma {
 
   export type CategoryCreateWithoutArticleInput = {
     name: string
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type CategoryUncheckedCreateWithoutArticleInput = {
     id?: number
     name: string
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type CategoryCreateOrConnectWithoutArticleInput = {
@@ -5499,43 +8660,106 @@ export namespace Prisma {
 
   export type CategoryUpdateWithoutArticleInput = {
     name?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CategoryUncheckedUpdateWithoutArticleInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CategoryOnArticleCreateManyArticleInput = {
     category_id: number
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type CategoryOnArticleUpdateWithoutArticleInput = {
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: CategoryUpdateOneWithoutArticleNestedInput
   }
 
   export type CategoryOnArticleUncheckedUpdateWithoutArticleInput = {
     category_id?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CategoryOnArticleUncheckedUpdateManyWithoutArticleInput = {
     category_id?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CategoryOnArticleCreateManyCategoryInput = {
     article_id: number
+    created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type CategoryOnArticleUpdateWithoutCategoryInput = {
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     article?: ArticleUpdateOneWithoutCategoryNestedInput
   }
 
   export type CategoryOnArticleUncheckedUpdateWithoutCategoryInput = {
     article_id?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CategoryOnArticleUncheckedUpdateManyWithoutCategoryInput = {
     article_id?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Session_audit_trailCreateManyAdminInput = {
+    id?: number
+    event_type: string
+    device_type: string
+    ip_address: string
+    success: boolean
+    failure_session?: string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type Session_audit_trailUpdateWithoutAdminInput = {
+    event_type?: StringFieldUpdateOperationsInput | string
+    device_type?: StringFieldUpdateOperationsInput | string
+    ip_address?: StringFieldUpdateOperationsInput | string
+    success?: BoolFieldUpdateOperationsInput | boolean
+    failure_session?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Session_audit_trailUncheckedUpdateWithoutAdminInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    event_type?: StringFieldUpdateOperationsInput | string
+    device_type?: StringFieldUpdateOperationsInput | string
+    ip_address?: StringFieldUpdateOperationsInput | string
+    success?: BoolFieldUpdateOperationsInput | boolean
+    failure_session?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type Session_audit_trailUncheckedUpdateManyWithoutAdminInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    event_type?: StringFieldUpdateOperationsInput | string
+    device_type?: StringFieldUpdateOperationsInput | string
+    ip_address?: StringFieldUpdateOperationsInput | string
+    success?: BoolFieldUpdateOperationsInput | boolean
+    failure_session?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

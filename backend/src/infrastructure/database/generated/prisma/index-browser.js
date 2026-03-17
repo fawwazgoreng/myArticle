@@ -132,12 +132,36 @@ exports.Prisma.ArticleScalarFieldEnum = {
 
 exports.Prisma.CategoryScalarFieldEnum = {
   id: 'id',
-  name: 'name'
+  name: 'name',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.AdminScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  password: 'password',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.Session_audit_trailScalarFieldEnum = {
+  id: 'id',
+  admin_id: 'admin_id',
+  event_type: 'event_type',
+  device_type: 'device_type',
+  ip_address: 'ip_address',
+  success: 'success',
+  failure_session: 'failure_session',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 };
 
 exports.Prisma.CategoryOnArticleScalarFieldEnum = {
   category_id: 'category_id',
-  article_id: 'article_id'
+  article_id: 'article_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 };
 
 exports.Prisma.SortOrder = {
@@ -159,6 +183,8 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   Article: 'Article',
   Category: 'Category',
+  Admin: 'Admin',
+  Session_audit_trail: 'Session_audit_trail',
   CategoryOnArticle: 'CategoryOnArticle'
 };
 

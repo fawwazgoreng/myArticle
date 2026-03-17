@@ -1,6 +1,6 @@
 import Redis, { RedisOptions } from "ioredis";
 const appName = process.env['APP_NAME'] ?? "";
-const node_env = process.env['NODE_ENV'] ?? "production";
+// const node_env = process.env['NODE_ENV'] ?? "production";
 export const prfix = `${appName}:test:`;
 
 export const redisConfig : RedisOptions = {
