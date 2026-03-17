@@ -7,6 +7,7 @@ import { prettyJSON } from "hono/pretty-json";
 import { logger } from "./infrastructure/logger/log";
 import category from "./category/category.route";
 import index from "./article/article.route";
+import admin from "./admin/admin.route";
 import schedule from "node-schedule";
 import WriteRedis from "./infrastructure/redis/redis.write";
 import { HTTPException } from "hono/http-exception";
@@ -104,6 +105,7 @@ app.get("/", async (c) => {
 // Register API routes and static file server
 app.route("/article", index)
     .route("/category", category)
+    .route('/' , admin)
 
     // Serve static files from /public directory
     .use(
