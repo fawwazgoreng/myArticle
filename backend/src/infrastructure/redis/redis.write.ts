@@ -4,7 +4,7 @@ import { article, articleMeta } from "../../article/article.type";
 import articleModel from "../../article/article.model";
 import { logger } from "../logger/log";
 
-const ttl = 60 * 60 * 24; // Cache expiration time (24 hours)
+export const ttl = 60 * 60 * 24; // Cache expiration time (24 hours)
 
 // Redis write service for caching and counter synchronization
 export default class WriteRedis {
