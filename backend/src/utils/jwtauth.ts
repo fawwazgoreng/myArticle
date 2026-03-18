@@ -19,3 +19,16 @@ export const checkToken = async (c : Context , next: Next) => {
         throw new HTTPException(res.status as ContentfulStatusCode, { res });
     }
 }
+
+export const hashPassword = async (password: string) => {
+    return await Bun.password.hash(password);
+}
+
+export const verifyHash = async (hashed: string , password: string) => {
+    const isMatch = await Bun.password.verify(password, hashed);
+    if (isMatch) return;
+    throw {
+        status: 422,
+        message: "email or password wrong"
+    }
+}
