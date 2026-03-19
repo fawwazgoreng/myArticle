@@ -1,22 +1,18 @@
+import { logger } from "../infrastructure/logger/log";
 import { ReadRedis } from "../infrastructure/redis/redis.read";
 import WriteRedis from "../infrastructure/redis/redis.write";
-import { logger } from "../infrastructure/logger/log";
-import articleModel from "./article.model";
+import ArticleModel from "./article.model";
 import { article, articleArrayResponse, articleMeta } from "./article.type";
 
 // Service responsible for reading articles with Redis caching
 export default class ReadArticle {
 
-    private articleModel;
-    private readRedis;
-    private writeRedis;
-
     // Initialize dependencies for database and Redis operations
-    constructor() {
-        this.articleModel = new articleModel();
-        this.readRedis = new ReadRedis();
-        this.writeRedis = new WriteRedis();
-    }
+    constructor(
+        private articleModel = new ArticleModel(),
+        private readRedis = new ReadRedis(),
+        private writeRedis = new WriteRedis(),
+    ){}
 
     // Retrieve paginated articles with Redis cache-first strategy
     show = async (req: {
@@ -121,7 +117,7 @@ export default class ReadArticle {
             if (redisCache) return redisCache;
 
             // Fetch article from database if cache miss
-            const article = await new articleModel().find(id);
+            const article = await this.articleModel.find(id);
 
             return article as article;
 

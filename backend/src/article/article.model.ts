@@ -10,7 +10,7 @@ import { Prisma } from "../infrastructure/database/generated/prisma";
 import { logger } from "../infrastructure/logger/log";
 
 // Article model responsible for database operations related to articles
-export default class articleModel {
+export default class ArticleModel {
     // Fetch paginated articles with filtering and sorting
     show = async (req: {
         page: number;

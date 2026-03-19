@@ -1,25 +1,25 @@
 import { ReadRedis } from "../infrastructure/redis/redis.read";
 import { logger } from "../infrastructure/logger/log";
-import categoryModel from "./category.model";
-import { category, categoryResponse, categoryResponses } from "./category.type";
+import { category, categoryResponses } from "./category.type";
 import { meta } from "../utils/global.type";
+import CategoryModel from "./category.model";
 
 // Service responsible for reading category data
 export default class ReadCategory {
 
-  private categoryModel;
 
   // Initialize category model dependency
-  constructor() {
-    this.categoryModel = new categoryModel();
-  }
+  constructor(
+      private categoryModel = new CategoryModel(),
+      private readRedis = new ReadRedis(),
+    ){}
 
   // Retrieve all categories
   show = async () => {
     try {
 
       // Fetch category list from database
-      const category = await new categoryModel().show();
+      const category = await this.categoryModel.show();
 
       // Build API response
       const res : categoryResponses = {
@@ -69,7 +69,7 @@ export default class ReadCategory {
       });
 
       // Retrieve latest view counters from Redis
-      const redisValue = await new ReadRedis().readViews(ids);
+      const redisValue = await this.readRedis.readViews(ids);
 
       // Override article views with Redis values if available
       for (const [key , value] of Object.entries(redisValue)) {

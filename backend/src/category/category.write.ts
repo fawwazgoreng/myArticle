@@ -1,20 +1,17 @@
 import { ZodError } from "zod";
 import { globalResponse } from "../utils/global.type";
 import { category, categoryResponse } from "./category.type";
-import categoryModel from "./category.model";
-import { categoryValidate } from "./category.validate";
+import CategoryModel from "./category.model";
+import { CategoryValidate } from "./category.validate";
 
 // Service responsible for writing category data
 export default class WriteCategory {
 
-  private categoryValidate;
-  private categoryModel;
-
   // Initialize validation and database model
-  constructor() {
-    this.categoryValidate = new categoryValidate();
-    this.categoryModel = new categoryModel();
-  }
+  constructor(
+    private categoryValidate =  new CategoryValidate(),
+    private categoryModel = new CategoryModel(),
+  ){}
 
   // Create a new category with validation
   create = async (req: {name : string}) => {

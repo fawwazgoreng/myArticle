@@ -6,7 +6,7 @@ import { findPage } from "../utils/findPage";
 import { meta } from "../utils/global.type";
 
 // Category model responsible for database operations related to categories
-export default class categoryModel {
+export default class CategoryModel {
 
   // Retrieve all categories
   show = async () => {

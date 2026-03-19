@@ -28,7 +28,7 @@ export class ReadRedis {
       const article = await (new articleModel().find(id));
 
       // Store article in Redis with expiration
-      const result = await redis.setex(
+      await redis.setex(
         'article:' + String(article.id),
         ttl,
         JSON.stringify(article)

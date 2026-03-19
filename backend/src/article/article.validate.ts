@@ -7,7 +7,7 @@ const writeValidate = z.object({
   category: z.array(z.string())
 });
 
-export class articleValidate {
+export class ArticleValidate {
   create = async (req : any) : Promise<any> => {
     try {
       return writeValidate.parse(req);

@@ -1,6 +1,4 @@
 import { ZodError } from "zod";
-import articleModel from "./article.model";
-import { articleValidate } from "./article.validate";
 import {
   articleModelPayload,
   articlePayload,
@@ -9,22 +7,19 @@ import {
 import { globalResponse } from "../utils/global.type";
 import { writeFile } from "../utils/image.write";
 import WriteRedis from "../infrastructure/redis/redis.write";
+import { ArticleValidate } from "./article.validate";
+import ArticleModel from "./article.model";
 
 // Service responsible for writing article data
 export default class WriteArticle {
 
-  private articleValidate;
-  private articleModel;
-  private articleImage;
-  private writeRedis;
-
   // Initialize validation, database model, image handler, and Redis writer
-  constructor() {
-    this.articleValidate = new articleValidate();
-    this.articleModel = new articleModel();
-    this.articleImage = new writeFile('article');
-    this.writeRedis = new WriteRedis();
-  }
+    constructor(
+        private articleValidate = new ArticleValidate(),
+        private articleModel = new ArticleModel(),
+        private articleImage = new writeFile('article'),
+        private writeRedis = new WriteRedis()
+    ) {}
 
   // Create a new article with validation, image upload, and Redis update
   create = async (req: articlePayload) => {

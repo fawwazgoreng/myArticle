@@ -4,11 +4,11 @@ const writeCategory = z.object({
   name : z.string().min(3).max(150)
 });
 
-export class categoryValidate {
-  create = async (req : any) : Promise<any> => {
+export class CategoryValidate {
+  create = async (req : any) => {
     return writeCategory.parse(req);
   }
-  update = async(req : any) : Promise<any> => {
+  update = async(req : any) => {
     return writeCategory.parse(req);
   }
 }
