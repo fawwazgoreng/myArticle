@@ -8,7 +8,7 @@ import RedisToken from "../infrastructure/redis/refreshToken";
 import { decryptToken } from "../utils/encrypt";
 
 export default class AdminWrite {
-    constructor(private writeRedis = new WriteRedis() , private adminValidate = new AdminValidate() , private adminModel = new AdminModel() , private redisToken = new RedisToken()) { }
+    constructor(private adminValidate = new AdminValidate() , private adminModel = new AdminModel() , private redisToken = new RedisToken()) { }
     login = async(req: loginRequest) => {
         try {
             const validate = await this.adminValidate.login(req);
@@ -44,8 +44,8 @@ export default class AdminWrite {
     logout = async (refreshToken: string) => {
         try {
             const res = await this.redisToken.getToken(refreshToken);
-            await this.redisToken.deleteToken(refreshToken);
             const admin: adminType = JSON.parse(await decryptToken(res));
+            await this.redisToken.deleteToken(refreshToken , admin.id);
             return admin;
         } catch (error: any) {
             throw {

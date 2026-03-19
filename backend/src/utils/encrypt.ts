@@ -33,6 +33,11 @@ export const encryptToken = async (value: string) => {
     }
 }
 
+export const randomUuid = async () => {
+    const uuid = crypto.randomUUID();
+    return await encryptToken(uuid);
+}
+
 export const decryptToken = async (token: string) => {
     const key = await getKey();
     
