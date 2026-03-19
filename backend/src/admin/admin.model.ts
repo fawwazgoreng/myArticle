@@ -13,8 +13,8 @@ export default class AdminModel {
                 select: {
                     id: true,
                     email: true,
+                    username: true,
                     password: true,
-                    created_at: true,
                 },
             });
             await verifyHash(String(admin?.password), req.password);
@@ -47,4 +47,32 @@ export default class AdminModel {
             });
         }
     };
+    find = async (id: string) => {
+        try {
+            const admin = await prisma?.admin.findFirst({
+                where: {
+                    id: id,
+                },
+                select: {
+                    id: true,
+                    email: true,
+                    username: true,
+                },
+            });
+            return admin;
+        } catch (error: any) {
+            if (error instanceof PrismaClientKnownRequestError) {
+                throw {
+                    status: 400,
+                    message: Object.values(error.message)[0],
+                    error: error.message,
+                };
+            }
+            throw {
+                status: 500,
+                message: "email or password wrong",
+                error: "email or password wrong",
+            };
+        }
+    }
 }

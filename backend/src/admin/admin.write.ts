@@ -1,11 +1,10 @@
-import WriteRedis from "../infrastructure/redis/redis.write";
-import { getCookie } from "hono/cookie";
 import { adminType, loginRequest } from "./admin.type";
 import { AdminValidate } from "./admin.validate";
 import { ZodError } from "zod";
 import AdminModel from "./admin.model";
 import RedisToken from "../infrastructure/redis/refreshToken";
-import { decryptToken } from "../utils/encrypt";
+import { decryptToken, encryptToken } from "../utils/encrypt";
+import { email } from "zod/v4/core/regexes.cjs";
 
 export default class AdminWrite {
     constructor(private adminValidate = new AdminValidate() , private adminModel = new AdminModel() , private redisToken = new RedisToken()) { }
@@ -20,12 +19,11 @@ export default class AdminWrite {
                     error: "Email or password wrong"
                 }
             }
-            const payload = {
+            return {
                 id: admin.id,
+                username: admin.username,
                 email: admin.email,
-                time: admin.created_at
-            }
-            return payload;
+            };
         } catch (error: any) {
             if (error instanceof ZodError) {
                 throw {
@@ -46,6 +44,26 @@ export default class AdminWrite {
             const res = await this.redisToken.getToken(refreshToken);
             const admin: adminType = JSON.parse(await decryptToken(res));
             await this.redisToken.deleteToken(refreshToken , admin.id);
+            return admin;
+        } catch (error: any) {
+            throw {
+                status: error.status || 500,
+                message: error.message || "internal server erorr",
+                error: error.error || "internal server error",
+            };
+        }
+    }
+    refreshData = async (id: string) => {
+        try {
+            const admin = await this.adminModel.find(id);
+            if (!admin) {
+                throw {
+                    status: 404,
+                    message: "Admin not found"
+                }
+            }
+            const value = await encryptToken(JSON.stringify(admin));
+            await this.redisToken.refreshData(admin.id, value);
             return admin;
         } catch (error: any) {
             throw {

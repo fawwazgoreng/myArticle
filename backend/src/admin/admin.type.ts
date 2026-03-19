@@ -1,4 +1,3 @@
-import { string } from "zod/v4/core/regexes.cjs"
 
 export interface loginRequest {
     email: string,
@@ -23,11 +22,12 @@ export interface session_audit_trail extends monitoring {
 
 export type adminType = {
     id: string,
+    username: string,
     email: string,
     password: string,
     created_at: Date,
     updated_at: Date,
-    authlogs: session_audit_trail | session_audit_trail[]
+    authlogs?: session_audit_trail | session_audit_trail[]
 } 
 
 export type adminHasUsed = {

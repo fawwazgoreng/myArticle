@@ -140,6 +140,7 @@ exports.Prisma.CategoryScalarFieldEnum = {
 exports.Prisma.AdminScalarFieldEnum = {
   id: 'id',
   email: 'email',
+  username: 'username',
   password: 'password',
   created_at: 'created_at',
   updated_at: 'updated_at'
