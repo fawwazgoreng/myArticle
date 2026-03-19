@@ -16,4 +16,8 @@ export default class RedisToken {
             message: "cookie expired please login first",
         };
     };
+    
+    deleteToken = async (token: string) => {
+        return await redis.del(`token${token}`);
+    }
 }

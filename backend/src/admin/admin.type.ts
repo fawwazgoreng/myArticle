@@ -12,3 +12,19 @@ export interface monitoring {
     success: boolean,
     failure_session: string | null
 }
+
+export interface session_audit_trail extends monitoring {
+    id: number,
+    admin: adminType,
+    created_at: Date,
+    updated_at: Date,
+}
+
+export type adminType = {
+    id: string,
+    email: string,
+    password: string,
+    created_at: Date,
+    updated_at: Date,
+    authlogs: session_audit_trail | session_audit_trail[]
+} 
