@@ -1,10 +1,13 @@
 import { Context, Next } from "hono";
 import { HTTPException } from "hono/http-exception";
-import {jwt} from "hono/jwt"
+import {jwt, sign} from "hono/jwt"
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { SignatureKey } from "hono/utils/jwt/jws";
-import { adminHasUsed } from "../admin/admin.type";
+import { adminHasUsed, adminType } from "../admin/admin.type";
 import { getConnInfo } from "hono/bun";
+import { encode } from "./encrypt";
+import { JWTPayload } from "hono/utils/jwt/types";
+const key = String(process.env['SECRET_KEY']);
 
 export const checkToken = async (c : Context , next: Next) => {
     try {
@@ -45,3 +48,15 @@ export const getUserHasUsed = async (c: Context , event_type : "login" | "logout
     };
     return res;
 } 
+
+export const signToken = async (admin: adminType) => {
+    // const hashedKey = await crypto.subtle.digest("SHA-256", encode(key));
+    const payload = {
+        username: admin.username,
+        role: "admin",
+        exp: Math.floor((Date.now() / 1000) * 60 * 15),
+        email: admin.email,
+        id: admin.id
+    }
+    return await sign(payload , key , "HS256"); 
+}

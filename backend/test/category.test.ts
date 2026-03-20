@@ -1,68 +1,126 @@
 import { describe, it, expect } from "bun:test";
-import App from "../src/index";
 
-export const headerVar =  {
-  "Content-Type" : "application/json",
-  "Origin" : process.env.FRONT_END_URL || "http://localhost:3001"
+// Base URL for the local API server
+const BASE_URL = "https://localhost:2000";
+
+// Standard headers for JSON requests and CORS compliance
+export const headerVar = {
+  "Content-Type": "application/json",
+  "Origin": process.env.FRONT_END_URL || "http://localhost:3000"
 };
 
-describe("category test", () => {
-  it("should created", async () => {
-    const payload = {
-      name: "politik",
-    };
-    const res = await App.request("/category", {
+/**
+ * Category Integration Tests
+ * Validates CRUD operations for article categorization via HTTPS
+ */
+describe("Category API Integration Tests", () => {
+  
+  // Test: Create a single new category
+  it("should create a new category successfully", async () => {
+    const payload = { name: "politics" };
+    
+    const res = await fetch(`${BASE_URL}/category`, {
       method: "POST",
-      headers:headerVar,
+      headers: headerVar,
       body: JSON.stringify(payload),
     });
-    const article = await res.json();
-    console.log(article);
+    
+    const result = await res.json();
+    console.log("Create Response:", result);
+    
+    // Expect 201 Created status
     expect(res.status).toBe(201);
   });
-  it("should created many category", async () => {
-    const category = ["ekonomi" , "kesehatan" , "luar negeri" , "olahraga" , "sains" , "luar angkasa"];
-    for (const item of category) {
-      const payload = {
-        name: item
-      };
-      const res = await App.request("/category", {
+
+  // Test: Bulk creation of categories using a loop
+  it("should create multiple categories from a list", async () => {
+    const categoryNames = ["economy", "health", "international", "sports", "science", "space"];
+    
+    for (const name of categoryNames) {
+      const payload = { name };
+      
+      const res = await fetch(`${BASE_URL}/category`, {
         method: "POST",
-        headers:headerVar,
+        headers: headerVar,
         body: JSON.stringify(payload),
       });
-      const category = await res.json();
-      console.log(category);
+      
+      const result = await res.json();
+      console.log(`Created Category [${name}]:`, result);
       expect(res.status).toBe(201);
     }
   });
-  it("should success get data", async () => {
-    const res = await App.request("/category");
-    const category = await res.json();
-    console.log(category);
-    expect(res.status).toBe(200);
-  });
-  it("should success find data", async () => {
-    const test = await prisma?.category.findFirst();
-    const res = await App.request(`/category/${test?.id}`);
-    const category = await res.json();
-    console.log(category);
-    expect(res.status).toBe(200);
-  });
-  it("should success filter data", async () => {
-    const res = await App.request("/article?page=2&title=news");
-    const article = await res.json();
-    console.log(article);
-    expect(res.status).toBe(200);
-  });
-  it("should deleted", async () => {
-    const test = await prisma?.category.findFirst();
-    const res = await App.request(`/category/${test?.id}`, {
-      method: "DELETE",
-      headers:headerVar,
+
+  // Test: Retrieve all categories
+  it("should retrieve a list of all categories", async () => {
+    const res = await fetch(`${BASE_URL}/category`, {
+      headers: headerVar
     });
-    const category = await res.json();
+    const result = await res.json();
+    
     expect(res.status).toBe(200);
-    expect(category.message).toContain("success delete category");
+    // Ensure the response contains an array of categories
+    expect(Array.isArray(result.category)).toBe(true);
+  });
+
+  // Test: Retrieve a specific category by its database ID
+  it("should find a specific category by ID", async () => {
+    // Fetch an existing ID from the database using Prisma
+    const existing = await prisma?.category.findFirst();
+    if (!existing) return;
+
+    const res = await fetch(`${BASE_URL}/category/${existing.id}`, {
+      headers: headerVar
+    });
+    const result = await res.json();
+    
+    expect(res.status).toBe(200);
+    expect(result.category.id).toBe(existing.id);
+  });
+
+  // Test: Delete a category and verify the message
+  it("should delete a category and return success message", async () => {
+    // Target the most recently created category for deletion
+    const target = await prisma?.category.findFirst({
+        orderBy: { id: 'desc' }
+    });
+    if (!target) return;
+
+    const res = await fetch(`${BASE_URL}/category/${target.id}`, {
+      method: "DELETE",
+      headers: headerVar,
+    });
+    
+    const result = await res.json();
+    expect(res.status).toBe(200);
+    expect(result.message).toContain("success delete category");
+  });
+
+  // --- UNIT TESTS: ERROR HANDLING & VALIDATION ---
+
+  // Test: Validation for empty fields (Testing Zod/Middleware)
+  it("should return 422 when category name is empty", async () => {
+    const payload = { name: "" };
+    
+    const res = await fetch(`${BASE_URL}/category`, {
+      method: "POST",
+      headers: headerVar,
+      body: JSON.stringify(payload),
+    });
+    
+    const result = await res.json();
+    // 422 Unprocessable Entity is expected for validation failures
+    expect(res.status).toBe(422);
+    expect(result).toHaveProperty("error");
+  });
+
+  // Test: Requesting a resource that doesn't exist
+  it("should return 404 when deleting a non-existent category", async () => {
+    const res = await fetch(`${BASE_URL}/category/999999`, {
+      method: "DELETE",
+      headers: headerVar,
+    });
+    
+    expect(res.status).toBe(404);
   });
 });

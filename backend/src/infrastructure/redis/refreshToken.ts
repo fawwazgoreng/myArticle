@@ -13,6 +13,10 @@ export default class RedisToken {
         await redis.setex(`admin:${id}`, ttl, data);
         return await redis.setex(`refresh_token:${token}`, ttl, value);
     };
+    
+    findToken = async (id: string) => {
+        return await redis.get(`admin:${id}`);
+    }
 
     getToken = async (token: string) => {
         const res = await redis.get(`refresh_token:${token}`);

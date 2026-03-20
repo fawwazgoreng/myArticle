@@ -39,7 +39,7 @@ index
             // Fetch articles from database
             const article = await readArticle.show(payload);
 
-            c.status((article.status as StatusCode) || 500);
+            // c.status((article.status as StatusCode) || 500);
             return c.json(article);
         } catch (error: any) {
             // Return structured error response

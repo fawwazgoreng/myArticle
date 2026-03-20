@@ -64,6 +64,12 @@ export default class ReadArticle {
             // Collect article IDs for Redis view lookup
             const ids : string[] = [];
 
+            if (article.article.length < 1) return {
+                status: 200,
+                message: 'success get article',
+                article: article.article,
+                meta: article.meta
+            };
             article.article.forEach((value) => {
                 const id = value.id;
                 if (id) {

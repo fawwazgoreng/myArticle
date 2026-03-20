@@ -4,12 +4,12 @@ import AdminWrite from "./admin.write";
 import AdminRead from "./admin.read";
 import { encryptToken, randomUuid } from "../utils/encrypt";
 import AdminModel from "./admin.model";
-import { monitoring } from "./admin.type";
+import { adminType, monitoring } from "./admin.type";
 import { getConnInfo } from "hono/bun";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { ttl } from "../infrastructure/redis/redis.write";
 import RedisToken from "../infrastructure/redis/refreshToken";
-import { getUserHasUsed } from "../utils/jwtauth";
+import { getUserHasUsed, signToken } from "../utils/jwtauth";
 
 // Create Hono app instance for admin-related routing
 const app = new Hono();
@@ -111,20 +111,35 @@ app
             const time = new Date(hashed.created_at).getTime(); // Ensure Date object
             let profile = hashed;
             const oneDay = 1000 * 60 * 60 * 24;
+            let isRefresh = false;
 
             // If session data is older than 24 hours, re-sync with primary database
-            if (now - time > oneDay) {                
+            if (now - time < oneDay) {                
+                const res = await redisToken.findToken(profile.id);
+                if (!res ) {
+                    isRefresh = true;
+                } else {
+                    profile = JSON.parse(res);
+                }
+            } else {
+                isRefresh = true;
+            }
+            
+            if (isRefresh) {
                 const res = await adminWrite.refreshData(hashed.id);
                 profile = {
                     created_at: newDate,
                     ...res
                 }
             }
+            
+            const token = signToken(profile as adminType);
 
             return c.json({
                 status: 200,
                 message: "success get profile",
                 profile,
+                token: token
             });
         } catch (error: any) {
             const res = {
