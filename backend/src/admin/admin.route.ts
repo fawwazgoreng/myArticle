@@ -9,7 +9,7 @@ import { getConnInfo } from "hono/bun";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { ttl } from "../infrastructure/redis/redis.write";
 import RedisToken from "../infrastructure/redis/refreshToken";
-import { getUserHasUsed, signToken } from "../utils/jwtauth";
+import { checkToken, getUserHasUsed, signToken } from "../utils/jwtauth";
 
 // Create Hono app instance for admin-related routing
 const app = new Hono();
@@ -23,7 +23,7 @@ const redisToken = new RedisToken();
 app
     // POST /login
     // Authenticate admin and establish a secure session via HttpOnly cookies and Redis
-    .post("login", async (c) => {
+    .post("/login", async (c) => {
         try {
             // Retrieve connection and device information for auditing
             const info = await getUserHasUsed(c, "login");
@@ -32,7 +32,7 @@ app
             // Validate credentials and retrieve admin profile
             const admin = await adminWrite.login(request);
             
-            // Prepare encrypted session data
+            // Prepare encrypted session data for the refresh token
             const encryptionData = {
                 id: admin.id,
                 created_at: new Date(),
@@ -49,7 +49,7 @@ app
             
             c.status(200);
             
-            // Refresh the client-side refresh-token cookie
+            // Refresh the client-side refresh-token cookie (HttpOnly for security)
             deleteCookie(c, "refresh-token");
             setCookie(c, "refresh-token", token, {
                 path: "/",
@@ -77,7 +77,6 @@ app
                 message: "login successfully",
             });
         } catch (error: any) {
-            // Map internal errors to HTTP Exceptions
             const res = {
                 status: error.status,
                 message: error.message,
@@ -88,19 +87,16 @@ app
     })
 
     // GET /profile
-    // Retrieve current admin session info and refresh stale session data if necessary
+    // Validates the refresh token, synchronizes cache, and issues a fresh JWT Access Token
     .get("/profile", async (c) => {
         try {
-            // Extract session token from cookies
+            // Extract the session identifier from the HttpOnly cookie
             const refreshToken = getCookie(c, "refresh-token");
             if (!refreshToken) {
-                throw {
-                    status: 401,
-                    message: "unauthorized",
-                };
+                throw { status: 401, message: "unauthorized" };
             }
 
-            // Decrypt and parse stored session data
+            // Decrypt and parse the stored session payload
             const hashed: {
                 id: string;
                 created_at: Date;
@@ -108,23 +104,24 @@ app
 
             const newDate = new Date();
             const now = newDate.getTime();
-            const time = new Date(hashed.created_at).getTime(); // Ensure Date object
+            const time = new Date(hashed.created_at).getTime();
             let profile = hashed;
             const oneDay = 1000 * 60 * 60 * 24;
             let isRefresh = false;
 
-            // If session data is older than 24 hours, re-sync with primary database
+            // Logic: Check if cache is still valid (under 24 hours)
             if (now - time < oneDay) {                
                 const res = await redisToken.findToken(profile.id);
-                if (!res ) {
-                    isRefresh = true;
+                if (!res) {
+                    isRefresh = true; // Cache missing, force re-sync
                 } else {
                     profile = JSON.parse(res);
                 }
             } else {
-                isRefresh = true;
+                isRefresh = true; // Token older than 24 hours, force re-sync from DB
             }
             
+            // Re-sync with primary Database if cache is stale or missing
             if (isRefresh) {
                 const res = await adminWrite.refreshData(hashed.id);
                 profile = {
@@ -133,6 +130,7 @@ app
                 }
             }
             
+            // Generate a fresh short-lived JWT for frontend authentication
             const token = signToken(profile as adminType);
 
             return c.json({
@@ -150,9 +148,33 @@ app
             throw new HTTPException(res.status, res);
         }
     })
+    
+    // POST /register
+    // Endpoint for creating new administrator accounts
+    .post('/register', async (c) => {
+        try {
+            const request = await c.req.json();
+            await adminWrite.register(request); 
+            c.status(201);
+            return c.json({
+                status: 201,
+                message: "success created admin",
+            });
+        } catch (error: any) {
+            const res = {
+                status: error.status,
+                message: error.message,
+                error: error.error,
+            };
+            throw new HTTPException(res.status, res);
+        }
+    })
 
+    // Secure the logout route using JWT verification middleware
+    .use('/logout', checkToken)
+    
     // DELETE /logout
-    // Invalidate session, clear cookies, and log the sign-out event
+    // Terminate session by clearing Redis entries and client-side cookies
     .delete("/logout", async (c) => {
         try {
             const info = getConnInfo(c);
@@ -160,17 +182,15 @@ app
             const refreshToken = getCookie(c, "refresh-token");
 
             if (!refreshToken) {
-                throw {
-                    status: 401,
-                    message: "unauthorized",
-                };
+                throw { status: 401, message: "unauthorized" };
             }
 
-            // Remove token from Redis and clear cookie
+            // Invalidate session in Redis
             const admin = await adminWrite.logout(refreshToken);
+            // Clear the browser cookie
             deleteCookie(c, "refresh-token");
 
-            // Record logout event for security monitoring
+            // Audit the logout event
             const monitoring: monitoring = {
                 admin_id: admin.id,
                 ip_address: info.remote.address || "anonymous",

@@ -1,9 +1,10 @@
-import { adminType, loginRequest } from "./admin.type";
+import { adminType, loginRequest, registerType } from "./admin.type";
 import { AdminValidate } from "./admin.validate";
 import { ZodError } from "zod";
 import AdminModel from "./admin.model";
 import RedisToken from "../infrastructure/redis/refreshToken";
 import { decryptToken, encryptToken } from "../utils/encrypt";
+import { hashPassword } from "../utils/jwtauth";
 
 // AdminWrite service responsible for state-changing operations like authentication and session sync
 export default class AdminWrite {
@@ -14,6 +15,42 @@ export default class AdminWrite {
         private redisToken = new RedisToken(),
     ) {}
 
+    // Handle new administrator registration, including validation and password hashing
+    register = async (req: registerType) => {
+        try {
+            // Validate the registration request against the Zod schema
+            const validated = await this.adminValidate.register(req);
+
+            // Hash the plain-text password before database storage
+            const hashed = await hashPassword(validated.password);
+
+            // Construct the final payload with the secured password
+            const payload: registerType = {
+                ...validated,
+                password: hashed
+            };
+
+            // Persist the new admin record to the database
+            const admin = await this.adminModel.register(payload);
+            return admin;
+        } catch (error: any) {
+            // Transform Zod validation errors into a standardized response format
+            if (error instanceof ZodError) {
+                throw {
+                    status: 422,
+                    message: error.issues[0].message,
+                    error: error.issues
+                };
+            }
+            // Standardize generic or custom errors
+            throw {
+                status: error.status || 500,
+                message: error.message || "internal server erorr",
+                error: error.error || "internal server error",
+            };
+        }
+    }
+    
     // Execute admin login workflow including validation and credential verification
     login = async (req: loginRequest) => {
         try {
@@ -39,7 +76,6 @@ export default class AdminWrite {
                 email: admin.email,
             };
         } catch (error: any) {
-            // Transform Zod validation errors into a standardized response format
             if (error instanceof ZodError) {
                 throw {
                     status: 422,
@@ -47,7 +83,6 @@ export default class AdminWrite {
                     error: error.issues,
                 };
             }
-            // Standardize generic or custom errors
             throw {
                 status: error.status || 500,
                 message: error.message || "internal server erorr",
@@ -59,15 +94,10 @@ export default class AdminWrite {
     // Terminate admin session by removing tokens from the cache
     logout = async (refreshToken: string) => {
         try {
-            // Retrieve the stored encrypted token from Redis
             const res = await this.redisToken.getToken(refreshToken);
-
-            // Decrypt and parse the token to identify the admin owner
             const admin: adminType = JSON.parse(await decryptToken(res));
 
-            // Delete the token pair to invalidate the session globally
             await this.redisToken.deleteToken(refreshToken, admin.id);
-
             return admin;
         } catch (error: any) {
             throw {
@@ -81,7 +111,6 @@ export default class AdminWrite {
     // Synchronize latest database profile data into the Redis session store
     refreshData = async (id: string) => {
         try {
-            // Fetch the most recent admin data from the database
             const admin = await this.adminModel.find(id);
 
             if (!admin) {
@@ -91,10 +120,7 @@ export default class AdminWrite {
                 };
             }
 
-            // Encrypt the updated data string before storage
             const value = await encryptToken(JSON.stringify(admin));
-
-            // Update the existing session entry in Redis
             await this.redisToken.refreshData(admin.id, value);
 
             return admin;

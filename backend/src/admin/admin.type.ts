@@ -4,6 +4,12 @@ export interface loginRequest {
     password: string
 }
 
+export interface registerType {
+    username: string,
+    email: string,
+    password:string
+}
+
 export interface monitoring {
     admin_id: string,
     event_type: "login" | "register" | "logout",

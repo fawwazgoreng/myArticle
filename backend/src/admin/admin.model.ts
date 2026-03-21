@@ -1,7 +1,7 @@
 import { PrismaClientKnownRequestError } from "../infrastructure/database/generated/prisma/runtime/client";
 import { logger } from "../infrastructure/logger/log";
 import { verifyHash } from "../utils/jwtauth";
-import { loginRequest, monitoring } from "./admin.type";
+import { loginRequest, monitoring, registerType } from "./admin.type";
 
 // Admin model responsible for database operations and authentication related to administrators
 export default class AdminModel {
@@ -85,6 +85,36 @@ export default class AdminModel {
                 };
             }
             // Generic error handling for data retrieval failures
+            throw {
+                status: 500,
+                message: "email or password wrong",
+                error: "email or password wrong",
+            };
+        }
+    }
+    
+    // register a new admin
+    register = async (req: registerType) => {
+        try {
+            const admin = await prisma?.admin.create({
+                data: req,
+                select: {
+                    id: true,
+                    username: true,
+                    email: true
+                }
+            });
+            return admin;
+        } catch (error: any) {
+            // Handle known Prisma database errors
+            if (error instanceof PrismaClientKnownRequestError) {
+                throw {
+                    status: 400,
+                    message: Object.values(error.message)[0],
+                    error: error.message,
+                };
+            }
+            // Fallback for failed authentication or unexpected errors
             throw {
                 status: 500,
                 message: "email or password wrong",
