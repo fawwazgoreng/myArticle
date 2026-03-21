@@ -24,30 +24,9 @@ it('should created new admin', async () => {
 })
 
 it('should get token', async () => {
-    const request = {
-        email: "admin@gmail.com",
-        password: "Admin123{}[]"
-    };
-    const refreshToken = await fetch(`${BASE_URL}/login`, {
-      method: "POST",
-        headers: headerVar,
-        body: JSON.stringify(request)
-    });
-    const authorization = await refreshToken.json();
-    const token = await fetch(`${BASE_URL}/profile`, {
-        method: "GET",
-        headers: {
-            ...headerVar,
-            "Cookie": `refresh-token=${authorization.token}`
-        },
-    })
-    const res = await token.json();
+    const res = await getToken();
     console.log(res);
-    expect(res.status).toBe(200)
-    // return token.json();
-    // const res = await getToken();
-    // console.log(res);
-    // expect(res.status).toBe(200);
+    expect(res.status).toBe(200);
 })
 
 export const getToken = async () => {
@@ -65,8 +44,9 @@ export const getToken = async () => {
         method: "GET",
         headers: {
             ...headerVar,
-            "Cookie": `refresh-token=${authorization.token}`
+            Cookie: `refresh-token=${authorization.token}`
         },
     })
-    return token.json();
+    const res = await token.json();
+    return res;
 }

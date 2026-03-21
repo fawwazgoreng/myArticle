@@ -13,7 +13,10 @@ export default class AdminRead {
             const hashed = await this.redisToken.getToken(refreshToken);
 
             // Decrypt the stored token to extract the original profile information
-            return await decryptToken(hashed);
+            return JSON.parse(await decryptToken(hashed)) as {
+                id: string,
+                created_at:Date
+            };
         } catch (error: any) {
             // Standardize error response based on caught exception or fallback to 500
             throw {

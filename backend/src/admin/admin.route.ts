@@ -92,7 +92,7 @@ app
     .get("/profile", async (c) => {
         try {
             // Extract the session identifier from the HttpOnly cookie
-            const refreshToken = getCookie(c, "refresh-token");
+            const refreshToken = String(getCookie(c, "refresh-token"));
             if (!refreshToken) {
                 throw { status: 401, message: "unauthorized" };
             }
@@ -101,7 +101,7 @@ app
             const hashed: {
                 id: string;
                 created_at: Date;
-            } = JSON.parse(await adminRead.profile(refreshToken));
+            } = await adminRead.profile(refreshToken);
 
             const newDate = new Date();
             const now = newDate.getTime();
@@ -115,8 +115,8 @@ app
                 const res = await redisToken.findToken(profile.id);
                 if (!res) {
                     isRefresh = true; // Cache missing, force re-sync
-                } else {
-                    profile = JSON.parse(res);
+                } else {    
+                    profile = res;
                 }
             } else {
                 isRefresh = true; // Token older than 24 hours, force re-sync from DB
@@ -132,7 +132,7 @@ app
             }
             
             // Generate a fresh short-lived JWT for frontend authentication
-            const token = signToken(profile as adminType);
+            const token = await signToken(profile as adminType);
 
             return c.json({
                 status: 200,

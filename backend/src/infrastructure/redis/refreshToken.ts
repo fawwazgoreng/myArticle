@@ -1,3 +1,4 @@
+import { ca } from "zod/v4/locales";
 import redis from "./redis";
 
 const ttl = 60 * 60 * 24; // Cache expiration time (24 hours)
@@ -15,7 +16,18 @@ export default class RedisToken {
     };
     
     findToken = async (id: string) => {
-        return await redis.get(`admin:${id}`);
+        try {
+            const res = await redis.get(`admin:${id}`);
+            if (!res) return false;
+            return JSON.parse(res) as {
+                id: string,
+                created_at: Date,
+                username: string,
+                email:string
+            }
+        } catch (error) {
+            return false;
+        }
     }
 
     getToken = async (token: string) => {
