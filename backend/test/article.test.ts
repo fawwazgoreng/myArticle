@@ -127,8 +127,6 @@ describe("Article API Integration Tests", () => {
     expect(data.message).toContain("success delete article");
   });
 
-  // --- NEW UNIT TEST: ERROR HANDLING ---
-  
   // Test: 404 Handling
   it("should return 404 when requesting a non-existent article", async () => {
     const nonExistentId = 9999999;

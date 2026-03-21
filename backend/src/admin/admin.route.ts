@@ -45,7 +45,7 @@ app
 
             // Store session token in Redis with defined Time-To-Live
             await redisToken.setToken(token, value, admin.id, setTokenCookie);
-            dateExp.setDate(dateExp.getSeconds() + ttl);
+            dateExp.setDate(dateExp.getTime() + ttl);
             
             c.status(200);
             
@@ -56,25 +56,26 @@ app
                 secure: true,
                 domain: process.env["FRONT_END_URL"] ?? "https://localhost:3000",
                 expires: dateExp,
-                maxAge: ttl,
+                maxAge: 7,
                 sameSite: "Strict",
                 httpOnly: true,
             });
 
             // Log successful login event to audit trail
-            const monitoring: monitoring = {
-                admin_id: admin.id,
-                ip_address: info.ip_address,
-                device_type: info.device_type,
-                event_type: info.event_type,
-                failure_session: null,
-                success: true,
-            };
-            adminModel.monitoring(monitoring);
+            // const monitoring: monitoring = {
+            //     admin_id: admin.id,
+            //     ip_address: info.ip_address,
+            //     device_type: info.device_type,
+            //     event_type: info.event_type,
+            //     failure_session: null,
+            //     success: true,
+            // };
+            // adminModel.monitoring(monitoring);
 
             return c.json({
                 status: 200,
                 message: "login successfully",
+                token
             });
         } catch (error: any) {
             const res = {

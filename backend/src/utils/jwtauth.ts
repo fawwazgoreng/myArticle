@@ -1,21 +1,17 @@
 import { Context, Next } from "hono";
 import { HTTPException } from "hono/http-exception";
-import {jwt, sign} from "hono/jwt"
+import {jwt, sign, verify} from "hono/jwt"
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { SignatureKey } from "hono/utils/jwt/jws";
 import { adminHasUsed, adminType } from "../admin/admin.type";
 import { getConnInfo } from "hono/bun";
-import { encode } from "./encrypt";
-import { JWTPayload } from "hono/utils/jwt/types";
 const key = String(process.env['SECRET_KEY']);
 
 export const checkToken = async (c : Context , next: Next) => {
     try {
-        const jwtMiddleware = jwt({
-            secret: (String(process.env["SECRET_TOKEN"])) as SignatureKey,
-            alg: "HS256"
-        })
-        await jwtMiddleware(c , next);
+        const token = c.req.header("Authorization");
+        await verify(String(token) , key , "HS256");
+        return next;
     } catch (error) {
         const res = c.json({
             status: 401,

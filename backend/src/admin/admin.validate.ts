@@ -6,7 +6,7 @@ const loginValidate = z.object({
     password: z
         .string()
         .min(6)
-        .max(10)
+        .max(100)
         .refine((val) => /[A-Z]/.test(val) && /[0-9]/.test(val), {
             error: "Password at least contains 1 uppercase and one number",
         })
