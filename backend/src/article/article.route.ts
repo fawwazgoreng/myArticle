@@ -107,8 +107,8 @@ index
 
             // Construct payload for article creation
             const payload: articlePayload = {
-                title: String(body["title"]),
-                content: String(body["content"]),
+                title: String(body["title"] || ""),
+                content: String(body["content"] || ""),
                 image: body["image"] ? (body["image"] as File) : null,
                 category: categoryBody,
             };

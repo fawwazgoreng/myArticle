@@ -1,21 +1,21 @@
 import { Context, Next } from "hono";
 import { HTTPException } from "hono/http-exception";
-import {jwt, sign, verify} from "hono/jwt"
+import { sign, verify} from "hono/jwt"
 import { ContentfulStatusCode } from "hono/utils/http-status";
-import { SignatureKey } from "hono/utils/jwt/jws";
 import { adminHasUsed, adminType } from "../admin/admin.type";
 import { getConnInfo } from "hono/bun";
 const key = String(process.env['SECRET_KEY']);
 
 export const checkToken = async (c : Context , next: Next) => {
     try {
-        const token = c.req.header("Authorization");
-        await verify(String(token) , key , "HS256");
-        return next;
-    } catch (error) {
+        const token = c.req.header("Authorization")?.split("Bearer ")[1].trim();
+        await verify(String(token), key, "HS256");
+        await next();
+    } catch (error : any) {
         const res = c.json({
             status: 401,
             message: 'unauthorized',
+            error: error.message
         });
         throw new HTTPException(res.status as ContentfulStatusCode, { res });
     }

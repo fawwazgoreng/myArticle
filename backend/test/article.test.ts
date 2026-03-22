@@ -1,12 +1,12 @@
 import { describe, it, expect } from "bun:test";
 import { File } from "buffer";
 import prisma from "../src/infrastructure/database/prisma/prisma";
+import { getToken } from "./helpers/getToken";
+import { headerVar } from "./category.test";
 
 // Configuration for the local test environment
 const BASE_URL = "https://localhost:2000";
-const headerVar = {
-  "Origin": process.env.FRONT_END_URL || "http://localhost:3000"
-};
+
 
 /**
  * Article Integration Tests
@@ -15,7 +15,8 @@ const headerVar = {
 describe("Article API Integration Tests", () => {
   
   // Test: Creating a single article with image upload (Multipart/Form-Data)
-  it("should create a new article with an image", async () => {
+    it("should create a new article with an image", async () => {
+        const token = await getToken();
     const category = await prisma?.category.findMany({ take: 3 });
     if (!category || category.length < 1) return;
 
@@ -30,7 +31,7 @@ describe("Article API Integration Tests", () => {
 
     const res = await fetch(`${BASE_URL}/article`, {
       method: "POST",
-      headers: headerVar,
+      headers: headerVar(token.token),
       body: form,
     });
 

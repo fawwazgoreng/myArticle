@@ -69,7 +69,7 @@ category
             return c.json({
                 status: 200,
                 message: "succes get category",
-                category: res,
+                ...res,
             });
         } catch (error: any) {
             const res = c.json({

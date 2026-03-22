@@ -137,13 +137,13 @@ export default class CategoryModel {
       // Transform relation result to pure article array
       const res = {
         ...category,
-        article: category.article.map(item => item.article)
+          article: {
+              data: category.article.map(item => item.article),
+              meta: meta
+          }
       };
 
-      return {
-        category : res,
-        meta
-      };
+    return res;
 
     } catch (error) {
       throw {
