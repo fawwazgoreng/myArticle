@@ -95,7 +95,7 @@ index
     .post("/", async (c) => {
         try {
             // Parse multipart/form-data body
-            const body = await c.req.parseBody({ all: true });
+            const body = await c.req.parseBody();
             // Normalize category input to always be an array
             const categoryBody: string[] = (
                 Array.isArray(body["category"])
@@ -111,7 +111,7 @@ index
                 content: String(body["content"] || ""),
                 image: body["image"] ? (body["image"] as File) : null,
                 category: categoryBody,
-            };
+            };            
 
             // Create article in database
             const res = await writeArticle.create(payload);
