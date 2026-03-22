@@ -4,6 +4,7 @@ import { Prisma } from "../infrastructure/database/generated/prisma";
 import { logger } from "../infrastructure/logger/log";
 import { findPage } from "../utils/findPage";
 import { meta } from "../utils/global.type";
+import { delCategoryRelation } from "../utils/checkCategory";
 
 // Category model responsible for database operations related to categories
 export default class CategoryModel {
@@ -36,7 +37,22 @@ export default class CategoryModel {
 
   // Create a new category
   create = async (req: {name : string}) => {
-    try {
+      try {
+        
+          const find = await prisma.category.findFirst({
+              where: {
+                  name: {
+                      equals: req.name,
+                      mode: "insensitive"
+                  },
+             }
+          });
+          if (find) {
+              throw {
+                  status: 400,
+                  message: "duplicate name for " + req.name
+              }
+          }
 
       const category = await prisma.category.create({
         data: {
@@ -186,12 +202,13 @@ export default class CategoryModel {
   // Delete category by ID
   delete = async (id: number) => {
     try {
-
-      const category = await prisma.category.delete({
+        await delCategoryRelation(id);
+        
+        const category = await prisma.category.delete({
         where: {
           id: id,
         },
-      });
+        });
 
       if (!category) {
         throw {

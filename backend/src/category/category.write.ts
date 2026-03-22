@@ -89,19 +89,16 @@ export default class WriteCategory {
   // Delete category by ID
   delete = async (id: number) => {
     try {
-
+        
       // Remove category from database
       await this.categoryModel.delete(id);
 
     } catch (error: any) {
-
-      const res: globalResponse = {
+      throw {
         status: error.status || 500,
         message: error.message || "internal server error",
         error: error.error,
       };
-
-      throw res;
     }
   };
 }

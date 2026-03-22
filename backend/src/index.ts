@@ -147,8 +147,10 @@ app.onError(async (error: any, c) => {
             (await res
                 .clone()
                 .json()
-                .catch(() => null)) || (await res.clone().text());
-
+                .catch(() => null)) || {
+                    status: error.status || 500,
+                    message: error.message || "internal server error"
+                };
         c.status((Number(body.status) as StatusCode) || 500);
 
         return c.json(body);

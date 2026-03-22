@@ -334,6 +334,11 @@ export default class ArticleModel {
     // Delete article by ID
     delete = async (id: number) => {
         try {
+            await prisma.categoryOnArticle.deleteMany({
+                where: {
+                    article_id: id
+                }
+            })
             // Remove article from database
             const article = await prisma.article.delete({
                 where: {
@@ -349,7 +354,7 @@ export default class ArticleModel {
             }
 
             return article;
-        } catch (error) {
+        } catch (error : any) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === "P2025") {
                     throw {
@@ -360,7 +365,7 @@ export default class ArticleModel {
             }
             throw {
                 status: 500,
-                message: "internal server error",
+                message: error.message || "internal server error",
             };
         }
     };

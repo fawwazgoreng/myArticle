@@ -139,7 +139,7 @@ index
     // Update an existing article (currently commented out)
     .put("/:id", async (c) => {
         try {
-            const body = await c.req.parseBody({ all: true });
+            const body = await c.req.parseBody();
 
             // Normalize category input to always be an array
             const categoryBody: string[] = (
@@ -174,9 +174,9 @@ index
     // Remove article from database and delete related Redis cache
     .delete("/:id", async (c) => {
         try {
-            const id = c.req.param("id");
-            await writeArticle.delete(Number(id));
-            await writeRedis.delete(id as RedisKey);
+            const id = Number(c.req.param("id"));
+            await writeArticle.delete(id);
+            await writeRedis.delete(String(id) as RedisKey);
             c.status(200);
             return c.json({
                 status: 200,

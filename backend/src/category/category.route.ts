@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
-import { StatusCode } from "hono/utils/http-status";
+import { ContentfulStatusCode, StatusCode } from "hono/utils/http-status";
 import WriteCategory from "./category.write";
 import ReadCategory from "./category.read";
 import { category } from "./category.type";
@@ -155,12 +155,12 @@ category
             });
         } catch (error: any) {
             const res = {
-                status: error.status,
-                message: error.message,
+                status: error.status || 500,
+                message: error.message || "",
                 error: error.error,
             };
 
-            throw new HTTPException(res.status, res);
+            throw new HTTPException(res.status as ContentfulStatusCode, res);
         }
     });
 
