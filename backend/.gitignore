@@ -9,3 +9,5 @@ key.pem
 localhost.pem
 localhost-key.pem
 public/image
+/src/infrastructure/database/generated
+/src/infrastructure/database/migrations

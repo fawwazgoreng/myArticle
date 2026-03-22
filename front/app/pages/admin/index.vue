@@ -17,8 +17,6 @@ const { data: articleData, pending: loading } = await useAsyncData('home-article
     };
 } );
 
-console.log(articleData.value.all);
-
 // 3. Dynamic SEO Meta
 // Since this is a landing page, we create an engaging description for search engines
 watchEffect(() => {
@@ -60,7 +58,7 @@ const formatDate = (dateStr) => {
 </script>
 
 <template>
-      <div class="min-h-screen bg-gray-50 font-sans">
+     <div class="min-h-screen bg-gray-50 font-sans">
 
         <div class="bg-red-600 text-white text-sm py-2 overflow-hidden">
             <div class="max-w-7xl mx-auto px-6 flex items-center gap-4">
@@ -94,7 +92,7 @@ const formatDate = (dateStr) => {
                 ></div>
             </section>
 
-             <section v-if="!loading && articleData.all.length > 0">
+            <section v-if="!loading && articleData.all.length > 0">
 
                 <div class="grid grid-cols-12 gap-6 mb-10">
 
@@ -116,26 +114,26 @@ const formatDate = (dateStr) => {
                             <p class="text-xs text-gray-300">{{ formatDate(articleData.all[0]?.created_at) }}</p>
                         </div>
                     </NuxtLink>
- 
-                     <div class="col-span-12 md:col-span-5 flex flex-col gap-4">
+
+                    <div class="col-span-12 md:col-span-5 flex flex-col gap-4">
                         <NuxtLink
                             v-for="(item, index) in articleData.all.slice(1, 4)"
                             :key="index"
                             :to="`/article/${item.id}`"
                             class="flex gap-4 items-start group no-underline"
                         >
-                             <img
+                            <img
                                 :src=" String(config.public.imageBaseUrl) + item.image || '/placeholder.jpg'"
                                 :alt="item.title"
                                 class="w-28 h-20 object-cover rounded-xl bg-gray-200 shrink-0 group-hover:opacity-90 transition-opacity"
                             />
-                             <div>
-                                 <span class="text-xs text-red-600 font-semibold uppercase tracking-wide">{{ item.category[0]?.category?.name || "News" }}</span> 
+                            <div>
+                                <span class="text-xs text-red-600 font-semibold uppercase tracking-wide">{{ item.category[0].category.name || "News" }}</span>
                                 <h3 class="text-sm font-semibold text-gray-800 leading-snug mt-1 line-clamp-3 group-hover:text-red-600 transition-colors">
                                     {{ item.title }}
                                 </h3>
                                 <p class="text-xs text-gray-400 mt-1">{{ formatDate(item.created_at) }}</p>
-                            </div>  
+                            </div>
                         </NuxtLink>
                     </div>
                 </div>
@@ -152,16 +150,16 @@ const formatDate = (dateStr) => {
                         :to="`/article/${item.id}`"
                         class="col-span-12 sm:col-span-6 md:col-span-4 group no-underline"
                     >
-                         <div class="rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
+                        <div class="rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
                             <div class="relative overflow-hidden h-44">
                                 <img
                                     :src="String(config.public.imageBaseUrl) + item.image || '/placeholder.jpg'"
                                     :alt="item.title"
                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
-                                 <span class="absolute top-3 left-3 text-xs bg-red-600 text-white px-2 py-0.5 rounded font-semibold uppercase">
-                                    {{ item.category[0]?.category?.name || "News" }}
-                                </span> 
+                                <span class="absolute top-3 left-3 text-xs bg-red-600 text-white px-2 py-0.5 rounded font-semibold uppercase">
+                                    {{ item.category[0].category.name || "News" }}
+                                </span>
                             </div>
                             <div class="p-4 flex flex-col gap-2 flex-1">
                                 <h3 class="text-sm font-semibold text-gray-800 leading-snug line-clamp-3 group-hover:text-red-600 transition-colors">
@@ -169,11 +167,11 @@ const formatDate = (dateStr) => {
                                 </h3>
                                 <p class="text-xs text-gray-400 mt-auto">{{ formatDate(item.created_at) }}</p>
                             </div>
-                        </div> 
+                        </div>
                     </NuxtLink>
                 </div>
 
-                 <div class="grid grid-cols-12 gap-8">
+                <div class="grid grid-cols-12 gap-8">
 
                     <div class="col-span-12 lg:col-span-8 flex flex-col gap-5">
                         <div class="flex items-center gap-4 mb-2">
@@ -241,8 +239,8 @@ const formatDate = (dateStr) => {
                             </div>
                         </div>
                     </aside>
-                </div> 
-            </section> 
+                </div>
+            </section>
 
             <div v-if="!loading && articleData.all.length === 0" class="flex flex-col items-center justify-center py-32 text-gray-400">
                 <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -252,7 +250,8 @@ const formatDate = (dateStr) => {
                 <p class="text-sm mt-1">Please check back later.</p>
             </div>
         </main>
-    </div>  
+    </div>
+     
 </template>
 
 <style scoped>

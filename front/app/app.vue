@@ -48,9 +48,9 @@ const handleChange = (e) => {
                         class="hover:text-red-600 transition-colors"
                     >Home</NuxtLink>
                 </li>
-                <li v-for="item in category" :key="item.id">
+                <li v-for="(item , index) in category" :key="item.id">
                     <NuxtLink
-                        :to="`/${item.name}`"
+                        :to="`/${item.name}`" v-if="index < 5"
                         class="hover:text-red-600 transition-colors"
                     >{{ item.name }}</NuxtLink>
                 </li>
@@ -121,8 +121,8 @@ const handleChange = (e) => {
             <div class="col-span-6 md:col-span-2">
                 <p class="text-white font-semibold mb-3 text-sm uppercase tracking-wide">Categories</p>
                 <ul class="text-sm space-y-2">
-                    <li v-for="item in category" :key="item.id">
-                        <NuxtLink :to="'/' + item.name" class="hover:text-white transition-colors">{{ item.name }}</NuxtLink>
+                    <li v-for="(item,index) in category" :key="item.id">
+                        <NuxtLink :to="'/' + item.name" v-if="index < 7" class="hover:text-white transition-colors">{{ item.name }}</NuxtLink>
                     </li>
                 </ul>
             </div>
