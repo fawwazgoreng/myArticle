@@ -7,6 +7,7 @@ import WriteRedis from "../infrastructure/redis/redis.write";
 import { article, articlePayload } from "./article.type";
 import { RedisKey } from "ioredis";
 import { checkToken } from "../utils/jwtauth";
+import category from "../category/category.route";
 
 // Create router instance for article endpoints
 const index = new Hono();
@@ -22,7 +23,7 @@ index
     .get("/", async (c) => {
         try {
             // Extract query parameters
-            const { page, title, populer, oldest } = c.req.query();
+            const { page, title, populer, oldest , category } = c.req.query();
 
             // Determine sorting order based on query
             const time: "newest" | "oldest" =
@@ -34,6 +35,7 @@ index
                 title,
                 time,
                 populer: Boolean(populer),
+                category
             };
 
             // Fetch articles from database

@@ -1,3 +1,4 @@
+import category from "../category/category.route";
 import { logger } from "../infrastructure/logger/log";
 import { ReadRedis } from "../infrastructure/redis/redis.read";
 import WriteRedis from "../infrastructure/redis/redis.write";
@@ -20,12 +21,13 @@ export default class ReadArticle {
         title: string;
         time: "newest" | "oldest";
         populer: boolean;
+        category: string
     }) => {
         try {
 
             // Generate Redis cache key based on search parameters
-            let cacheKey = `articles:${req.page}:${req.time}:${req.populer ? "populer" : "unpopuler"}`;
-
+            let cacheKey = `articles:${req.page}:${req.time}:${req.populer ? "populer" : "unpopuler"}:${req.category}`;
+            
             // Append title filter if short to reduce cache fragmentation
             if (String(req.title).length < 10) cacheKey = cacheKey + `:${req.title}`;
 
@@ -42,7 +44,6 @@ export default class ReadArticle {
 
             // Attempt to read cached article data
             const data = await this.readRedis.readAll(cacheKey);
-
             if (data) {
 
                 // Parse cached JSON data

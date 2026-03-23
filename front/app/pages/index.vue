@@ -15,9 +15,14 @@ const { data: articleData, pending: loading } = await useAsyncData('home-article
         popular: popular.article || [],
         meta: articles.article?.meta || {}
     };
-} );
+}, {
+    default: () => ({
+        all: [],
+        popular: [],
+        meta:{}
+    })
+});
 
-console.log(articleData.value.all);
 
 // 3. Dynamic SEO Meta
 // Since this is a landing page, we create an engaging description for search engines
@@ -27,7 +32,7 @@ useSeoMeta({
     ogTitle: 'MYArticle - Trusted News Portal',
     description: 'Get the latest news today from politics, technology, and lifestyle categories only at MYArticle.',
     ogDescription: 'A trusted news portal providing accurate and balanced information.',
-    ogImage: String(config.public.imageBaseUrl) + String(articleData.value?.all[0]?.image) || '/default-og.jpg',
+    ogImage: articleData.value?.all[0]?.image ? String(config.public.imageBaseUrl) + String(articleData.value?.all[0]?.image) : '/default-og.jpg',
     twitterCard: 'summary_large_image',
 });
 })
@@ -71,7 +76,7 @@ const formatDate = (dateStr) => {
 
         <main class="max-w-7xl mx-auto px-6 py-8">
 
-            <section v-if="loading" class="grid grid-cols-12 gap-6">
+             <section v-if="loading" class="grid grid-cols-12 gap-6">
                 <div class="col-span-12 md:col-span-7 h-96 bg-gray-200 rounded-2xl animate-pulse"></div>
                 <div class="col-span-12 md:col-span-5 flex flex-col gap-4">
                     <div
@@ -92,7 +97,7 @@ const formatDate = (dateStr) => {
                     :key="i"
                     class="col-span-12 md:col-span-4 h-56 bg-gray-200 rounded-2xl animate-pulse"
                 ></div>
-            </section>
+            </section> 
 
              <section v-if="!loading && articleData.all.length > 0">
 
