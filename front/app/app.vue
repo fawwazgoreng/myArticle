@@ -2,6 +2,7 @@
 const categoryStore = useCategoryStore();
 const config = useRuntimeConfig();
 const search = ref([]);
+const path = String(window?.location?.href) || "";
 
 // Fetch categories on the server for SEO and navigation
 await useAsyncData('categories-data', () => categoryStore.mount());
@@ -22,11 +23,13 @@ const handleChange = (e) => {
         try {
             const res = await $fetch(`${config.public.apiBaseUrl}/article?title=${value}`);
             search.value = res.article;
+            console.log(res);
         } catch (error) {
             console.error(error);
         }
     }, 400);
 };
+console.log(search.value);
 </script>
 
 <template>
@@ -49,7 +52,7 @@ const handleChange = (e) => {
                 <li v-for="(item , index) in category" :key="item.id">
                     <NuxtLink
                         :to="`/${item.name}`" v-if="index < 5"
-                        class="hover:text-red-600 transition-colors"
+                        :class="`hover:text-red-600 text-md font-semibold transition-colors ${path.includes(item.name) ? 'text-red-800 ' : ''}`"
                     >{{ item.name }}</NuxtLink>
                 </li>
             </ul>
@@ -57,7 +60,7 @@ const handleChange = (e) => {
             <div class="relative w-72">
                 <input
                     type="text"
-                    class="w-full px-4 py-2 pl-9 text-sm border border-gray-300 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-400 focus:bg-white transition"
+                    class="w-full px-4 py-2 pl-9 peer text-sm border border-gray-300 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-400 focus:bg-white transition"
                     placeholder="Search news..."
                     @input="handleChange"
                     @focus="changeMenu"
@@ -78,7 +81,7 @@ const handleChange = (e) => {
                 </svg>
 
                 <div
-                    v-show="menu && search.length > 0"
+                    v-if="search.length > 0"
                     class="absolute top-full mt-1 left-0 w-full bg-white border border-gray-200 rounded-xl shadow-lg z-50 max-h-72 overflow-y-auto"
                 >
                     <NuxtLink
@@ -87,18 +90,20 @@ const handleChange = (e) => {
                         :to="`/article?name=${item.slug}`"
                         class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-none no-underline"
                     >
+                        <div class="w-10 h-10 overflow-hidden">
                         <img
                             :src="item.image || '/placeholder.jpg'"
-                            :alt="item.title"
-                            class="w-10 h-10 rounded object-cover bg-gray-200 shrink-0"
+                             :alt="item.title" 
+                            class="w-full h-full rounded hover:scale-110 duration-100 object-cover bg-gray-200 shrink-0"
                         />
+                        </div>
                         <span class="text-sm text-gray-800 line-clamp-2">{{ item.title }}</span>
                     </NuxtLink>
                 </div>
 
                 <div
-                    v-show="menu && search.length === 0"
-                    class="absolute top-full mt-1 left-0 w-full bg-white border border-gray-200 rounded-xl shadow-lg z-50 px-4 py-3 text-sm text-gray-400"
+                    v-if="search.length === 0"
+                    class="absolute top-full mt-1 left-0 w-full bg-white border border-gray-200 rounded-xl shadow-lg z-50 px-4 py-3 text-sm text-gray-400 peer-focus:flex hidden"
                 >
                     Type to search for news...
                 </div>
@@ -106,7 +111,7 @@ const handleChange = (e) => {
         </div>
     </nav>
 
-    <main class="mt-10">
+     <main class="mt-10">
         <NuxtPage />
     </main>
 
@@ -136,5 +141,5 @@ const handleChange = (e) => {
         <div class="max-w-7xl mx-auto px-6 mt-8 pt-6 border-t border-gray-800 text-xs text-center">
             2026 MYArticle. Created by Fawwaz.
         </div>
-    </footer>
+    </footer> 
 </template>
