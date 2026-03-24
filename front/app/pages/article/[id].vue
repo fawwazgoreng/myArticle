@@ -6,6 +6,9 @@
  */
 const config = useRuntimeConfig();
 const route = useRoute();
+definePageMeta({
+    layout: "default"
+})
 
 // 1. Fetching Data with useAsyncData
 // We fetch both the specific article details and a list of popular articles concurrently

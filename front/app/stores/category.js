@@ -14,10 +14,11 @@ export const useCategoryStore = defineStore('category', {
       try {
         const res = await $fetch(`${config.public.apiBaseUrl}/category`)
         // Pastikan format response backend sesuai
-        this.category = res.category || res; 
+        this.category = res.category ?? []; 
         this.isLoaded = true;
       } catch (error) {
-        console.error("Gagal mengambil kategori:", error);
+          console.error("Gagal mengambil kategori:", error);
+          this.category = [];
       }
     }
   }

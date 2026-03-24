@@ -3,6 +3,16 @@ import { useRoute } from "vue-router"
 
 const route = useRoute();
 const category = route.params.category; // Captures the category name from the URL path
+definePageMeta({
+    layout: "default"
+})
+
+const defaultMeta = {
+    firstPage: 1,
+    currentPage: 1,
+    lastPage: 1,
+    count: 0
+};
 
 const config = useRuntimeConfig();
 
@@ -16,7 +26,7 @@ for (let i = 0; i < 8; i++) {
 // 2. Data Fetching
 // Uses Nuxt's useFetch to grab articles filtered by category.
 // { lazy: true } allows the page to navigate immediately while the data loads in the background.
-const { data: article , pending : loading , error } = await useFetch(`${config.public.apiBaseUrl}/article?category=${route.params.category}` , { lazy: true});
+const { data: article , pending : loading } = await useFetch(`${config.public.apiBaseUrl}/article?category=${route.params.category}` , { lazy: false});
 
 const renderPaginate = () => {
     const page = route.query.page
@@ -38,7 +48,6 @@ watchEffect(() => {
 
 /**
  * Formats a raw date string into a localized Indonesian format (e.g., 23 Maret 2026).
- * @param {string} dateStr - ISO Date string from API
  */
 const formatDate = (dateStr) => {
     if (!dateStr) return "";

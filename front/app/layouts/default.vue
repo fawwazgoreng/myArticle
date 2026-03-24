@@ -5,9 +5,12 @@ const search = ref([]);
 const path = String(window?.location?.href) || "";
 
 // Fetch categories on the server for SEO and navigation
-await useAsyncData('categories-data', () => categoryStore.mount());
+useAsyncData('categories-data', async () => {
+    await categoryStore.mount();
+    return true;
+} , {lazy: false});
 
-const { category } = storeToRefs(categoryStore);
+const {category} = storeToRefs(categoryStore);
 let debounceTimer;
 
 const handleChange = (e) => {
