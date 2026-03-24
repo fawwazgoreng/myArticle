@@ -8,6 +8,7 @@ import { findPage } from "../utils/findPage";
 import { meta } from "../utils/global.type";
 import { Prisma } from "../infrastructure/database/generated/prisma";
 import { logger } from "../infrastructure/logger/log";
+import category from "../category/category.route";
 
 // Article model responsible for database operations related to articles
 export default class ArticleModel {
@@ -17,6 +18,7 @@ export default class ArticleModel {
         title: string;
         time: "newest" | "oldest";
         populer: boolean;
+        category?: string;
     }) => {
         try {
             // Normalize pagination and filter parameters
@@ -40,9 +42,17 @@ export default class ArticleModel {
 
             const take = 30;
 
+            await prisma.article.findMany({
+                where: {
+                    category: {
+                        some: {},
+                    },
+                },
+            });
+
             // Run data query and total count inside a transaction
-            const [article, count] = await prisma.$transaction([
-                prisma.article.findMany({
+            const [article, count] = await prisma.$transaction(async (tx) => {
+                const article = await tx.article.findMany({
                     take: take,
                     skip: page.skip,
                     orderBy: orderBy,
@@ -52,6 +62,18 @@ export default class ArticleModel {
                         title: {
                             startsWith: page.title ?? "",
                         },
+                        category: req.category
+                            ? {
+                                  every: {
+                                      category: {
+                                          name: {
+                                              equals: req.category,
+                                              mode: "insensitive",
+                                          },
+                                      },
+                                  },
+                              }
+                            : {},
                     },
 
                     // Select article fields with related categories
@@ -72,11 +94,13 @@ export default class ArticleModel {
                             },
                         },
                     },
-                }),
-
-                // Count total articles for pagination metadata
-                prisma.article.count({}),
-            ]);
+                });
+                return [
+                    article,
+                    // Count total articles for pagination metadata
+                    article.length,
+                ];
+            });
 
             // Build pagination metadata
             const meta: meta = {
@@ -241,7 +265,7 @@ export default class ArticleModel {
             const idsAddCategory = await prisma.category.findMany({
                 where: {
                     name: {
-                        in: addCategory
+                        in: addCategory,
                     },
                 },
                 select: {
@@ -336,9 +360,9 @@ export default class ArticleModel {
         try {
             await prisma.categoryOnArticle.deleteMany({
                 where: {
-                    article_id: id
-                }
-            })
+                    article_id: id,
+                },
+            });
             // Remove article from database
             const article = await prisma.article.delete({
                 where: {
@@ -354,7 +378,7 @@ export default class ArticleModel {
             }
 
             return article;
-        } catch (error : any) {
+        } catch (error: any) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
                 if (error.code === "P2025") {
                     throw {

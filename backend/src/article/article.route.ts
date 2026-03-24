@@ -35,7 +35,7 @@ index
                 title,
                 time,
                 populer: Boolean(populer),
-                category
+                category: category ?? null
             };
 
             // Fetch articles from database
