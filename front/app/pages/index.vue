@@ -36,7 +36,7 @@ useSeoMeta({
     ogTitle: 'MYArticle - Trusted News Portal',
     description: 'Get the latest news today from politics, technology, and lifestyle categories only at MYArticle.',
     ogDescription: 'A trusted news portal providing accurate and balanced information.',
-    ogImage: computed(() => article.value[0]?.image ? imageUrl(article.value[0].image) : '/default-og.jpg'),
+    ogImage: computed(() => article[0]?.image ? imageUrl(article[0].image) : '/default-og.jpg'),
     twitterCard: 'summary_large_image',
 });
 
