@@ -50,16 +50,16 @@
         "../node_modules/crossws"
       ],
       "~": [
-        "../app"
+        ".."
       ],
       "~/*": [
-        "../app/*"
+        "../*"
       ],
       "@": [
-        "../app"
+        ".."
       ],
       "@/*": [
-        "../app/*"
+        "../*"
       ],
       "~~": [
         ".."
@@ -104,7 +104,7 @@
         "./imports"
       ],
       "#app-manifest": [
-        "./manifest/meta/dev"
+        "./manifest/meta/f0ecdd88-c0d1-4ff0-9ff1-080d12bf000b"
       ],
       "#build": [
         "."

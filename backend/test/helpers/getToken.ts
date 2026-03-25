@@ -40,13 +40,13 @@ export const getToken = async () => {
         body: JSON.stringify(request)
     });
     const authorization = await refreshToken.json();
-    const token = await fetch(`${BASE_URL}/profile`, {
-        method: "GET",
-        headers: {
-            ...headerVar,
-            Cookie: `refresh-token=${authorization.token}`
-        },
-    })
-    const res = await token.json();
-    return res;
+    // const token = await fetch(`${BASE_URL}/profile`, {
+    //     method: "GET",
+    //     headers: {
+    //         ...headerVar,
+    //         Cookie: `refresh-token=${authorization.token}`
+    //     },
+    // })
+    // const res = await token.json();
+    return authorization;
 }

@@ -5,8 +5,9 @@ export default defineNuxtConfig({
     typescript: {
         typeCheck: true,
         strict: true,
+        includeWorkspace: true,
         tsConfig: {
-            include: ["../types/**/*.d.ts" , "../types/**/*.ts"]
+            include: ["../types/*.d.ts" , "../types/*.ts"]
         }
     },
   modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt"],
@@ -31,7 +32,8 @@ export default defineNuxtConfig({
             apiBaseUrl: process.env.NUXT_PUBLIC_API_BASEURL || "https://localhost:2000",
             imageBaseUrl: process.env.NUXT_PUBLIC_BASE_IMAGE|| "https://localhost:2000/static"
     }
-  },
+    },
+    srcDir: ".",
   telemetry: false,
   pinia: {
     storesDirs: ["./stores/**"]

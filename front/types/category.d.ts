@@ -1,15 +1,11 @@
 
 declare global {
     interface Category {
-        id: number,
-        title: string,
-        content: string,
-        base_views: number,
-        image: string,
+        id?: number | null,
+        name: string,
     }
     interface CategoryResponse extends GlobalResponse {
-        category: Category,
-        article?: Article[] | Article
+        category: Category[],
     }
 }
 export { };

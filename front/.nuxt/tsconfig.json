@@ -50,16 +50,16 @@
         "../node_modules/crossws"
       ],
       "~": [
-        "../app"
+        ".."
       ],
       "~/*": [
-        "../app/*"
+        "../*"
       ],
       "@": [
-        "../app"
+        ".."
       ],
       "@/*": [
-        "../app/*"
+        "../*"
       ],
       "~~": [
         ".."
@@ -104,7 +104,7 @@
         "./imports"
       ],
       "#app-manifest": [
-        "./manifest/meta/dev"
+        "./manifest/meta/f0ecdd88-c0d1-4ff0-9ff1-080d12bf000b"
       ],
       "#components": [
         "./components"
@@ -146,8 +146,11 @@
     "allowSyntheticDefaultImports": true
   },
   "include": [
+    "../types/*.d.ts",
+    "../types/*.ts",
     "./nuxt.d.ts",
-    "../app/**/*",
+    "../../**/*",
+    "../**/*",
     "../modules/*/runtime/**/*",
     "../test/nuxt/**/*",
     "../tests/nuxt/**/*",
@@ -177,7 +180,6 @@
     "../node_modules/nuxt/node_modules",
     "../node_modules/@nuxtjs/tailwindcss/node_modules",
     "../node_modules/@pinia/nuxt/node_modules",
-    "../node_modules/@nuxt/devtools/node_modules",
     "../dist",
     "../.data",
     "../modules/*/runtime/server/**/*",
