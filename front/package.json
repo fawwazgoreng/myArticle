@@ -5,7 +5,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "NODE_OPTIONS='--max-old-space-size=1200 --expose-gc' &  nuxt dev",
-    "clean" : "rm -rf node_modules/.cache",
+    "clean": "rm -rf node_modules/.cache",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
@@ -21,6 +21,7 @@
     "@nuxtjs/tailwindcss": "^6.14.0",
     "@vue/language-server": "^3.2.5",
     "install": "^0.13.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2",
+    "vue-tsc": "^3.2.6"
   }
 }

@@ -12,7 +12,7 @@ export const useCategoryStore = defineStore('category', {
 
       const config = useRuntimeConfig();
       try {
-        const res = await $fetch(`${config.public.apiBaseUrl}/category`)
+          const res = await $fetch<CategoryResponse>(`${config.public.apiBaseUrl}/category`);
         // Pastikan format response backend sesuai
         this.category = res.category ?? []; 
         this.isLoaded = true;

@@ -2,6 +2,13 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
     devtools: { enabled: process.env.NODE_ENV == "development" },
+    typescript: {
+        typeCheck: true,
+        strict: true,
+        tsConfig: {
+            include: ["../types/**/*.d.ts" , "../types/**/*.ts"]
+        }
+    },
   modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt"],
     devServer: {
         https: {
