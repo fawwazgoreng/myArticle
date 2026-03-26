@@ -1,22 +1,21 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
-import AdminWrite from "./user.write";
-import AdminRead from "./user.read";
 import { encryptToken, randomUuid } from "../utils/encrypt";
 import AdminModel from "./user.model";
-import { adminType, monitoring } from "./user.type";
+import { userType, monitoring } from "./user.type";
 import { getConnInfo } from "hono/bun";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { ttl } from "../infrastructure/redis/redis.write";
 import RedisToken from "../infrastructure/redis/refreshToken";
 import { checkToken, getUserHasUsed, signToken } from "../utils/jwtauth";
+import { decryptCookie } from "../utils/decryptUserToken";
+import UserWrite from "./user.write";
 
 // Create Hono app instance for admin-related routing
 const app = new Hono();
 
 // Initialize internal services and database models
-const adminWrite = new AdminWrite();
-const adminRead = new AdminRead();
+const userWrite = new UserWrite();
 const adminModel = new AdminModel();
 const redisToken = new RedisToken();
 
@@ -30,12 +29,13 @@ app
             const request = await c.req.json();
             
             // Validate credentials and retrieve admin profile
-            const admin = await adminWrite.login(request);
+            const admin = await userWrite.login(request);
             
             // Prepare encrypted session data for the refresh token
             const encryptionData = {
                 id: admin.id,
                 created_at: new Date(),
+                roles: admin.roles
             };
             
             const value = await encryptToken(JSON.stringify(encryptionData));
@@ -92,47 +92,10 @@ app
     .get("/profile", async (c) => {
         try {
             // Extract the session identifier from the HttpOnly cookie
-            const refreshToken = String(getCookie(c, "refresh-token"));
-            if (!refreshToken) {
-                throw { status: 401, message: "unauthorized" };
-            }
-
-            // Decrypt and parse the stored session payload
-            const hashed: {
-                id: string;
-                created_at: Date;
-            } = await adminRead.profile(refreshToken);
-
-            const newDate = new Date();
-            const now = newDate.getTime();
-            const time = new Date(hashed.created_at).getTime();
-            let profile = hashed;
-            const oneDay = 1000 * 60 * 60 * 24;
-            let isRefresh = false;
-
-            // Logic: Check if cache is still valid (under 24 hours)
-            if (now - time < oneDay) {                
-                const res = await redisToken.findToken(profile.id);
-                if (!res) {
-                    isRefresh = true; // Cache missing, force re-sync
-                } else {    
-                    profile = res;
-                }
-            } else {
-                isRefresh = true; // Token older than 24 hours, force re-sync from DB
-            }
-            
-            // Re-sync with primary Database if cache is stale or missing
-            if (isRefresh) {
-                const res = await adminWrite.refreshData(hashed.id);
-                profile = {
-                    created_at: newDate,
-                    ...res
-                }
-            }
+            const profile = await decryptCookie(c);
             
             // Generate a fresh short-lived JWT for frontend authentication
-            const token = await signToken(profile as adminType);
+            const token = await signToken(profile as userType);
 
             return c.json({
                 status: 200,
@@ -156,7 +119,7 @@ app
         try {
             const request = await c.req.json();
             const roles = String(request.roles) == "writer" ? "writer" : "user";
-            await adminWrite.register({...request, roles}); 
+            await userWrite.register({...request, roles}); 
             c.status(201);
             return c.json({
                 status: 201,
@@ -188,7 +151,7 @@ app
             }
 
             // Invalidate session in Redis
-            const admin = await adminWrite.logout(refreshToken);
+            const admin = await userWrite.logout(refreshToken);
             // Clear the browser cookie
             deleteCookie(c, "refresh-token");
 

@@ -9,8 +9,9 @@ const headerVar = {
 it('should created new writer', async () => {
     const request = {
         username: "writer123",
-        email: "writer@gmail.com",
-        password: "Writer123{}[]"
+        email: "write@gmail.com",
+        password: "Writer123{}[]",
+        roles: "writer"
     };
     const res = await fetch(`${BASE_URL}/register`, {
       method: "POST",
@@ -31,7 +32,7 @@ it('should get token', async () => {
 
 export const getToken = async () => {
     const request = {
-        email: "writer@gmail.com",
+        email: "write@gmail.com",
         password: "Writer123{}[]"
     };
     const refreshToken = await fetch(`${BASE_URL}/login`, {
@@ -48,5 +49,5 @@ export const getToken = async () => {
         },
     })
     const res = await token.json();
-    return authorization;
+    return res;
 }

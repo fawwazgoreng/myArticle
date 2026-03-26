@@ -23,7 +23,8 @@ export default class RedisToken {
                 id: string,
                 created_at: Date,
                 username: string,
-                email:string
+                email: string,
+                roles: string
             }
         } catch (error) {
             return false;

@@ -1,4 +1,4 @@
-import { adminType, loginRequest, registerType } from "./user.type";
+import { userType, loginRequest, registerType } from "./user.type";
 import { UserValidate } from "./user.validate";
 import { ZodError } from "zod";
 import UserModel from "./user.model";
@@ -75,6 +75,7 @@ export default class UserWrite {
                 id: admin.id,
                 username: admin.username,
                 email: admin.email,
+                roles: admin.roles
             };
         } catch (error: any) {
             if (error instanceof ZodError) {
@@ -96,7 +97,7 @@ export default class UserWrite {
     logout = async (refreshToken: string) => {
         try {
             const res = await this.redisToken.getToken(refreshToken);
-            const admin: adminType = JSON.parse(await decryptToken(res));
+            const admin: userType = JSON.parse(await decryptToken(res));
 
             await this.redisToken.deleteToken(refreshToken, admin.id);
             return admin;

@@ -2,7 +2,7 @@ import { Context, Next } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { sign, verify} from "hono/jwt"
 import { ContentfulStatusCode } from "hono/utils/http-status";
-import { adminHasUsed, adminType } from "../user/user.type";
+import { adminHasUsed, userType } from "../user/user.type";
 import { getConnInfo } from "hono/bun";
 const key = String(process.env['SECRET_KEY']);
 
@@ -45,11 +45,11 @@ export const getUserHasUsed = async (c: Context , event_type : "login" | "logout
     return res;
 } 
 
-export const signToken = async (admin: adminType) => {
+export const signToken = async (admin: userType) => {
     // const hashedKey = await crypto.subtle.digest("SHA-256", encode(key));
     const payload = {
         username: admin.username,
-        role: "admin",
+        role: admin.roles,
         exp: Math.floor((Date.now() / 1000) * 60 * 15),
         email: admin.email,
         id: admin.id

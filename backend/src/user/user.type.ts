@@ -22,12 +22,12 @@ export interface monitoring {
 
 export interface session_audit_trail extends monitoring {
     id: number,
-    admin: adminType,
+    admin: userType,
     created_at: Date,
     updated_at: Date,
 }
 
-export type adminType = {
+export type userType = {
     id: string,
     username: string,
     email: string,
@@ -35,6 +35,7 @@ export type adminType = {
     created_at: Date,
     updated_at: Date,
     authlogs?: session_audit_trail | session_audit_trail[]
+    roles: "admin" | "writer" | "user"
 } 
 
 export type adminHasUsed = {

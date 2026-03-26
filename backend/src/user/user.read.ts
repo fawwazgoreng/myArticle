@@ -1,8 +1,8 @@
 import RedisToken from "../infrastructure/redis/refreshToken";
 import { decryptToken } from "../utils/encrypt";
 
-// AdminRead service responsible for retrieving administrative session data
-export default class AdminRead {
+// UserRead service responsible for retrieving administrative session data
+export default class UserRead {
     // Initialize with RedisToken dependency for session management
     constructor(private redisToken = new RedisToken()) {}
 
@@ -15,7 +15,8 @@ export default class AdminRead {
             // Decrypt the stored token to extract the original profile information
             return JSON.parse(await decryptToken(hashed)) as {
                 id: string,
-                created_at:Date
+                created_at: Date,
+                roles: string
             };
         } catch (error: any) {
             // Standardize error response based on caught exception or fallback to 500
