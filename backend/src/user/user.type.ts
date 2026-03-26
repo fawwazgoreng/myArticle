@@ -7,7 +7,8 @@ export interface loginRequest {
 export interface registerType {
     username: string,
     email: string,
-    password:string
+    password: string,
+    roles: "admin" | "writer" | "user";
 }
 
 export interface monitoring {

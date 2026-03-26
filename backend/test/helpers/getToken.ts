@@ -6,11 +6,11 @@ const headerVar = {
   "Origin": process.env.FRONT_END_URL || "http://localhost:3000"
 };
 
-it('should created new admin', async () => {
+it('should created new writer', async () => {
     const request = {
-        username: "admin123",
-        email: "admin@gmail.com",
-        password: "Admin123{}[]"
+        username: "writer123",
+        email: "writer@gmail.com",
+        password: "Writer123{}[]"
     };
     const res = await fetch(`${BASE_URL}/register`, {
       method: "POST",
@@ -31,8 +31,8 @@ it('should get token', async () => {
 
 export const getToken = async () => {
     const request = {
-        email: "admin@gmail.com",
-        password: "Admin123{}[]"
+        email: "writer@gmail.com",
+        password: "Writer123{}[]"
     };
     const refreshToken = await fetch(`${BASE_URL}/login`, {
       method: "POST",
@@ -40,13 +40,13 @@ export const getToken = async () => {
         body: JSON.stringify(request)
     });
     const authorization = await refreshToken.json();
-    // const token = await fetch(`${BASE_URL}/profile`, {
-    //     method: "GET",
-    //     headers: {
-    //         ...headerVar,
-    //         Cookie: `refresh-token=${authorization.token}`
-    //     },
-    // })
-    // const res = await token.json();
+    const token = await fetch(`${BASE_URL}/profile`, {
+        method: "GET",
+        headers: {
+            ...headerVar,
+            Cookie: `refresh-token=${authorization.token}`
+        },
+    })
+    const res = await token.json();
     return authorization;
 }

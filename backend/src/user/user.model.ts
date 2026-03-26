@@ -1,15 +1,15 @@
 import { PrismaClientKnownRequestError } from "../infrastructure/database/generated/prisma/runtime/client";
 import { logger } from "../infrastructure/logger/log";
 import { verifyHash } from "../utils/jwtauth";
-import { loginRequest, monitoring, registerType } from "./admin.type";
+import { loginRequest, monitoring, registerType } from "./user.type";
 
-// Admin model responsible for database operations and authentication related to administrators
-export default class AdminModel {
-    // Authenticate admin user by email and password verification
+// user model responsible for database operations and authentication related to administrators
+export default class UserModel {
+    // Authenticate user user by email and password verification
     login = async (req: loginRequest) => {
         try {
-            // Retrieve admin record matching the provided email
-            const admin = await prisma?.admin.findFirst({
+            // Retrieve user record matching the provided email
+            const user = await prisma?.user.findFirst({
                 where: {
                     email: req.email,
                 },
@@ -18,13 +18,14 @@ export default class AdminModel {
                     email: true,
                     username: true,
                     password: true,
+                    roles: true
                 },
             });
 
             // Verify the provided plain-text password against the stored hash
-            await verifyHash(String(admin?.password), req.password);
+            await verifyHash(String(user?.password), req.password);
 
-            return admin;
+            return user;
         } catch (error: any) {
             // Handle known Prisma database errors
             if (error instanceof PrismaClientKnownRequestError) {
@@ -60,11 +61,11 @@ export default class AdminModel {
         }
     };
 
-    // Retrieve specific admin details by unique ID
+    // Retrieve specific user details by unique ID
     find = async (id: string) => {
         try {
-            // Fetch minimal admin info for profile or verification purposes
-            const admin = await prisma?.admin.findFirst({
+            // Fetch minimal user info for profile or verification purposes
+            const user = await prisma?.user.findFirst({
                 where: {
                     id: id,
                 },
@@ -72,9 +73,10 @@ export default class AdminModel {
                     id: true,
                     email: true,
                     username: true,
+                    roles: true
                 },
             });
-            return admin;
+            return user;
         } catch (error: any) {
             // Handle known database errors during retrieval
             if (error instanceof PrismaClientKnownRequestError) {
@@ -93,18 +95,19 @@ export default class AdminModel {
         }
     }
     
-    // register a new admin
+    // register a new user
     register = async (req: registerType) => {
         try {
-            const admin = await prisma?.admin.create({
+            const user = await prisma?.user.create({
                 data: req,
                 select: {
                     id: true,
                     username: true,
-                    email: true
+                    email: true,
+                    roles: true
                 }
             });
-            return admin;
+            return user;
         } catch (error: any) {
             // Handle known Prisma database errors
             if (error instanceof PrismaClientKnownRequestError) {

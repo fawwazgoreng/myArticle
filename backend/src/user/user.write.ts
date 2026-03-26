@@ -1,17 +1,17 @@
-import { adminType, loginRequest, registerType } from "./admin.type";
-import { AdminValidate } from "./admin.validate";
+import { adminType, loginRequest, registerType } from "./user.type";
+import { UserValidate } from "./user.validate";
 import { ZodError } from "zod";
-import AdminModel from "./admin.model";
+import UserModel from "./user.model";
 import RedisToken from "../infrastructure/redis/refreshToken";
 import { decryptToken, encryptToken } from "../utils/encrypt";
 import { hashPassword } from "../utils/jwtauth";
 
-// AdminWrite service responsible for state-changing operations like authentication and session sync
-export default class AdminWrite {
+// UserWrite service responsible for state-changing operations like authentication and session sync
+export default class UserWrite {
     // Initialize dependencies for validation, database access, and token management
     constructor(
-        private adminValidate = new AdminValidate(),
-        private adminModel = new AdminModel(),
+        private userValidate = new UserValidate(),
+        private userModel = new UserModel(),
         private redisToken = new RedisToken(),
     ) {}
 
@@ -19,7 +19,7 @@ export default class AdminWrite {
     register = async (req: registerType) => {
         try {
             // Validate the registration request against the Zod schema
-            const validated = await this.adminValidate.register(req);
+            const validated = await this.userValidate.register(req);
 
             // Hash the plain-text password before database storage
             const hashed = await hashPassword(validated.password);
@@ -27,11 +27,12 @@ export default class AdminWrite {
             // Construct the final payload with the secured password
             const payload: registerType = {
                 ...validated,
-                password: hashed
+                password: hashed,
+                roles: req.roles
             };
 
             // Persist the new admin record to the database
-            const admin = await this.adminModel.register(payload);
+            const admin = await this.userModel.register(payload);
             return admin;
         } catch (error: any) {
             // Transform Zod validation errors into a standardized response format
@@ -55,10 +56,10 @@ export default class AdminWrite {
     login = async (req: loginRequest) => {
         try {
             // Validate incoming request body against defined schema
-            const validate = await this.adminValidate.login(req);
+            const validate = await this.userValidate.login(req);
 
             // Check credentials via the database model
-            const admin = await this.adminModel.login(validate);
+            const admin = await this.userModel.login(validate);
 
             // Explicitly handle failed authentication attempts
             if (!admin) {
@@ -111,7 +112,7 @@ export default class AdminWrite {
     // Synchronize latest database profile data into the Redis session store
     refreshData = async (id: string) => {
         try {
-            const admin = await this.adminModel.find(id);
+            const admin = await this.userModel.find(id);
 
             if (!admin) {
                 throw {

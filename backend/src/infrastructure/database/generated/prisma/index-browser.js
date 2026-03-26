@@ -137,11 +137,19 @@ exports.Prisma.CategoryScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
-exports.Prisma.AdminScalarFieldEnum = {
+exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   username: 'username',
   password: 'password',
+  roles: 'roles',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.CommentScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
@@ -184,7 +192,8 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   Article: 'Article',
   Category: 'Category',
-  Admin: 'Admin',
+  User: 'User',
+  Comment: 'Comment',
   Session_audit_trail: 'Session_audit_trail',
   CategoryOnArticle: 'CategoryOnArticle'
 };

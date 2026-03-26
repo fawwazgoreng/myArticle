@@ -1,5 +1,5 @@
 import z from "zod";
-import { loginRequest, registerType } from "./admin.type";
+import { loginRequest, registerType } from "./user.type";
 
 const loginValidate = z.object({
     email: z.email().min(10).max(150),
@@ -29,7 +29,7 @@ const registerValidate = z.object({
         }),
 });
 
-export class AdminValidate {
+export class UserValidate {
     login = async (req: loginRequest) => {
         try {
             return loginValidate.parse(req);

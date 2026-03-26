@@ -1,10 +1,10 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
-import AdminWrite from "./admin.write";
-import AdminRead from "./admin.read";
+import AdminWrite from "./user.write";
+import AdminRead from "./user.read";
 import { encryptToken, randomUuid } from "../utils/encrypt";
-import AdminModel from "./admin.model";
-import { adminType, monitoring } from "./admin.type";
+import AdminModel from "./user.model";
+import { adminType, monitoring } from "./user.type";
 import { getConnInfo } from "hono/bun";
 import { deleteCookie, getCookie, setCookie } from "hono/cookie";
 import { ttl } from "../infrastructure/redis/redis.write";
@@ -62,15 +62,15 @@ app
             });
 
             // Log successful login event to audit trail
-            // const monitoring: monitoring = {
-            //     admin_id: admin.id,
-            //     ip_address: info.ip_address,
-            //     device_type: info.device_type,
-            //     event_type: info.event_type,
-            //     failure_session: null,
-            //     success: true,
-            // };
-            // adminModel.monitoring(monitoring);
+            const monitoring: monitoring = {
+                admin_id: admin.id,
+                ip_address: info.ip_address,
+                device_type: info.device_type,
+                event_type: info.event_type,
+                failure_session: null,
+                success: true,
+            };
+            adminModel.monitoring(monitoring);
 
             return c.json({
                 status: 200,
@@ -155,7 +155,8 @@ app
     .post('/register', async (c) => {
         try {
             const request = await c.req.json();
-            await adminWrite.register(request); 
+            const roles = String(request.roles) == "writer" ? "writer" : "user";
+            await adminWrite.register({...request, roles}); 
             c.status(201);
             return c.json({
                 status: 201,

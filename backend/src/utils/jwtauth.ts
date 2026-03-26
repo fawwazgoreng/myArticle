@@ -2,7 +2,7 @@ import { Context, Next } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { sign, verify} from "hono/jwt"
 import { ContentfulStatusCode } from "hono/utils/http-status";
-import { adminHasUsed, adminType } from "../admin/admin.type";
+import { adminHasUsed, adminType } from "../user/user.type";
 import { getConnInfo } from "hono/bun";
 const key = String(process.env['SECRET_KEY']);
 
