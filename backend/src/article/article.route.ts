@@ -7,10 +7,18 @@ import WriteRedis from "../infrastructure/redis/redis.write";
 import { article, articlePayload } from "./article.type";
 import { RedisKey } from "ioredis";
 import { checkToken } from "../utils/jwtauth";
-import category from "../category/category.route";
+import { checkPermisssion } from "../utils/checkPermission";
+
+type variable = {
+    profile: {
+        id: string;
+        created_at: Date;
+        roles: "admin" | "writer" | "user";
+    };
+};
 
 // Create router instance for article endpoints
-const index = new Hono();
+const index = new Hono<{ Variables: variable }>();
 
 // Initialize service classes for database and Redis operations
 const writeArticle = new WriteArticle();
@@ -23,7 +31,7 @@ index
     .get("/", async (c) => {
         try {
             // Extract query parameters
-            const { page, title, populer, oldest , category } = c.req.query();
+            const { page, title, populer, oldest, category } = c.req.query();
 
             // Determine sorting order based on query
             const time: "newest" | "oldest" =
@@ -35,7 +43,7 @@ index
                 title,
                 time,
                 populer: Boolean(populer),
-                category: category ?? null
+                category: category ?? null,
             };
 
             // Fetch articles from database
@@ -54,7 +62,7 @@ index
             throw new HTTPException(error.status, { res });
         }
     })
-    
+
     // GET /article/:id
     // Retrieve a single article by ID and increment view counter in Redis
     .get("/:id", async (c) => {
@@ -87,15 +95,19 @@ index
             throw new HTTPException(error.status, { res });
         }
     })
-    
+
     // USE middleware
     // check access token
-    .use('/', checkToken)
-
+    .use("/", checkToken)
+    .use(
+        "/",
+        async (c, next) => await checkPermisssion(c, next, ["admin", "writer"]),
+    )
     // POST /article
     // Create a new article with optional image upload and category relations
     .post("/", async (c) => {
         try {
+            const profile = c.get("profile");
             // Parse multipart/form-data body
             const body = await c.req.parseBody();
             // Normalize category input to always be an array
@@ -113,7 +125,8 @@ index
                 content: String(body["content"] || ""),
                 image: body["image"] ? (body["image"] as File) : null,
                 category: categoryBody,
-            };            
+                profile: { ...profile, author_id: profile.id },
+            };
 
             // Create article in database
             const res = await writeArticle.create(payload);
@@ -142,7 +155,7 @@ index
     .put("/:id", async (c) => {
         try {
             const body = await c.req.parseBody();
-
+            const profile = c.get("profile");
             // Normalize category input to always be an array
             const categoryBody: string[] = (
                 Array.isArray(body["category"])
@@ -155,8 +168,12 @@ index
             const request: articlePayload = {
                 title: String(body["title"]) || "",
                 content: String(body["content"]) || "",
-                image: typeof body["image"] == "string" ? null : body["image"] as File || null,
+                image:
+                    typeof body["image"] == "string"
+                        ? null
+                        : (body["image"] as File) || null,
                 category: categoryBody,
+                profile: { ...profile, author_id: profile.id },
             };
             const res = await writeArticle.update(id, request);
             await writeRedis.newArticle(res.article);
@@ -177,7 +194,11 @@ index
     .delete("/:id", async (c) => {
         try {
             const id = Number(c.req.param("id"));
-            await writeArticle.delete(id);
+            const profile = c.get("profile");
+            await writeArticle.delete(id, {
+                ...profile,
+                author_id: profile.id,
+            });
             await writeRedis.delete(String(id) as RedisKey);
             c.status(200);
             return c.json({

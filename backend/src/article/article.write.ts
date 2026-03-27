@@ -1,8 +1,8 @@
 import { ZodError } from "zod";
 import {
-  articleModelPayload,
-  articlePayload,
-  articleResponse,
+    articleModelPayload,
+    articlePayload,
+    articleResponse,
 } from "./article.type";
 import { globalResponse } from "../utils/global.type";
 import { writeFile } from "../utils/image.write";
@@ -12,139 +12,148 @@ import ArticleModel from "./article.model";
 
 // Service responsible for writing article data
 export default class WriteArticle {
-
-  // Initialize validation, database model, image handler, and Redis writer
+    // Initialize validation, database model, image handler, and Redis writer
     constructor(
         private articleValidate = new ArticleValidate(),
         private articleModel = new ArticleModel(),
-        private articleImage = new writeFile('article'),
-        private writeRedis = new WriteRedis()
+        private articleImage = new writeFile("article"),
+        private writeRedis = new WriteRedis(),
     ) {}
 
-  // Create a new article with validation, image upload, and Redis update
-  create = async (req: articlePayload) => {
-    try {
+    // Create a new article with validation, image upload, and Redis update
+    create = async (req: articlePayload) => {
+        try {
+            // Validate incoming payload
+            const validated: articlePayload =
+                await this.articleValidate.create(req);
 
-      // Validate incoming payload
-      const validated: articlePayload = await this.articleValidate.create(req);
+            let url = "";
 
-      let url = "";
+            // Save uploaded image if provided
+            if (req.image) url = await this.articleImage.write(req.image);
 
-      // Save uploaded image if provided
-      if (req.image) url = await this.articleImage.write(req.image);
+            // Prepare payload for database layer
+            const payload: articleModelPayload = {
+                title: validated.title,
+                content: validated.content,
+                image: url,
+                category: validated.category,
+                author_id: req.profile.author_id,
+            };
 
-      // Prepare payload for database layer
-      const payload: articleModelPayload = {
-        title: validated.title,
-        content: validated.content,
-        image: url,
-        category: validated.category
-      };
+            // Insert article into database
+            const article = await this.articleModel.create(payload);
 
-      // Insert article into database
-      const article = await this.articleModel.create(payload);
+            // Update Redis cache for new article
+            await this.writeRedis.newArticle(article);
 
-      // Update Redis cache for new article
-      await this.writeRedis.newArticle(article);
+            return {
+                status: 201,
+                message: "success create new article",
+                article: article,
+            };
+        } catch (error: any) {
+            // Handle validation errors
+            if (error instanceof ZodError) {
+                throw {
+                    status: 422,
+                    message: error.issues[0].message,
+                    error: error.issues,
+                } as globalResponse;
+            }
 
-      return {
-        status: 201,
-        message: "success create new article",
-        article: article,
-      };
+            // Fallback for unexpected errors
+            throw {
+                status: error.status || 500,
+                message: error.message || "internal server error",
+                error: error,
+            } as globalResponse;
+        }
+    };
 
-    } catch (error: any) {
+    // Update article data and synchronize image if changed
+    update = async (id: number, req: articlePayload) => {
+        try {
+            // Validate update payload
+            const validated = await this.articleValidate.update(req);
 
-      // Handle validation errors
-      if (error instanceof ZodError) {
-        throw {
-          status: 422,
-          message: error.issues[0].message,
-          error: error.issues,
-        } as globalResponse;
-      }
+            // check permission
+            if (req.profile.roles != "admin")
+                await this.articleModel.checkPermisssion(
+                    id,
+                    req.profile.author_id,
+                );
 
-      // Fallback for unexpected errors
-      throw {
-        status: error.status || 500,
-        message: error.message || "internal server error",
-        error: error,
-      } as globalResponse;
-    }
-  };
+            // Retrieve current article image
+            const lastImg =
+                (await this.articleModel
+                    .findImage(id)
+                    .then((data) => data?.image)) || "";
 
-  // Update article data and synchronize image if changed
-  update = async (id: number, req: articlePayload) => {
-    try {
+            // Replace or keep existing image
+            const url = this.articleImage.update(lastImg, req.image);
 
-      // Validate update payload
-      const validated = await this.articleValidate.update(req);
+            // Prepare update payload
+            const payload: articleModelPayload = {
+                title: validated.title,
+                content: validated.content,
+                image: url,
+                category: validated.category,
+                author_id: req.profile.author_id,
+            };
 
-      // Retrieve current article image
-      const lastImg =
-        (await this.articleModel.findImage(id).then(data => data?.image)) || "";
+            // Update article in database
+            const article = await this.articleModel.update(id, payload);
 
-      // Replace or keep existing image
-      const url = this.articleImage.update(lastImg, req.image);
+            const res: articleResponse = {
+                status: 200,
+                message: "succes update article",
+                article: article,
+            };
 
-      // Prepare update payload
-      const payload : articleModelPayload = {
-        title: validated.title,
-        content: validated.content,
-        image: url,
-        category: validated.category
-      };
+            return res;
+        } catch (error: any) {
+            // Handle validation errors
+            if (error instanceof ZodError) {
+                throw {
+                    status: 422,
+                    message: error.issues[0].message,
+                    error: error.issues,
+                } as globalResponse;
+            }
 
-      // Update article in database
-      const article = await this.articleModel.update(id, payload);
+            // Fallback error response
+            throw {
+                status: error.status || 500,
+                message: error.message || "internal server error",
+                error: error,
+            } as globalResponse;
+        }
+    };
 
-      const res : articleResponse = {
-        status: 200,
-        message: "succes update article",
-        article: article
-      };
+    // Delete article and remove associated image
+    delete = async (
+        id: number,
+        profile: { author_id: string; roles: "admin" | "writer" | "user" },
+    ) => {
+        try {
+            // Remove article from database
+            const article = await this.articleModel.delete(id);
 
-      return res;
+            // check permission
+            if (profile.roles != "admin")
+                await this.articleModel.checkPermisssion(id, profile.author_id);
 
-    } catch (error: any) {
+            // Delete stored image if exists
+            if (article.image) this.articleImage.update(article.image);
+        } catch (error: any) {
+            const res: globalResponse = {
+                status: error.status || 500,
+                message: error.message || "internal server error",
+                error: error.error,
+            };
 
-      // Handle validation errors
-      if (error instanceof ZodError) {
-        throw {
-          status: 422,
-          message: error.issues[0].message,
-          error: error.issues,
-        } as globalResponse;
-      }
-
-      // Fallback error response
-      throw {
-        status: error.status || 500,
-        message: error.message || "internal server error",
-        error: error,
-      } as globalResponse;
-    }
-  };
-
-  // Delete article and remove associated image
-  delete = async (id: number) => {
-    try {
-
-      // Remove article from database
-      const article = await this.articleModel.delete(id);
-
-      // Delete stored image if exists
-      if (article.image) this.articleImage.update(article.image);
-
-    } catch (error: any) {
-
-      const res: globalResponse = {
-        status: error.status || 500,
-        message: error.message || "internal server error",
-        error: error.error,
-      };
-
-      throw res;
-    }
-  };
+            throw res;
+        }
+    };
 }

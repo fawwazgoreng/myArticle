@@ -152,6 +152,7 @@ export default class ArticleModel {
                     title: req.title,
                     content: req.content,
                     image: req.image,
+                    author_id: req.author_id,
 
                     // Create category relations in join table
                     category: {
@@ -225,13 +226,76 @@ export default class ArticleModel {
 
             return article;
         } catch (error) {
+            if (error instanceof PrismaClientKnownRequestError) {
+                if (error.code == "P2025") {
+                    throw {
+                        status: 404,
+                        message: "article id " + id + " not found"
+                    }
+                }
+                throw {
+                    status: 400,
+                    message: error.message,
+                        error: error.cause
+                }
+            }
             throw {
-                status: 404,
-                message: "article id " + id + " not found",
+                status: 500,
+                message: "internal server error",
             };
         }
     };
+    
+    // retrieve permission by author id
+    checkPermisssion = async (id: number , author_id : string) => {
+        try {
+            // Fetch article with related categories
+            const article = await prisma.article.findFirst({
+                where: {
+                    id: id,
+                },
+                select: {
+                    id: true,
+                    author_id: true
+                },
+            });
 
+            // Throw error if article does not exist
+            if (!article?.id) {
+                throw {
+                    status: 404,
+                    message: "article id " + id + " not found",
+                };
+            }
+            if (article.author_id != author_id) {
+                throw {
+                    status: 401,
+                    message: "you dont have permission to access this resource"
+                }
+            }
+
+            return article;
+        } catch (error) {
+            if (error instanceof PrismaClientKnownRequestError) {
+                if (error.code == "P2025") {
+                    throw {
+                        status: 404,
+                        message: "article id " + id + " not found"
+                    }
+                }
+                throw {
+                    status: 400,
+                    message: error.message,
+                        error: error.cause
+                }
+            }
+            throw {
+                status: 500,
+                message: "internal server error",
+            };
+        }
+    }
+    
     // Update article and synchronize its category relations
     update = async (id: number, req: articleModelPayload) => {
         try {

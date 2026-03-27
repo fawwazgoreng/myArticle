@@ -41,6 +41,10 @@ export type articlePayload = {
     content: string;
     image?: File | null;
     category: string[];
+    profile: {
+        author_id: string;
+        roles: "admin" | "writer" | "user";
+    };
 };
 
 export type articleModelPayload = {
@@ -48,4 +52,5 @@ export type articleModelPayload = {
     content: string;
     image?: string | null;
     category: string[];
+    author_id: string;
 };

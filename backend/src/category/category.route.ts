@@ -5,9 +5,7 @@ import WriteCategory from "./category.write";
 import ReadCategory from "./category.read";
 import { category } from "./category.type";
 import { checkToken } from "../utils/jwtauth";
-import { getCookie } from "hono/cookie";
-import AdminRead from "../user/user.read";
-import { decryptCookie } from "../utils/decryptUserToken";
+import { checkPermisssion } from "../utils/checkPermission";
 
 // Create a new Hono router instance for category endpoints
 const category = new Hono();
@@ -88,25 +86,7 @@ category
     // USE middleware
     // check access token
     .use("/", checkToken)
-    .use("/", async (c, next) => {
-        try {
-            const profile = await decryptCookie(c);
-            if (profile.roles != "admin") {
-                const res = c.json({
-                    status: 403,
-                    message: 'you dont have permission to do this action',
-                });
-                throw new HTTPException(res.status as ContentfulStatusCode, { res });
-            }
-            await next();
-        } catch (error : any) {
-            const res = c.json({
-                status: 403,
-                message: 'you dont have permission to do this action',
-            });
-            throw new HTTPException(res.status as ContentfulStatusCode, { res });
-        }
-    })
+    .use("/", async (c, next) => await checkPermisssion(c, next, ["admin"]))
     // POST /category
     // Create a new category
     .post("/", async (c) => {

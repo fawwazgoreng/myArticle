@@ -11,7 +11,7 @@ import { checkToken, getUserHasUsed, signToken } from "../utils/jwtauth";
 import { decryptCookie } from "../utils/decryptUserToken";
 import UserWrite from "./user.write";
 
-// Create Hono app instance for admin-related routing
+// Create Hono app instance for user-related routing
 const app = new Hono();
 
 // Initialize internal services and database models
@@ -29,22 +29,22 @@ app
             const request = await c.req.json();
             
             // Validate credentials and retrieve admin profile
-            const admin = await userWrite.login(request);
+            const user = await userWrite.login(request);
             
             // Prepare encrypted session data for the refresh token
             const encryptionData = {
-                id: admin.id,
+                id: user.id,
                 created_at: new Date(),
-                roles: admin.roles
+                roles: user.roles
             };
             
             const value = await encryptToken(JSON.stringify(encryptionData));
-            const setTokenCookie = await encryptToken(JSON.stringify(admin));
+            const setTokenCookie = await encryptToken(JSON.stringify(user));
             const token = await randomUuid();
             const dateExp = new Date();
 
             // Store session token in Redis with defined Time-To-Live
-            await redisToken.setToken(token, value, admin.id, setTokenCookie);
+            await redisToken.setToken(token, value, user.id, setTokenCookie);
             dateExp.setDate(dateExp.getTime() + ttl);
             
             c.status(200);
@@ -63,7 +63,7 @@ app
 
             // Log successful login event to audit trail
             const monitoring: monitoring = {
-                admin_id: admin.id,
+                admin_id: user.id,
                 ip_address: info.ip_address,
                 device_type: info.device_type,
                 event_type: info.event_type,
@@ -151,13 +151,13 @@ app
             }
 
             // Invalidate session in Redis
-            const admin = await userWrite.logout(refreshToken);
+            const user = await userWrite.logout(refreshToken);
             // Clear the browser cookie
             deleteCookie(c, "refresh-token");
 
             // Audit the logout event
             const monitoring: monitoring = {
-                admin_id: admin.id,
+                admin_id: user.id,
                 ip_address: info.remote.address || "anonymous",
                 device_type: userAgent || "mobile",
                 event_type: "logout",

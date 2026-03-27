@@ -1318,10 +1318,12 @@ export namespace Prisma {
 
   export type ArticleCountOutputType = {
     category: number
+    author: number
   }
 
   export type ArticleCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     category?: boolean | ArticleCountOutputTypeCountCategoryArgs
+    author?: boolean | ArticleCountOutputTypeCountAuthorArgs
   }
 
   // Custom InputTypes
@@ -1340,6 +1342,13 @@ export namespace Prisma {
    */
   export type ArticleCountOutputTypeCountCategoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CategoryOnArticleWhereInput
+  }
+
+  /**
+   * ArticleCountOutputType without action
+   */
+  export type ArticleCountOutputTypeCountAuthorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
   }
 
 
@@ -1381,11 +1390,13 @@ export namespace Prisma {
   export type UserCountOutputType = {
     authlogs: number
     comment: number
+    article: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     authlogs?: boolean | UserCountOutputTypeCountAuthlogsArgs
     comment?: boolean | UserCountOutputTypeCountCommentArgs
+    article?: boolean | UserCountOutputTypeCountArticleArgs
   }
 
   // Custom InputTypes
@@ -1411,6 +1422,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountCommentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CommentWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountArticleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ArticleWhereInput
   }
 
 
@@ -1445,6 +1463,7 @@ export namespace Prisma {
     title: string | null
     content: string | null
     image: string | null
+    author_id: string | null
     base_views: number | null
     created_at: Date | null
     updated_at: Date | null
@@ -1455,6 +1474,7 @@ export namespace Prisma {
     title: string | null
     content: string | null
     image: string | null
+    author_id: string | null
     base_views: number | null
     created_at: Date | null
     updated_at: Date | null
@@ -1465,6 +1485,7 @@ export namespace Prisma {
     title: number
     content: number
     image: number
+    author_id: number
     base_views: number
     created_at: number
     updated_at: number
@@ -1487,6 +1508,7 @@ export namespace Prisma {
     title?: true
     content?: true
     image?: true
+    author_id?: true
     base_views?: true
     created_at?: true
     updated_at?: true
@@ -1497,6 +1519,7 @@ export namespace Prisma {
     title?: true
     content?: true
     image?: true
+    author_id?: true
     base_views?: true
     created_at?: true
     updated_at?: true
@@ -1507,6 +1530,7 @@ export namespace Prisma {
     title?: true
     content?: true
     image?: true
+    author_id?: true
     base_views?: true
     created_at?: true
     updated_at?: true
@@ -1604,6 +1628,7 @@ export namespace Prisma {
     title: string
     content: string
     image: string | null
+    author_id: string
     base_views: number
     created_at: Date
     updated_at: Date
@@ -1633,10 +1658,12 @@ export namespace Prisma {
     title?: boolean
     content?: boolean
     image?: boolean
+    author_id?: boolean
     base_views?: boolean
     created_at?: boolean
     updated_at?: boolean
     category?: boolean | Article$categoryArgs<ExtArgs>
+    author?: boolean | Article$authorArgs<ExtArgs>
     _count?: boolean | ArticleCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["article"]>
 
@@ -1645,6 +1672,7 @@ export namespace Prisma {
     title?: boolean
     content?: boolean
     image?: boolean
+    author_id?: boolean
     base_views?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -1655,6 +1683,7 @@ export namespace Prisma {
     title?: boolean
     content?: boolean
     image?: boolean
+    author_id?: boolean
     base_views?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -1665,14 +1694,16 @@ export namespace Prisma {
     title?: boolean
     content?: boolean
     image?: boolean
+    author_id?: boolean
     base_views?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type ArticleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "content" | "image" | "base_views" | "created_at" | "updated_at", ExtArgs["result"]["article"]>
+  export type ArticleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "content" | "image" | "author_id" | "base_views" | "created_at" | "updated_at", ExtArgs["result"]["article"]>
   export type ArticleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     category?: boolean | Article$categoryArgs<ExtArgs>
+    author?: boolean | Article$authorArgs<ExtArgs>
     _count?: boolean | ArticleCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ArticleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1682,12 +1713,14 @@ export namespace Prisma {
     name: "Article"
     objects: {
       category: Prisma.$CategoryOnArticlePayload<ExtArgs>[]
+      author: Prisma.$UserPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       title: string
       content: string
       image: string | null
+      author_id: string
       base_views: number
       created_at: Date
       updated_at: Date
@@ -2086,6 +2119,7 @@ export namespace Prisma {
   export interface Prisma__ArticleClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     category<T extends Article$categoryArgs<ExtArgs> = {}>(args?: Subset<T, Article$categoryArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CategoryOnArticlePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    author<T extends Article$authorArgs<ExtArgs> = {}>(args?: Subset<T, Article$authorArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2119,6 +2153,7 @@ export namespace Prisma {
     readonly title: FieldRef<"Article", 'String'>
     readonly content: FieldRef<"Article", 'String'>
     readonly image: FieldRef<"Article", 'String'>
+    readonly author_id: FieldRef<"Article", 'String'>
     readonly base_views: FieldRef<"Article", 'Int'>
     readonly created_at: FieldRef<"Article", 'DateTime'>
     readonly updated_at: FieldRef<"Article", 'DateTime'>
@@ -2531,6 +2566,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CategoryOnArticleScalarFieldEnum | CategoryOnArticleScalarFieldEnum[]
+  }
+
+  /**
+   * Article.author
+   */
+  export type Article$authorArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
   /**
@@ -3825,6 +3884,7 @@ export namespace Prisma {
     updated_at?: boolean
     authlogs?: boolean | User$authlogsArgs<ExtArgs>
     comment?: boolean | User$commentArgs<ExtArgs>
+    article?: boolean | User$articleArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3862,6 +3922,7 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     authlogs?: boolean | User$authlogsArgs<ExtArgs>
     comment?: boolean | User$commentArgs<ExtArgs>
+    article?: boolean | User$articleArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3872,6 +3933,7 @@ export namespace Prisma {
     objects: {
       authlogs: Prisma.$Session_audit_trailPayload<ExtArgs>[]
       comment: Prisma.$CommentPayload<ExtArgs>[]
+      article: Prisma.$ArticlePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4277,6 +4339,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     authlogs<T extends User$authlogsArgs<ExtArgs> = {}>(args?: Subset<T, User$authlogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$Session_audit_trailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     comment<T extends User$commentArgs<ExtArgs> = {}>(args?: Subset<T, User$commentArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    article<T extends User$articleArgs<ExtArgs> = {}>(args?: Subset<T, User$articleArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ArticlePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4746,6 +4809,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CommentScalarFieldEnum | CommentScalarFieldEnum[]
+  }
+
+  /**
+   * User.article
+   */
+  export type User$articleArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Article
+     */
+    select?: ArticleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Article
+     */
+    omit?: ArticleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ArticleInclude<ExtArgs> | null
+    where?: ArticleWhereInput
+    orderBy?: ArticleOrderByWithRelationInput | ArticleOrderByWithRelationInput[]
+    cursor?: ArticleWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ArticleScalarFieldEnum | ArticleScalarFieldEnum[]
   }
 
   /**
@@ -8157,6 +8244,7 @@ export namespace Prisma {
     title: 'title',
     content: 'content',
     image: 'image',
+    author_id: 'author_id',
     base_views: 'base_views',
     created_at: 'created_at',
     updated_at: 'updated_at'
@@ -8326,10 +8414,12 @@ export namespace Prisma {
     title?: StringFilter<"Article"> | string
     content?: StringFilter<"Article"> | string
     image?: StringNullableFilter<"Article"> | string | null
+    author_id?: StringFilter<"Article"> | string
     base_views?: IntFilter<"Article"> | number
     created_at?: DateTimeFilter<"Article"> | Date | string
     updated_at?: DateTimeFilter<"Article"> | Date | string
     category?: CategoryOnArticleListRelationFilter
+    author?: UserListRelationFilter
   }
 
   export type ArticleOrderByWithRelationInput = {
@@ -8337,10 +8427,12 @@ export namespace Prisma {
     title?: SortOrder
     content?: SortOrder
     image?: SortOrderInput | SortOrder
+    author_id?: SortOrder
     base_views?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     category?: CategoryOnArticleOrderByRelationAggregateInput
+    author?: UserOrderByRelationAggregateInput
   }
 
   export type ArticleWhereUniqueInput = Prisma.AtLeast<{
@@ -8351,10 +8443,12 @@ export namespace Prisma {
     title?: StringFilter<"Article"> | string
     content?: StringFilter<"Article"> | string
     image?: StringNullableFilter<"Article"> | string | null
+    author_id?: StringFilter<"Article"> | string
     base_views?: IntFilter<"Article"> | number
     created_at?: DateTimeFilter<"Article"> | Date | string
     updated_at?: DateTimeFilter<"Article"> | Date | string
     category?: CategoryOnArticleListRelationFilter
+    author?: UserListRelationFilter
   }, "id">
 
   export type ArticleOrderByWithAggregationInput = {
@@ -8362,6 +8456,7 @@ export namespace Prisma {
     title?: SortOrder
     content?: SortOrder
     image?: SortOrderInput | SortOrder
+    author_id?: SortOrder
     base_views?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -8380,6 +8475,7 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<"Article"> | string
     content?: StringWithAggregatesFilter<"Article"> | string
     image?: StringNullableWithAggregatesFilter<"Article"> | string | null
+    author_id?: StringWithAggregatesFilter<"Article"> | string
     base_views?: IntWithAggregatesFilter<"Article"> | number
     created_at?: DateTimeWithAggregatesFilter<"Article"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"Article"> | Date | string
@@ -8450,6 +8546,7 @@ export namespace Prisma {
     updated_at?: DateTimeFilter<"User"> | Date | string
     authlogs?: Session_audit_trailListRelationFilter
     comment?: CommentListRelationFilter
+    article?: ArticleListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -8462,6 +8559,7 @@ export namespace Prisma {
     updated_at?: SortOrder
     authlogs?: Session_audit_trailOrderByRelationAggregateInput
     comment?: CommentOrderByRelationAggregateInput
+    article?: ArticleOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -8477,6 +8575,7 @@ export namespace Prisma {
     updated_at?: DateTimeFilter<"User"> | Date | string
     authlogs?: Session_audit_trailListRelationFilter
     comment?: CommentListRelationFilter
+    article?: ArticleListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -8694,10 +8793,12 @@ export namespace Prisma {
     title: string
     content: string
     image?: string | null
+    author_id: string
     base_views?: number
     created_at?: Date | string
     updated_at?: Date | string
     category?: CategoryOnArticleCreateNestedManyWithoutArticleInput
+    author?: UserCreateNestedManyWithoutArticleInput
   }
 
   export type ArticleUncheckedCreateInput = {
@@ -8705,20 +8806,24 @@ export namespace Prisma {
     title: string
     content: string
     image?: string | null
+    author_id: string
     base_views?: number
     created_at?: Date | string
     updated_at?: Date | string
     category?: CategoryOnArticleUncheckedCreateNestedManyWithoutArticleInput
+    author?: UserUncheckedCreateNestedManyWithoutArticleInput
   }
 
   export type ArticleUpdateInput = {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    author_id?: StringFieldUpdateOperationsInput | string
     base_views?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: CategoryOnArticleUpdateManyWithoutArticleNestedInput
+    author?: UserUpdateManyWithoutArticleNestedInput
   }
 
   export type ArticleUncheckedUpdateInput = {
@@ -8726,10 +8831,12 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    author_id?: StringFieldUpdateOperationsInput | string
     base_views?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: CategoryOnArticleUncheckedUpdateManyWithoutArticleNestedInput
+    author?: UserUncheckedUpdateManyWithoutArticleNestedInput
   }
 
   export type ArticleCreateManyInput = {
@@ -8737,6 +8844,7 @@ export namespace Prisma {
     title: string
     content: string
     image?: string | null
+    author_id: string
     base_views?: number
     created_at?: Date | string
     updated_at?: Date | string
@@ -8746,6 +8854,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    author_id?: StringFieldUpdateOperationsInput | string
     base_views?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8756,6 +8865,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    author_id?: StringFieldUpdateOperationsInput | string
     base_views?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8821,6 +8931,7 @@ export namespace Prisma {
     updated_at?: Date | string
     authlogs?: Session_audit_trailCreateNestedManyWithoutAdminInput
     comment?: CommentCreateNestedManyWithoutUserInput
+    article?: ArticleCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -8833,6 +8944,7 @@ export namespace Prisma {
     updated_at?: Date | string
     authlogs?: Session_audit_trailUncheckedCreateNestedManyWithoutAdminInput
     comment?: CommentUncheckedCreateNestedManyWithoutUserInput
+    article?: ArticleUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUpdateInput = {
@@ -8845,6 +8957,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     authlogs?: Session_audit_trailUpdateManyWithoutAdminNestedInput
     comment?: CommentUpdateManyWithoutUserNestedInput
+    article?: ArticleUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -8857,6 +8970,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     authlogs?: Session_audit_trailUncheckedUpdateManyWithoutAdminNestedInput
     comment?: CommentUncheckedUpdateManyWithoutUserNestedInput
+    article?: ArticleUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -9119,6 +9233,12 @@ export namespace Prisma {
     none?: CategoryOnArticleWhereInput
   }
 
+  export type UserListRelationFilter = {
+    every?: UserWhereInput
+    some?: UserWhereInput
+    none?: UserWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -9128,11 +9248,16 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type UserOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ArticleCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
     content?: SortOrder
     image?: SortOrder
+    author_id?: SortOrder
     base_views?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -9148,6 +9273,7 @@ export namespace Prisma {
     title?: SortOrder
     content?: SortOrder
     image?: SortOrder
+    author_id?: SortOrder
     base_views?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -9158,6 +9284,7 @@ export namespace Prisma {
     title?: SortOrder
     content?: SortOrder
     image?: SortOrder
+    author_id?: SortOrder
     base_views?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -9275,11 +9402,21 @@ export namespace Prisma {
     none?: CommentWhereInput
   }
 
+  export type ArticleListRelationFilter = {
+    every?: ArticleWhereInput
+    some?: ArticleWhereInput
+    none?: ArticleWhereInput
+  }
+
   export type Session_audit_trailOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type CommentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ArticleOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -9462,11 +9599,23 @@ export namespace Prisma {
     connect?: CategoryOnArticleWhereUniqueInput | CategoryOnArticleWhereUniqueInput[]
   }
 
+  export type UserCreateNestedManyWithoutArticleInput = {
+    create?: XOR<UserCreateWithoutArticleInput, UserUncheckedCreateWithoutArticleInput> | UserCreateWithoutArticleInput[] | UserUncheckedCreateWithoutArticleInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutArticleInput | UserCreateOrConnectWithoutArticleInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+  }
+
   export type CategoryOnArticleUncheckedCreateNestedManyWithoutArticleInput = {
     create?: XOR<CategoryOnArticleCreateWithoutArticleInput, CategoryOnArticleUncheckedCreateWithoutArticleInput> | CategoryOnArticleCreateWithoutArticleInput[] | CategoryOnArticleUncheckedCreateWithoutArticleInput[]
     connectOrCreate?: CategoryOnArticleCreateOrConnectWithoutArticleInput | CategoryOnArticleCreateOrConnectWithoutArticleInput[]
     createMany?: CategoryOnArticleCreateManyArticleInputEnvelope
     connect?: CategoryOnArticleWhereUniqueInput | CategoryOnArticleWhereUniqueInput[]
+  }
+
+  export type UserUncheckedCreateNestedManyWithoutArticleInput = {
+    create?: XOR<UserCreateWithoutArticleInput, UserUncheckedCreateWithoutArticleInput> | UserCreateWithoutArticleInput[] | UserUncheckedCreateWithoutArticleInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutArticleInput | UserCreateOrConnectWithoutArticleInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -9503,6 +9652,19 @@ export namespace Prisma {
     deleteMany?: CategoryOnArticleScalarWhereInput | CategoryOnArticleScalarWhereInput[]
   }
 
+  export type UserUpdateManyWithoutArticleNestedInput = {
+    create?: XOR<UserCreateWithoutArticleInput, UserUncheckedCreateWithoutArticleInput> | UserCreateWithoutArticleInput[] | UserUncheckedCreateWithoutArticleInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutArticleInput | UserCreateOrConnectWithoutArticleInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutArticleInput | UserUpsertWithWhereUniqueWithoutArticleInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutArticleInput | UserUpdateWithWhereUniqueWithoutArticleInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutArticleInput | UserUpdateManyWithWhereWithoutArticleInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
+  }
+
   export type CategoryOnArticleUncheckedUpdateManyWithoutArticleNestedInput = {
     create?: XOR<CategoryOnArticleCreateWithoutArticleInput, CategoryOnArticleUncheckedCreateWithoutArticleInput> | CategoryOnArticleCreateWithoutArticleInput[] | CategoryOnArticleUncheckedCreateWithoutArticleInput[]
     connectOrCreate?: CategoryOnArticleCreateOrConnectWithoutArticleInput | CategoryOnArticleCreateOrConnectWithoutArticleInput[]
@@ -9515,6 +9677,19 @@ export namespace Prisma {
     update?: CategoryOnArticleUpdateWithWhereUniqueWithoutArticleInput | CategoryOnArticleUpdateWithWhereUniqueWithoutArticleInput[]
     updateMany?: CategoryOnArticleUpdateManyWithWhereWithoutArticleInput | CategoryOnArticleUpdateManyWithWhereWithoutArticleInput[]
     deleteMany?: CategoryOnArticleScalarWhereInput | CategoryOnArticleScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutArticleNestedInput = {
+    create?: XOR<UserCreateWithoutArticleInput, UserUncheckedCreateWithoutArticleInput> | UserCreateWithoutArticleInput[] | UserUncheckedCreateWithoutArticleInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutArticleInput | UserCreateOrConnectWithoutArticleInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutArticleInput | UserUpsertWithWhereUniqueWithoutArticleInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutArticleInput | UserUpdateWithWhereUniqueWithoutArticleInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutArticleInput | UserUpdateManyWithWhereWithoutArticleInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type CategoryOnArticleCreateNestedManyWithoutCategoryInput = {
@@ -9573,6 +9748,12 @@ export namespace Prisma {
     connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
   }
 
+  export type ArticleCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<ArticleCreateWithoutAuthorInput, ArticleUncheckedCreateWithoutAuthorInput> | ArticleCreateWithoutAuthorInput[] | ArticleUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: ArticleCreateOrConnectWithoutAuthorInput | ArticleCreateOrConnectWithoutAuthorInput[]
+    connect?: ArticleWhereUniqueInput | ArticleWhereUniqueInput[]
+  }
+
   export type Session_audit_trailUncheckedCreateNestedManyWithoutAdminInput = {
     create?: XOR<Session_audit_trailCreateWithoutAdminInput, Session_audit_trailUncheckedCreateWithoutAdminInput> | Session_audit_trailCreateWithoutAdminInput[] | Session_audit_trailUncheckedCreateWithoutAdminInput[]
     connectOrCreate?: Session_audit_trailCreateOrConnectWithoutAdminInput | Session_audit_trailCreateOrConnectWithoutAdminInput[]
@@ -9585,6 +9766,12 @@ export namespace Prisma {
     connectOrCreate?: CommentCreateOrConnectWithoutUserInput | CommentCreateOrConnectWithoutUserInput[]
     createMany?: CommentCreateManyUserInputEnvelope
     connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+  }
+
+  export type ArticleUncheckedCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<ArticleCreateWithoutAuthorInput, ArticleUncheckedCreateWithoutAuthorInput> | ArticleCreateWithoutAuthorInput[] | ArticleUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: ArticleCreateOrConnectWithoutAuthorInput | ArticleCreateOrConnectWithoutAuthorInput[]
+    connect?: ArticleWhereUniqueInput | ArticleWhereUniqueInput[]
   }
 
   export type Session_audit_trailUpdateManyWithoutAdminNestedInput = {
@@ -9615,6 +9802,19 @@ export namespace Prisma {
     deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
   }
 
+  export type ArticleUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<ArticleCreateWithoutAuthorInput, ArticleUncheckedCreateWithoutAuthorInput> | ArticleCreateWithoutAuthorInput[] | ArticleUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: ArticleCreateOrConnectWithoutAuthorInput | ArticleCreateOrConnectWithoutAuthorInput[]
+    upsert?: ArticleUpsertWithWhereUniqueWithoutAuthorInput | ArticleUpsertWithWhereUniqueWithoutAuthorInput[]
+    set?: ArticleWhereUniqueInput | ArticleWhereUniqueInput[]
+    disconnect?: ArticleWhereUniqueInput | ArticleWhereUniqueInput[]
+    delete?: ArticleWhereUniqueInput | ArticleWhereUniqueInput[]
+    connect?: ArticleWhereUniqueInput | ArticleWhereUniqueInput[]
+    update?: ArticleUpdateWithWhereUniqueWithoutAuthorInput | ArticleUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: ArticleUpdateManyWithWhereWithoutAuthorInput | ArticleUpdateManyWithWhereWithoutAuthorInput[]
+    deleteMany?: ArticleScalarWhereInput | ArticleScalarWhereInput[]
+  }
+
   export type Session_audit_trailUncheckedUpdateManyWithoutAdminNestedInput = {
     create?: XOR<Session_audit_trailCreateWithoutAdminInput, Session_audit_trailUncheckedCreateWithoutAdminInput> | Session_audit_trailCreateWithoutAdminInput[] | Session_audit_trailUncheckedCreateWithoutAdminInput[]
     connectOrCreate?: Session_audit_trailCreateOrConnectWithoutAdminInput | Session_audit_trailCreateOrConnectWithoutAdminInput[]
@@ -9641,6 +9841,19 @@ export namespace Prisma {
     update?: CommentUpdateWithWhereUniqueWithoutUserInput | CommentUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: CommentUpdateManyWithWhereWithoutUserInput | CommentUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
+  }
+
+  export type ArticleUncheckedUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<ArticleCreateWithoutAuthorInput, ArticleUncheckedCreateWithoutAuthorInput> | ArticleCreateWithoutAuthorInput[] | ArticleUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: ArticleCreateOrConnectWithoutAuthorInput | ArticleCreateOrConnectWithoutAuthorInput[]
+    upsert?: ArticleUpsertWithWhereUniqueWithoutAuthorInput | ArticleUpsertWithWhereUniqueWithoutAuthorInput[]
+    set?: ArticleWhereUniqueInput | ArticleWhereUniqueInput[]
+    disconnect?: ArticleWhereUniqueInput | ArticleWhereUniqueInput[]
+    delete?: ArticleWhereUniqueInput | ArticleWhereUniqueInput[]
+    connect?: ArticleWhereUniqueInput | ArticleWhereUniqueInput[]
+    update?: ArticleUpdateWithWhereUniqueWithoutAuthorInput | ArticleUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: ArticleUpdateManyWithWhereWithoutAuthorInput | ArticleUpdateManyWithWhereWithoutAuthorInput[]
+    deleteMany?: ArticleScalarWhereInput | ArticleScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutCommentInput = {
@@ -9880,6 +10093,35 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UserCreateWithoutArticleInput = {
+    id?: string
+    email: string
+    username: string
+    password?: string | null
+    roles: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    authlogs?: Session_audit_trailCreateNestedManyWithoutAdminInput
+    comment?: CommentCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutArticleInput = {
+    id?: string
+    email: string
+    username: string
+    password?: string | null
+    roles: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    authlogs?: Session_audit_trailUncheckedCreateNestedManyWithoutAdminInput
+    comment?: CommentUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutArticleInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutArticleInput, UserUncheckedCreateWithoutArticleInput>
+  }
+
   export type CategoryOnArticleUpsertWithWhereUniqueWithoutArticleInput = {
     where: CategoryOnArticleWhereUniqueInput
     update: XOR<CategoryOnArticleUpdateWithoutArticleInput, CategoryOnArticleUncheckedUpdateWithoutArticleInput>
@@ -9904,6 +10146,35 @@ export namespace Prisma {
     article_id?: IntFilter<"CategoryOnArticle"> | number
     created_at?: DateTimeFilter<"CategoryOnArticle"> | Date | string
     updated_at?: DateTimeFilter<"CategoryOnArticle"> | Date | string
+  }
+
+  export type UserUpsertWithWhereUniqueWithoutArticleInput = {
+    where: UserWhereUniqueInput
+    update: XOR<UserUpdateWithoutArticleInput, UserUncheckedUpdateWithoutArticleInput>
+    create: XOR<UserCreateWithoutArticleInput, UserUncheckedCreateWithoutArticleInput>
+  }
+
+  export type UserUpdateWithWhereUniqueWithoutArticleInput = {
+    where: UserWhereUniqueInput
+    data: XOR<UserUpdateWithoutArticleInput, UserUncheckedUpdateWithoutArticleInput>
+  }
+
+  export type UserUpdateManyWithWhereWithoutArticleInput = {
+    where: UserScalarWhereInput
+    data: XOR<UserUpdateManyMutationInput, UserUncheckedUpdateManyWithoutArticleInput>
+  }
+
+  export type UserScalarWhereInput = {
+    AND?: UserScalarWhereInput | UserScalarWhereInput[]
+    OR?: UserScalarWhereInput[]
+    NOT?: UserScalarWhereInput | UserScalarWhereInput[]
+    id?: StringFilter<"User"> | string
+    email?: StringFilter<"User"> | string
+    username?: StringFilter<"User"> | string
+    password?: StringNullableFilter<"User"> | string | null
+    roles?: StringFilter<"User"> | string
+    created_at?: DateTimeFilter<"User"> | Date | string
+    updated_at?: DateTimeFilter<"User"> | Date | string
   }
 
   export type CategoryOnArticleCreateWithoutCategoryInput = {
@@ -9996,6 +10267,34 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ArticleCreateWithoutAuthorInput = {
+    title: string
+    content: string
+    image?: string | null
+    author_id: string
+    base_views?: number
+    created_at?: Date | string
+    updated_at?: Date | string
+    category?: CategoryOnArticleCreateNestedManyWithoutArticleInput
+  }
+
+  export type ArticleUncheckedCreateWithoutAuthorInput = {
+    id?: number
+    title: string
+    content: string
+    image?: string | null
+    author_id: string
+    base_views?: number
+    created_at?: Date | string
+    updated_at?: Date | string
+    category?: CategoryOnArticleUncheckedCreateNestedManyWithoutArticleInput
+  }
+
+  export type ArticleCreateOrConnectWithoutAuthorInput = {
+    where: ArticleWhereUniqueInput
+    create: XOR<ArticleCreateWithoutAuthorInput, ArticleUncheckedCreateWithoutAuthorInput>
+  }
+
   export type Session_audit_trailUpsertWithWhereUniqueWithoutAdminInput = {
     where: Session_audit_trailWhereUniqueInput
     update: XOR<Session_audit_trailUpdateWithoutAdminInput, Session_audit_trailUncheckedUpdateWithoutAdminInput>
@@ -10053,6 +10352,36 @@ export namespace Prisma {
     updated_at?: DateTimeFilter<"Comment"> | Date | string
   }
 
+  export type ArticleUpsertWithWhereUniqueWithoutAuthorInput = {
+    where: ArticleWhereUniqueInput
+    update: XOR<ArticleUpdateWithoutAuthorInput, ArticleUncheckedUpdateWithoutAuthorInput>
+    create: XOR<ArticleCreateWithoutAuthorInput, ArticleUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type ArticleUpdateWithWhereUniqueWithoutAuthorInput = {
+    where: ArticleWhereUniqueInput
+    data: XOR<ArticleUpdateWithoutAuthorInput, ArticleUncheckedUpdateWithoutAuthorInput>
+  }
+
+  export type ArticleUpdateManyWithWhereWithoutAuthorInput = {
+    where: ArticleScalarWhereInput
+    data: XOR<ArticleUpdateManyMutationInput, ArticleUncheckedUpdateManyWithoutAuthorInput>
+  }
+
+  export type ArticleScalarWhereInput = {
+    AND?: ArticleScalarWhereInput | ArticleScalarWhereInput[]
+    OR?: ArticleScalarWhereInput[]
+    NOT?: ArticleScalarWhereInput | ArticleScalarWhereInput[]
+    id?: IntFilter<"Article"> | number
+    title?: StringFilter<"Article"> | string
+    content?: StringFilter<"Article"> | string
+    image?: StringNullableFilter<"Article"> | string | null
+    author_id?: StringFilter<"Article"> | string
+    base_views?: IntFilter<"Article"> | number
+    created_at?: DateTimeFilter<"Article"> | Date | string
+    updated_at?: DateTimeFilter<"Article"> | Date | string
+  }
+
   export type UserCreateWithoutCommentInput = {
     id?: string
     email: string
@@ -10062,6 +10391,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     authlogs?: Session_audit_trailCreateNestedManyWithoutAdminInput
+    article?: ArticleCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutCommentInput = {
@@ -10073,6 +10403,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     authlogs?: Session_audit_trailUncheckedCreateNestedManyWithoutAdminInput
+    article?: ArticleUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutCommentInput = {
@@ -10100,6 +10431,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     authlogs?: Session_audit_trailUpdateManyWithoutAdminNestedInput
+    article?: ArticleUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCommentInput = {
@@ -10111,6 +10443,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     authlogs?: Session_audit_trailUncheckedUpdateManyWithoutAdminNestedInput
+    article?: ArticleUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserCreateWithoutAuthlogsInput = {
@@ -10122,6 +10455,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     comment?: CommentCreateNestedManyWithoutUserInput
+    article?: ArticleCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutAuthlogsInput = {
@@ -10133,6 +10467,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     comment?: CommentUncheckedCreateNestedManyWithoutUserInput
+    article?: ArticleUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutAuthlogsInput = {
@@ -10160,6 +10495,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     comment?: CommentUpdateManyWithoutUserNestedInput
+    article?: ArticleUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAuthlogsInput = {
@@ -10171,15 +10507,18 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     comment?: CommentUncheckedUpdateManyWithoutUserNestedInput
+    article?: ArticleUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type ArticleCreateWithoutCategoryInput = {
     title: string
     content: string
     image?: string | null
+    author_id: string
     base_views?: number
     created_at?: Date | string
     updated_at?: Date | string
+    author?: UserCreateNestedManyWithoutArticleInput
   }
 
   export type ArticleUncheckedCreateWithoutCategoryInput = {
@@ -10187,9 +10526,11 @@ export namespace Prisma {
     title: string
     content: string
     image?: string | null
+    author_id: string
     base_views?: number
     created_at?: Date | string
     updated_at?: Date | string
+    author?: UserUncheckedCreateNestedManyWithoutArticleInput
   }
 
   export type ArticleCreateOrConnectWithoutCategoryInput = {
@@ -10230,9 +10571,11 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    author_id?: StringFieldUpdateOperationsInput | string
     base_views?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    author?: UserUpdateManyWithoutArticleNestedInput
   }
 
   export type ArticleUncheckedUpdateWithoutCategoryInput = {
@@ -10240,9 +10583,11 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     content?: StringFieldUpdateOperationsInput | string
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    author_id?: StringFieldUpdateOperationsInput | string
     base_views?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    author?: UserUncheckedUpdateManyWithoutArticleNestedInput
   }
 
   export type CategoryUpsertWithoutArticleInput = {
@@ -10289,6 +10634,40 @@ export namespace Prisma {
 
   export type CategoryOnArticleUncheckedUpdateManyWithoutArticleInput = {
     category_id?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpdateWithoutArticleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    authlogs?: Session_audit_trailUpdateManyWithoutAdminNestedInput
+    comment?: CommentUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutArticleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    authlogs?: Session_audit_trailUncheckedUpdateManyWithoutAdminNestedInput
+    comment?: CommentUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateManyWithoutArticleInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    roles?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -10379,6 +10758,40 @@ export namespace Prisma {
 
   export type CommentUncheckedUpdateManyWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ArticleUpdateWithoutAuthorInput = {
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    author_id?: StringFieldUpdateOperationsInput | string
+    base_views?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    category?: CategoryOnArticleUpdateManyWithoutArticleNestedInput
+  }
+
+  export type ArticleUncheckedUpdateWithoutAuthorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    author_id?: StringFieldUpdateOperationsInput | string
+    base_views?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    category?: CategoryOnArticleUncheckedUpdateManyWithoutArticleNestedInput
+  }
+
+  export type ArticleUncheckedUpdateManyWithoutAuthorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    author_id?: StringFieldUpdateOperationsInput | string
+    base_views?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
