@@ -1,4 +1,4 @@
-import prisma from "../infrastructure/database/prisma/prisma";
+import prisma from "../../infrastructure/database/prisma/prisma";
 
 export const delCategoryRelation = async (categoryId: number) => {
     let unclasId = 0;

@@ -4,8 +4,8 @@ import { ContentfulStatusCode, StatusCode } from "hono/utils/http-status";
 import WriteCategory from "./category.write";
 import ReadCategory from "./category.read";
 import { category } from "./category.type";
-import { checkToken } from "../utils/jwtauth";
-import { checkPermisssion } from "../utils/checkPermission";
+import { checkToken } from "../utils/auth/jwtauth";
+import { checkPermisssion } from "../utils/auth/checkPermission";
 
 // Create a new Hono router instance for category endpoints
 const category = new Hono();

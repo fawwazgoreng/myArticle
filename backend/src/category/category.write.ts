@@ -1,5 +1,5 @@
 import { ZodError } from "zod";
-import { globalResponse } from "../utils/global.type";
+import { globalResponse } from "../type/global.type";
 import { category, categoryResponse } from "./category.type";
 import CategoryModel from "./category.model";
 import { CategoryValidate } from "./category.validate";

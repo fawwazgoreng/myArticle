@@ -4,7 +4,7 @@ import {
     articlePayload,
     articleResponse,
 } from "./article.type";
-import { globalResponse } from "../utils/global.type";
+import { globalResponse } from "../type/global.type";
 import { writeFile } from "../utils/image.write";
 import WriteRedis from "../infrastructure/redis/redis.write";
 import { ArticleValidate } from "./article.validate";

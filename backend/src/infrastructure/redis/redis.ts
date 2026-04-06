@@ -1,13 +1,13 @@
 import Redis, { RedisOptions } from "ioredis";
-const appName = process.env['APP_NAME'] ?? "";
-// const node_env = process.env['NODE_ENV'] ?? "production";
+import { env } from "../../config";
+const appName = env.APP_NAME ?? "";
 export const prfix = `${appName}:test:`;
 
 export const redisConfig : RedisOptions = {
-  port: Number(process.env['REDIS_PORT']) ?? 6379,
-  host: process.env['REDIS_HOST'] ?? '127.0.0.1',
+  port: Number(env.REDIS_PORT),
+  host: env.REDIS_HOST,
   keyPrefix: `${prfix}`,
-  db: Number(process.env['REDIS_DB']) ?? 0,
+  db: Number(env.REDIS_DB),
 }
 
 const redis = new Redis(redisConfig);

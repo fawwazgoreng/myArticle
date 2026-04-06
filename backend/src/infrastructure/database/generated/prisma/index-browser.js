@@ -144,6 +144,8 @@ exports.Prisma.UserScalarFieldEnum = {
   username: 'username',
   password: 'password',
   roles: 'roles',
+  is_verify: 'is_verify',
+  verified_at: 'verified_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
@@ -174,6 +176,14 @@ exports.Prisma.CategoryOnArticleScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
+exports.Prisma.VerificationCodeScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  user_id: 'user_id',
+  created_at: 'created_at',
+  expired_at: 'expired_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -196,7 +206,8 @@ exports.Prisma.ModelName = {
   User: 'User',
   Comment: 'Comment',
   Session_audit_trail: 'Session_audit_trail',
-  CategoryOnArticle: 'CategoryOnArticle'
+  CategoryOnArticle: 'CategoryOnArticle',
+  VerificationCode: 'VerificationCode'
 };
 
 /**

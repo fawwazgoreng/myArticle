@@ -1,4 +1,3 @@
-import category from "../category/category.route";
 import { logger } from "../infrastructure/logger/log";
 import { ReadRedis } from "../infrastructure/redis/redis.read";
 import WriteRedis from "../infrastructure/redis/redis.write";

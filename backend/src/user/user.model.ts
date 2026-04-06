@@ -1,6 +1,6 @@
 import { PrismaClientKnownRequestError } from "../infrastructure/database/generated/prisma/runtime/client";
 import { logger } from "../infrastructure/logger/log";
-import { verifyHash } from "../utils/jwtauth";
+import { verifyHash } from "../utils/auth/jwtauth";
 import { loginRequest, monitoring, registerType } from "./user.type";
 
 // user model responsible for database operations and authentication related to administrators

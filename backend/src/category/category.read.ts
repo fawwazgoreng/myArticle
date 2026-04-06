@@ -1,7 +1,7 @@
 import { ReadRedis } from "../infrastructure/redis/redis.read";
 import { logger } from "../infrastructure/logger/log";
 import { category, categoryResponses } from "./category.type";
-import { meta } from "../utils/global.type";
+import { meta } from "../type/global.type";
 import CategoryModel from "./category.model";
 
 // Service responsible for reading category data

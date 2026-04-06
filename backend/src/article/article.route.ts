@@ -6,8 +6,8 @@ import ReadArticle from "./article.read";
 import WriteRedis from "../infrastructure/redis/redis.write";
 import { article, articlePayload } from "./article.type";
 import { RedisKey } from "ioredis";
-import { checkToken } from "../utils/jwtauth";
-import { checkPermisssion } from "../utils/checkPermission";
+import { checkToken } from "../utils/auth/jwtauth";
+import { checkPermisssion } from "../utils/auth/checkPermission";
 
 type variable = {
     profile: {

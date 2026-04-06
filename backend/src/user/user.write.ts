@@ -3,8 +3,8 @@ import { UserValidate } from "./user.validate";
 import { ZodError } from "zod";
 import UserModel from "./user.model";
 import RedisToken from "../infrastructure/redis/refreshToken";
-import { decryptToken, encryptToken } from "../utils/encrypt";
-import { hashPassword } from "../utils/jwtauth";
+import { decryptToken, encryptToken } from "../utils/auth/encrypt";
+import { hashPassword } from "../utils/auth/jwtauth";
 
 // UserWrite service responsible for state-changing operations like authentication and session sync
 export default class UserWrite {

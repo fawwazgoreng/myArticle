@@ -1,4 +1,3 @@
-import { ca } from "zod/v4/locales";
 import redis from "./redis";
 
 const ttl = 60 * 60 * 24; // Cache expiration time (24 hours)

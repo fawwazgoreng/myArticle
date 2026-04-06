@@ -12,6 +12,7 @@ import schedule from "node-schedule";
 import WriteRedis from "./infrastructure/redis/redis.write";
 import { HTTPException } from "hono/http-exception";
 import { StatusCode } from "hono/utils/http-status";
+import { env } from "./config";
 
 // Initialize Redis writer for sync jobs
 const writeRedis = new WriteRedis();
@@ -24,7 +25,7 @@ const app = new Hono();
 app.use(
     "*",
     cors({
-        origin: process.env["FRONT_END_URL"] ?? "https://localhost:3000",
+        origin: env.FRONT_END_URL,
         allowHeaders: ["Content-Type", "Authorization"],
         allowMethods: ["POST", "GET", "PUT", "DELETE", "OPTIONS"],
         exposeHeaders: ["Content-Length"],
@@ -42,7 +43,7 @@ app.use("*", prettyJSON());
 app.use(
     "*",
     csrf({
-        origin: process.env["FRONT_END_URL"] ?? "https://localhost:3000",
+        origin: env.FRONT_END_URL,
     }),
 );
 
@@ -134,7 +135,7 @@ app.onError(async (error: any, c) => {
     // Set CORS header for error responses
     c.res.headers.set(
         "Access-Control-Allow-Origin",
-        process.env["FRONT_END_URL"] ?? "https://localhost:3000",
+        env.FRONT_END_URL
     );
 
 

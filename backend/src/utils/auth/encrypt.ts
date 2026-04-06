@@ -1,8 +1,10 @@
+import { env } from "../../config";
+
 export const encode = (text: string) => new TextEncoder().encode(text);
 export const decode = (buffer: ArrayBuffer) => new TextDecoder().decode(buffer);
 
 const getKey = async () => {
-    const key = String(process.env['SECRET_KEY']);
+    const key = String(env.SECRET_KEY);
     const hashedKey = await crypto.subtle.digest("SHA-256", encode(key));
     return crypto.subtle.importKey(
         "raw",
