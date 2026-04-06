@@ -91,7 +91,6 @@ app.use("*", async (c, next) => {
 const job = schedule.scheduleJob("*/5 * * * *", async () => {
 
     const redis = await writeRedis.syncData();
-
     logger.info(redis);
 });
 

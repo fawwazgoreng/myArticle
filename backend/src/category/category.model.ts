@@ -226,4 +226,14 @@ export default class CategoryModel {
       };
     }
   };
+  findCategoryByNames = async (name: string[]) => {
+      return await prisma?.category.findMany?.({
+          where: {
+              name: {
+                  in: name
+              },
+          },
+          select: { id: true },
+      })
+  }
 }

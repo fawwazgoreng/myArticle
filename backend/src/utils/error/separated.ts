@@ -49,5 +49,5 @@ export const toHttpException = (error:AppError): HTTPException => {
 
 export const handleError = (error: any) => {
     const appError = mapToAppError(error);
-    throw toHttpException(appError);
+    return toHttpException(appError);
 }

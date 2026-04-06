@@ -1,14 +1,14 @@
-import { ZodError } from "zod";
 import {
-    articleModelPayload,
+    article,
     articlePayload,
-    articleResponse,
 } from "./article.type";
-import { globalResponse } from "../type/global.type";
 import { writeFile } from "../utils/image.write";
 import WriteRedis from "../infrastructure/redis/redis.write";
 import { ArticleValidate } from "./article.validate";
 import ArticleModel from "./article.model";
+import { checkDatabasePermission } from "../utils/auth/checkPermission";
+import AppError from "../utils/error";
+import CategoryModel from "../category/category.model";
 
 // Service responsible for writing article data
 export default class WriteArticle {
@@ -18,117 +18,86 @@ export default class WriteArticle {
         private articleModel = new ArticleModel(),
         private articleImage = new writeFile("article"),
         private writeRedis = new WriteRedis(),
+        private categoryModel = new CategoryModel();
     ) {}
 
     // Create a new article with validation, image upload, and Redis update
     create = async (req: articlePayload) => {
-        try {
-            // Validate incoming payload
-            const validated: articlePayload =
-                await this.articleValidate.create(req);
+        const validated = await this.articleValidate.create(req);
 
-            let url = "";
-
-            // Save uploaded image if provided
-            if (req.image) url = await this.articleImage.write(req.image);
-
-            // Prepare payload for database layer
-            const payload: articleModelPayload = {
-                title: validated.title,
-                content: validated.content,
-                image: url,
-                category: validated.category,
-                author_id: req.profile.author_id,
-            };
-
-            // Insert article into database
-            const article = await this.articleModel.create(payload);
-
-            // Update Redis cache for new article
-            await this.writeRedis.newArticle(article);
-
-            return {
-                status: 201,
-                message: "success create new article",
-                article: article,
-            };
-        } catch (error: any) {
-            // Handle validation errors
-            if (error instanceof ZodError) {
-                throw {
-                    status: 422,
-                    message: error.issues[0].message,
-                    error: error.issues,
-                } as globalResponse;
-            }
-
-            // Fallback for unexpected errors
-            throw {
-                status: error.status || 500,
-                message: error.message || "internal server error",
-                error: error,
-            } as globalResponse;
+        let url = "";
+        if (req.image) {
+            url = await this.articleImage.write(req.image);
         }
+
+        const categories = await this.categoryModel.findCategoryByNames(req.category);
+
+        if (!categories || categories.length !== validated.category.length) {
+            throw new AppError(
+                400,
+                "Invalid category",
+                "INVALID_CATEGORY",
+            );
+        }
+
+        const article = await this.articleModel.create({
+            title: validated.title,
+            content: validated.content,
+            image: url,
+            author_id: req.profile.author_id,
+            categoryIds: categories.map((c: any) => c.id),
+        });
+
+        await this.writeRedis.newArticle(article as article);
+
+        return article;
     };
 
     // Update article data and synchronize image if changed
     update = async (id: number, req: articlePayload) => {
-        try {
-            // Validate update payload
-            const validated = await this.articleValidate.update(req);
+        const validated = await this.articleValidate.update(req);
 
-            // check permission
-            if (req.profile.roles != "admin")
-                await this.articleModel.checkPermisssion(
-                    id,
-                    req.profile.author_id,
+        if (req.profile.roles !== "admin") {
+            const permission = await this.articleModel.checkPermisssion(id);
+
+            if (!permission?.id) {
+                throw new AppError(
+                    404,
+                    `article id ${id} not found`,
+                    "ARTICLE_NOT_FOUND",
                 );
-
-            // Retrieve current article image
-            const lastImg =
-                (await this.articleModel
-                    .findImage(id)
-                    .then((data) => data?.image)) || "";
-
-            // Replace or keep existing image
-            const url = this.articleImage.update(lastImg, req.image);
-
-            // Prepare update payload
-            const payload: articleModelPayload = {
-                title: validated.title,
-                content: validated.content,
-                image: url,
-                category: validated.category,
-                author_id: req.profile.author_id,
-            };
-
-            // Update article in database
-            const article = await this.articleModel.update(id, payload);
-
-            const res: articleResponse = {
-                status: 200,
-                message: "succes update article",
-                article: article,
-            };
-
-            return res;
-        } catch (error: any) {
-            // Handle validation errors
-            if (error instanceof ZodError) {
-                throw {
-                    status: 422,
-                    message: error.issues[0].message,
-                    error: error.issues,
-                } as globalResponse;
             }
 
-            // Fallback error response
-            throw {
-                status: error.status || 500,
-                message: error.message || "internal server error",
-                error: error,
-            } as globalResponse;
+            await checkDatabasePermission(id, req.profile.author_id);
         }
+
+        const lastImg =
+            (await this.articleModel.findImage(id))?.image || "";
+
+        const url = this.articleImage.update(lastImg, req.image) || "";
+
+        const categories = await this.categoryModel.findCategoryByNames(validated.category);
+
+        if (!categories || categories.length !== validated.category.length) {
+            throw new AppError(
+                400,
+                "Invalid category",
+                "INVALID_CATEGORY",
+            );
+        }
+
+        const article = await this.articleModel.update(id, {
+            title: validated.title,
+            content: validated.content,
+            image: url,
+        });
+
+        await this.articleModel.replaceCategories(
+            id,
+            categories.map((c: any) => c.id),
+        );
+
+        return article;
     };
 
     // Delete article and remove associated image
@@ -136,24 +105,36 @@ export default class WriteArticle {
         id: number,
         profile: { author_id: string; roles: "admin" | "writer" | "user" },
     ) => {
-        try {
-            // Remove article from database
-            const article = await this.articleModel.delete(id);
+        if (profile.roles !== "admin") {
+            const permission = await this.articleModel.checkPermisssion(id);
 
-            // check permission
-            if (profile.roles != "admin")
-                await this.articleModel.checkPermisssion(id, profile.author_id);
+            if (!permission?.id) {
+                throw new AppError(
+                    404,
+                    `article id ${id} not found`,
+                    "ARTICLE_NOT_FOUND",
+                );
+            }
 
-            // Delete stored image if exists
-            if (article.image) this.articleImage.update(article.image);
-        } catch (error: any) {
-            const res: globalResponse = {
-                status: error.status || 500,
-                message: error.message || "internal server error",
-                error: error.error,
-            };
-
-            throw res;
+            await checkDatabasePermission(id, profile.author_id);
         }
+
+        const article = await this.articleModel.find(id);
+
+        if (!article?.id) {
+            throw new AppError(
+                404,
+                `article id ${id} not found`,
+                "ARTICLE_NOT_FOUND",
+            );
+        }
+
+        await this.articleModel.delete(id);
+
+        if (article.image) {
+            this.articleImage.update(article.image);
+        }
+
+        return true;
     };
 }
