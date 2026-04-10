@@ -3,6 +3,8 @@ import { HTTPException } from "hono/http-exception";
 import { decryptCookie } from "./decryptUserToken";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import ArticleModel from "../../article/article.model";
+import { toHttpException } from "../error/separated";
+import AppError from "../error";
 
 export const checkPermisssion = async (
     c: Context,
@@ -23,11 +25,7 @@ export const checkPermisssion = async (
         c.set("profile", profile);
         await next();
     } catch (error: any) {
-        const res = c.json({
-            status: 403,
-            message: "you dont have permission to do this action",
-        });
-        throw new HTTPException(res.status as ContentfulStatusCode, { res });
+        throw toHttpException(new AppError(403,"you dont have permission to do this action","UNAUTHORIZED"));
     }
 };
 
@@ -38,15 +36,9 @@ export const checkDatabasePermission = async (
     const article = await new ArticleModel().checkPermisssion(id);
     // Throw error if article does not exist
     if (!article?.id) {
-        throw {
-            status: 404,
-            message: "article id " + id + " not found",
-        };
+        throw toHttpException(new AppError(404,`article id ${id} not found`,"NOT FOUND"));
     }
     if (article.author_id != author_id) {
-        throw {
-            status: 401,
-            message: "you dont have permission to access this resource",
-        };
+        throw toHttpException(new AppError(403,"you dont have permission to do this action","UNAUTHORIZED"));
     }
 };

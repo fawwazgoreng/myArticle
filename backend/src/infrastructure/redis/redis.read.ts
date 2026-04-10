@@ -1,5 +1,6 @@
 import redis from "./redis";
 import articleModel from "../../article/article.model";
+import AppError from "../../utils/error";
 
 const ttl = 60 * 60 * 24; // Cache expiration time (24 hours)
 
@@ -25,7 +26,10 @@ export class ReadRedis {
     // If cache miss, fetch article from database
     if (!res) {
 
-      const article = await (new articleModel().find(id));
+        const article = await (new articleModel().find(id));
+        if (!article) {
+            throw new AppError(404 , `article id ${id} not found`);
+        }
 
       // Store article in Redis with expiration
       await redis.setex(

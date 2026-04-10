@@ -30,18 +30,10 @@ const registerValidate = z.object({
 });
 
 export class UserValidate {
-    login = async (req: loginRequest) => {
-        try {
-            return loginValidate.parse(req);
-        } catch (error) {
-            throw error;
-        }
+    login =  (req: loginRequest) => {
+        return  loginValidate.parse(req);
     };
-    register = async (req: registerType) => {
-        try {
-            return registerValidate.parse(req);
-        } catch (error) {
-            throw error;
-        }
-    }
+    register =  (req: registerType) => {
+        return registerValidate.parse(req);
+    };
 }

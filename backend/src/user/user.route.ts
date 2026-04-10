@@ -11,6 +11,7 @@ import { checkToken, getUserHasUsed, signToken } from "../utils/auth/jwtauth";
 import { decryptCookie } from "../utils/auth/decryptUserToken";
 import UserWrite from "./user.write";
 import { env } from "../config";
+import { handleError } from "../utils/error/separated";
 
 // Create Hono app instance for user-related routing
 const app = new Hono();
@@ -79,12 +80,7 @@ app
                 token
             });
         } catch (error: any) {
-            const res = {
-                status: error.status,
-                message: error.message,
-                error: error.error,
-            };
-            throw new HTTPException(res.status, res);
+            throw handleError(error);
         }
     })
 
@@ -105,12 +101,7 @@ app
                 token: token
             });
         } catch (error: any) {
-            const res = {
-                status: error.status,
-                message: error.message,
-                error: error.error,
-            };
-            throw new HTTPException(res.status, res);
+            throw handleError(error);
         }
     })
     
@@ -127,12 +118,7 @@ app
                 message: "success created admin",
             });
         } catch (error: any) {
-            const res = {
-                status: error.status,
-                message: error.message,
-                error: error.error,
-            };
-            throw new HTTPException(res.status, res);
+            throw handleError(error);
         }
     })
 
@@ -172,12 +158,7 @@ app
                 message: "logout successfully",
             });
         } catch (error: any) {
-            const res = {
-                status: error.status,
-                message: error.message,
-                error: error.error,
-            };
-            throw new HTTPException(res.status, res);
+            throw handleError(error);
         }
     });
 

@@ -1,5 +1,4 @@
 import prisma from "../infrastructure/database/prisma/prisma";
-import { Sql } from "../infrastructure/database/generated/prisma/runtime/client";
 import { Prisma } from "../infrastructure/database/generated/prisma";
 
 // Article model responsible for database operations related to articles
@@ -177,33 +176,7 @@ export default class ArticleModel {
     };
 
     // Sync Redis view counters to database in batch
-    sync = async (req: { key: string; val: string | null }[]) => {
-        const condition: Sql[] = [];
-        const ids: number[] = [];
-
-        // Convert Redis key/value pairs into SQL CASE conditions
-        req.forEach((item) => {
-            const id = Number(item.key.split(":")[2]);
-            const val = Number(item.val);
-
-            if (isNaN(id) || isNaN(val)) return;
-
-            condition.push(Prisma.sql`WHEN id = ${id} THEN ${val}`);
-            ids.push(id);
-        });
-
-        if (!ids.length) return 0;
-
-        const queryCase = Prisma.join(condition, " ");
-        const inId = Prisma.join(ids, ",");
-
-        // Batch update article views using CASE SQL
-        const query = Prisma.sql`
-        UPDATE "Article"
-        SET base_views = CASE ${queryCase} ELSE base_views END
-        where id in(${inId})
-      `;
-
+    raw = async (query: any) => {
         return await prisma.$executeRaw(query);
     };
 

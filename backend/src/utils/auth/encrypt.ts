@@ -1,4 +1,5 @@
 import { env } from "../../config";
+import AppError from "../error";
 
 export const encode = (text: string) => new TextEncoder().encode(text);
 export const decode = (buffer: ArrayBuffer) => new TextDecoder().decode(buffer);
@@ -29,9 +30,7 @@ export const encryptToken = async (value: string) => {
     combined.set(new Uint8Array(encryped), iv.length);
         return Buffer.from(combined).toString("base64");
     } catch (error : any) {
-        throw {
-            message: error
-        }
+        throw new AppError(500, "Error encript token");
     }
 }
 

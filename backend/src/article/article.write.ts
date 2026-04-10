@@ -1,7 +1,4 @@
-import {
-    article,
-    articlePayload,
-} from "./article.type";
+import { article, articlePayload } from "./article.type";
 import { writeFile } from "../utils/image.write";
 import WriteRedis from "../infrastructure/redis/redis.write";
 import { ArticleValidate } from "./article.validate";
@@ -9,6 +6,8 @@ import ArticleModel from "./article.model";
 import { checkDatabasePermission } from "../utils/auth/checkPermission";
 import AppError from "../utils/error";
 import CategoryModel from "../category/category.model";
+import { Sql } from "../infrastructure/database/generated/prisma/runtime/client";
+import { Prisma } from "../infrastructure/database/generated/prisma";
 
 // Service responsible for writing article data
 export default class WriteArticle {
@@ -18,7 +17,7 @@ export default class WriteArticle {
         private articleModel = new ArticleModel(),
         private articleImage = new writeFile("article"),
         private writeRedis = new WriteRedis(),
-        private categoryModel = new CategoryModel();
+        private categoryModel = new CategoryModel(),
     ) {}
 
     // Create a new article with validation, image upload, and Redis update
@@ -30,14 +29,12 @@ export default class WriteArticle {
             url = await this.articleImage.write(req.image);
         }
 
-        const categories = await this.categoryModel.findCategoryByNames(req.category);
+        const categories = await this.categoryModel.findCategoryByNames(
+            req.category,
+        );
 
         if (!categories || categories.length !== validated.category.length) {
-            throw new AppError(
-                400,
-                "Invalid category",
-                "INVALID_CATEGORY",
-            );
+            throw new AppError(400, "Invalid category", "INVALID_CATEGORY");
         }
 
         const article = await this.articleModel.create({
@@ -50,7 +47,10 @@ export default class WriteArticle {
 
         await this.writeRedis.newArticle(article as article);
 
-        return article;
+        return {
+            ...article,
+            base_views: 0,
+        };
     };
 
     // Update article data and synchronize image if changed
@@ -71,19 +71,16 @@ export default class WriteArticle {
             await checkDatabasePermission(id, req.profile.author_id);
         }
 
-        const lastImg =
-            (await this.articleModel.findImage(id))?.image || "";
+        const lastImg = (await this.articleModel.findImage(id))?.image || "";
 
         const url = this.articleImage.update(lastImg, req.image) || "";
 
-        const categories = await this.categoryModel.findCategoryByNames(validated.category);
+        const categories = await this.categoryModel.findCategoryByNames(
+            validated.category,
+        );
 
         if (!categories || categories.length !== validated.category.length) {
-            throw new AppError(
-                400,
-                "Invalid category",
-                "INVALID_CATEGORY",
-            );
+            throw new AppError(400, "Invalid category", "INVALID_CATEGORY");
         }
 
         const article = await this.articleModel.update(id, {
@@ -136,5 +133,35 @@ export default class WriteArticle {
         }
 
         return true;
+    };
+
+    sync = async (req: { key: string; val: string | null }[]) => {
+        const condition: Sql[] = [];
+        const ids: number[] = [];
+
+        // Convert Redis key/value pairs into SQL CASE conditions
+        req.forEach((item) => {
+            const id = Number(item.key.split(":")[2]);
+            const val = Number(item.val);
+
+            if (isNaN(id) || isNaN(val)) return;
+
+            condition.push(Prisma.sql`WHEN id = ${id} THEN ${val}`);
+            ids.push(id);
+        });
+
+        if (!ids.length) return 0;
+
+        const queryCase = Prisma.join(condition, " ");
+        const inId = Prisma.join(ids, ",");
+
+        // Batch update article views using CASE SQL
+        const query = Prisma.sql`
+        UPDATE "Article"
+        SET base_views = CASE ${queryCase} ELSE base_views END
+        where id in(${inId})
+      `;
+
+        return await this.articleModel.raw(query);
     };
 }

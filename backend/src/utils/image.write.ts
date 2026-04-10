@@ -1,91 +1,93 @@
 import path from "path";
 import fs from "fs";
+import AppError from "./error";
 
 // Utility for handling image file storage
 export class writeFile {
+    // Define directory target (ex: article, category)
+    constructor(public direct: string) {}
 
-  // Define directory target (ex: article, category)
-  constructor(public direct : string) {}
+    // Save new uploaded file to disk
+    write = async (file: File) => {
+        try {
+            // Build directory path for storing images
+            const fileDir = path.join(
+                process.cwd(),
+                `public/image/${this.direct}`,
+            );
 
-  // Save new uploaded file to disk
-  write = async (file: File) => {
-    try {
+            // Create directory if it does not exist
+            if (!fs.existsSync(fileDir)) {
+                fs.mkdirSync(fileDir, { recursive: true });
+            }
 
-      // Build directory path for storing images
-      const fileDir = path.join(process.cwd(), `public/image/${this.direct}`);
+            // Generate random filename to avoid collision
+            const url = path.join(
+                fileDir,
+                Math.random().toString(15).substring(2, 7) + file.name,
+            );
 
-      // Create directory if it does not exist
-      if (!fs.existsSync(fileDir)) {
-        fs.mkdirSync(fileDir, { recursive: true });
-      }
+            // Write file using Bun runtime
+            Bun.write(url, file);
 
-      // Generate random filename to avoid collision
-      const url = path.join(
-        fileDir,
-        Math.random().toString(15).substring(2, 7) + file.name,
-      );
+            // Convert absolute path to public URL path
+            const splitUrl = path.join(process.cwd(), "public");
+            const finalUrl = url.split(splitUrl);
 
-      // Write file using Bun runtime
-      Bun.write(url, file);
+            return finalUrl[1];
+        } catch (error: any) {
+            throw new AppError(
+                500,
+                "failed create photo profile",
+                "INTERNAL SERVER ERROR",
+            );
+        }
+    };
 
-      // Convert absolute path to public URL path
-      const splitUrl = path.join(process.cwd() , 'public');
-      const finalUrl = url.split(splitUrl);
+    // Replace existing image with new file
+    update = (lastFile: string, file?: File | null) => {
+        try {
+            // Ensure image directory exists
+            const fileDir = path.join(
+                process.cwd(),
+                `public/image/${this.direct}`,
+            );
 
-      return finalUrl[1];
+            if (!fs.existsSync(fileDir)) {
+                fs.mkdirSync(fileDir, { recursive: true });
+            }
 
-    } catch (error: any) {
+            // Resolve previous image path
+            const lastImage = path.join(process.cwd(), lastFile);
 
-      throw {
-        message: error.message || "internal server erorr",
-        error: error,
-      };
-    }
-  };
+            // Delete old image if exists
+            if (fs.existsSync(lastImage)) {
+                fs.rmdirSync(lastImage);
+            }
 
-  // Replace existing image with new file
-  update = (lastFile: string, file?: File | null) => {
-    try {
+            // Stop if no new file provided
+            if (!file) return;
 
-      // Ensure image directory exists
-      const fileDir = path.join(process.cwd(), `public/image/${this.direct}`);
+            // Generate new file path
+            const url = path.join(
+                fileDir,
+                Math.random().toString(15).substring(2, 7) + file.name,
+            );
 
-      if (!fs.existsSync(fileDir)) {
-        fs.mkdirSync(fileDir, { recursive: true });
-      }
+            // Write new file to disk
+            Bun.write(url, file);
 
-      // Resolve previous image path
-      const lastImage = path.join(process.cwd() , lastFile);
+            // Convert absolute path to public URL
+            const splitUrl = path.join(process.cwd(), "public");
+            const finalUrl = url.split(splitUrl);
 
-      // Delete old image if exists
-      if (fs.existsSync(lastImage)) {
-        fs.rmdirSync(lastImage);
-      }
-
-      // Stop if no new file provided
-      if (!file) return;
-
-      // Generate new file path
-      const url = path.join(
-        fileDir,
-        Math.random().toString(15).substring(2, 7) + file.name,
-      );
-
-      // Write new file to disk
-      Bun.write(url, file);
-
-      // Convert absolute path to public URL
-      const splitUrl = path.join(process.cwd() , 'public');
-      const finalUrl = url.split(splitUrl);
-
-      return finalUrl[1];
-
-    } catch (error: any) {
-
-      throw {
-        message: error.message || "internal server erorr",
-        error: error,
-      };
-    }
-  };
+            return finalUrl[1];
+        } catch (error: any) {
+            throw new AppError(
+                500,
+                "failed edit profile",
+                "INTERNAL SERVER ERROR",
+            );
+        }
+    };
 }

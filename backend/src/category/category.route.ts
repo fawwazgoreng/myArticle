@@ -1,11 +1,12 @@
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
-import { ContentfulStatusCode, StatusCode } from "hono/utils/http-status";
+import { StatusCode } from "hono/utils/http-status";
 import WriteCategory from "./category.write";
 import ReadCategory from "./category.read";
 import { category } from "./category.type";
 import { checkToken } from "../utils/auth/jwtauth";
 import { checkPermisssion } from "../utils/auth/checkPermission";
+import { handleError } from "../utils/error/separated";
 
 // Create a new Hono router instance for category endpoints
 const category = new Hono();
@@ -28,15 +29,8 @@ category
 
             c.status(res.status as StatusCode);
             return c.json(res);
-        } catch (error: any) {
-            // Return structured error response
-            const res = c.json({
-                status: error.status,
-                message: error.message,
-                error: error.error,
-            });
-
-            throw new HTTPException(error.status, { res });
+        } catch (error) {
+            throw handleError(error);
         }
     })
 
@@ -72,14 +66,8 @@ category
                 message: "succes get category",
                 ...res,
             });
-        } catch (error: any) {
-            const res = c.json({
-                status: error.status,
-                message: error.message,
-                error: error.error,
-            });
-
-            throw new HTTPException(error.status, { res });
+        } catch (error) {
+            throw handleError(error);
         }
     })
 
@@ -103,14 +91,8 @@ category
 
             c.status(res.status as StatusCode);
             return c.json(res);
-        } catch (error: any) {
-            const res = c.json({
-                status: error.status,
-                message: error.message,
-                error: error.error,
-            });
-
-            throw new HTTPException(error.status, { res });
+        } catch (error) {
+            throw handleError(error);
         }
     })
 
@@ -129,14 +111,8 @@ category
 
             c.status(res.status as StatusCode);
             return c.json(res);
-        } catch (error: any) {
-            const res = c.json({
-                status: error.status,
-                message: error.message,
-                error: error.error,
-            });
-
-            throw new HTTPException(error.status, { res });
+        } catch (error) {
+            throw handleError(error);
         }
     })
 
@@ -154,14 +130,8 @@ category
                 status: 200,
                 message: "success delete category id" + id,
             });
-        } catch (error: any) {
-            const res = {
-                status: error.status || 500,
-                message: error.message || "",
-                error: error.error,
-            };
-
-            throw new HTTPException(res.status as ContentfulStatusCode, res);
+        } catch (error) {
+            throw handleError(error);
         }
     });
 

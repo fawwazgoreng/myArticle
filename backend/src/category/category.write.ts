@@ -3,102 +3,58 @@ import { globalResponse } from "../type/global.type";
 import { category, categoryResponse } from "./category.type";
 import CategoryModel from "./category.model";
 import { CategoryValidate } from "./category.validate";
+import AppError from "../utils/error";
 
 // Service responsible for writing category data
 export default class WriteCategory {
+    // Initialize validation and database model
+    constructor(
+        private categoryValidate = new CategoryValidate(),
+        private categoryModel = new CategoryModel(),
+    ) {}
 
-  // Initialize validation and database model
-  constructor(
-    private categoryValidate =  new CategoryValidate(),
-    private categoryModel = new CategoryModel(),
-  ){}
+    // Create a new category with validation
+    create = async (req: { name: string }) => {
+        // Validate incoming payload
+        const validated = await this.categoryValidate.create(req);
 
-  // Create a new category with validation
-  create = async (req: {name : string}) => {
-    try {
+        const if_exist = await this.categoryModel.findFirst(validated.name);
+        if (if_exist) {
+            throw new AppError(400, `category ${req.name} has created`);
+        }
 
-      // Validate incoming payload
-      const validated = await this.categoryValidate.create(req);
+        // Insert category into database
+        const category: category = await this.categoryModel.create(validated);
 
-      // Insert category into database
-      const category: category = await this.categoryModel.create(validated);
+        // Build API response
+        return {
+            status: 201,
+            message: "success create new category",
+            category: category,
+        } as categoryResponse;
+    };
 
-      // Build API response
-      return {
-        status: 201,
-        message: "success create new category",
-        category: category,
-      } as categoryResponse;
+    // Update category name by ID
+    update = async (req: { id: number; name: string }) => {
+        // Validate incoming payload
+        const validated = await this.categoryValidate.create(req);
 
-    } catch (error: any) {
+        // Update category in database
+        const category: category = await this.categoryModel.update(
+            req.id,
+            validated,
+        );
 
-      // Handle validation errors
-      if (error instanceof ZodError) {
-        throw {
-          status: 422,
-          message: error.issues[0].message,
-          error: error.issues,
-        } as globalResponse;
-      }
+        return {
+            status: 200,
+            message: "success update new category",
+            category: category,
+        } as categoryResponse;
+    };
 
-      // Fallback for unexpected errors
-      throw {
-        status: error.status || 500,
-        message: error.message || "internal server error",
-        error: error,
-      } as globalResponse;
-    }
-  };
-
-  // Update category name by ID
-  update = async (req: {id: number , name : string}) => {
-    try {
-
-      // Validate incoming payload
-      const validated = await this.categoryValidate.create(req);
-
-      // Update category in database
-      const category: category = await this.categoryModel.update(req.id, validated);
-
-      return {
-        status: 200,
-        message: "success update new category",
-        category: category,
-      } as categoryResponse;
-
-    } catch (error: any) {
-
-      // Handle validation errors
-      if (error instanceof ZodError) {
-        throw {
-          status: 422,
-          message: error.issues[0].message,
-          error: error.issues,
-        } as globalResponse;
-      }
-
-      // Fallback error response
-      throw {
-        status: error.status || 500,
-        message: error.message || "internal server error",
-        error: error,
-      } as globalResponse;
-    }
-  };
-
-  // Delete category by ID
-  delete = async (id: number) => {
-    try {
-        
-      // Remove category from database
-      await this.categoryModel.delete(id);
-
-    } catch (error: any) {
-      throw {
-        status: error.status || 500,
-        message: error.message || "internal server error",
-        error: error.error,
-      };
-    }
-  };
+    // Delete category by ID
+    delete = async (id: number) => {
+        // Remove category from database
+        await this.categoryModel.delete(id);
+    };
 }

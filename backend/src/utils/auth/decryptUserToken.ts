@@ -3,11 +3,12 @@ import { getCookie } from "hono/cookie";
 import RedisToken from "../../infrastructure/redis/refreshToken";
 import UserWrite from "../../user/user.write";
 import UserRead from "../../user/user.read";
+import AppError from "../error";
 
 export const decryptCookie = async (c: Context) => {
     const refreshToken = String(getCookie(c, "refresh-token"));
     if (!refreshToken) {
-        throw { status: 401, message: "unauthorized" };
+        throw new AppError(401,"unauthorized" , "UNAUTHORIZED");
     }
 
     // Decrypt and parse the stored session payload

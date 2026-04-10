@@ -1,101 +1,93 @@
 import { RedisKey } from "ioredis";
 import redis, { prfix } from "./redis";
 import { article, articleMeta } from "../../article/article.type";
-import articleModel from "../../article/article.model";
 import { logger } from "../logger/log";
+import WriteArticle from "../../article/article.write";
 
 export const ttl = 60 * 60 * 24; // Cache expiration time (24 hours)
 
 // Redis write service for caching and counter synchronization
 export default class WriteRedis {
+    // Increment article view counter in Redis
+    increment = async (id: RedisKey) => {
+        const res = await redis.incr(id);
 
-  // Increment article view counter in Redis
-  increment = async (id: RedisKey) => {
-    const res = await redis.incr(id);
+        if (!res) {
+            return 404;
+        }
 
-    if (!res) {
-      return 404;
-    }
+        return res;
+    };
 
-    return res;
-  };
+    // Cache newly created article and initialize view counter
+    newArticle = async (req: article) => {
+        // Cache full article object
+        const res = await redis.setex(
+            `article:` + req.id,
+            ttl,
+            JSON.stringify(req),
+        );
 
-  // Cache newly created article and initialize view counter
-  newArticle = async (req: article) => {
+        // Initialize view counter
+        await redis.set(String(req.id), req.base_views ?? 0);
 
-    // Cache full article object
-    const res = await redis.setex(`article:` + req.id, ttl, JSON.stringify(req));
+        if (!res) {
+            return 404;
+        }
 
-    // Initialize view counter
-    await redis.set(String(req.id), req.base_views ?? 0);
-
-    if (!res) {
-      return 404;
-    }
-
-    return res;
-  };
+        return res;
+    };
 
     // Cache search result for article listing
-  cacheSearch = async (key : string , val : articleMeta) => {
-    await redis.setex(key, ttl, JSON.stringify(val));
-  };
+    cacheSearch = async (key: string, val: articleMeta) => {
+        await redis.setex(key, ttl, JSON.stringify(val));
+    };
 
-  // Remove article cache and view counter
-  delete = async (id: RedisKey) => {
+    // Remove article cache and view counter
+    delete = async (id: RedisKey) => {
+        // Delete cached article object
+        await redis.del("article:" + id);
 
-    // Delete cached article object
-    await redis.del("article:" + id);
+        // Delete view counter key
+        const res = await redis.del(id);
 
-    // Delete view counter key
-    const res = await redis.del(id);
+        if (!res) {
+            return 404;
+        }
 
-    if (!res) {
-      return 404;
-    }
+        return res;
+    };
 
-    return res;
-  };  
+    // Sync Redis view counters back to database
+    syncData = async () => {
+        // Retrieve all Redis keys
+        const keys = await redis.keys("*");
 
-  // Sync Redis view counters back to database
-  syncData = async () => {
-    try {
+        if (!keys.length) return;
 
-      // Retrieve all Redis keys
-      const keys = await redis.keys("*");
+        // Remove Redis prefix from keys
+        const key: RedisKey[] = keys.map((k) => k.replace(prfix, ""));
 
-      if (!keys.length) return;
+        // Retrieve values for all keys
+        const value = await redis.mget(key);
 
-      // Remove Redis prefix from keys
-      const key : RedisKey[] = keys.map(k => k.replace(prfix,''));
+        // Build key-value mapping for syncing
+        const data = keys
+            .map((key, index) => ({
+                key,
+                val: value[index],
+            }))
+            .filter((value) => value.key != null && value.key != null)
+            .filter((item) => Number(item.val) != 0);
 
-      // Retrieve values for all keys
-      const value = await redis.mget(key);
+        if (!data) return;
 
-      // Build key-value mapping for syncing
-      const data = keys.map((key, index) => ({
-        key,
-        val: value[index]
-      }))
-      .filter(value => value.key != null && value.key != null)
-      .filter(item => Number(item.val) != 0);
+        // Log sync data for debugging
+        logger.info(data);
 
-      if (!data) return;
+        // Sync Redis counters to database
+        const res: any = await new WriteArticle().sync(data);
 
-      // Log sync data for debugging
-      logger.info(data);
-
-      // Sync Redis counters to database
-      const res : any = await new articleModel().sync(data);
-
-      return res;
-
-    } catch (error : any) {
-
-      return {
-        status: 500,
-        message: error.message || "internal server error"
-      };
-    }
-  };
+        return res;
+    };
 }

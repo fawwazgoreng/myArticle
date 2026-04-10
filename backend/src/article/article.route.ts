@@ -54,7 +54,13 @@ index
         try {
             const { page, title, populer, oldest, category } = c.req.query();
 
-            const payload = {
+            const payload: {
+                page: number,
+                title: string,
+                time: "oldest" | "newest",
+                populer: boolean,
+                category?: string 
+            } = {
                 page: Number(page) || 1,
                 title: title || "",
                 time: typeof oldest === "string" ? "oldest" : "newest",
@@ -100,9 +106,7 @@ index
     })
 
     .use("/", checkToken)
-    .use("/", (c, next) =>
-        checkPermisssion(c, next, ["admin", "writer"]),
-    )
+    .use("/", (c, next) => checkPermisssion(c, next, ["admin", "writer"]))
 
     .post("/", async (c) => {
         try {
@@ -116,7 +120,8 @@ index
                 article,
             };
 
-            return c.json(res, res.status as StatusCode);
+            c.status(res.status as StatusCode);
+            return c.json(res);
         } catch (error) {
             throw handleError(error);
         }
@@ -138,7 +143,8 @@ index
                 article,
             };
 
-            return c.json(res, res.status as StatusCode);
+            c.status(res.status as StatusCode);
+            return c.json(res);
         } catch (error) {
             throw handleError(error);
         }

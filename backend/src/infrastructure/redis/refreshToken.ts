@@ -13,22 +13,18 @@ export default class RedisToken {
         await redis.setex(`admin:${id}`, ttl, data);
         return await redis.setex(`refresh_token:${token}`, ttl, value);
     };
-    
+
     findToken = async (id: string) => {
-        try {
-            const res = await redis.get(`admin:${id}`);
-            if (!res) return false;
-            return JSON.parse(res) as {
-                id: string,
-                created_at: Date,
-                username: string,
-                email: string,
-                roles: string
-            }
-        } catch (error) {
-            return false;
-        }
-    }
+        const res = await redis.get(`admin:${id}`);
+        if (!res) return false;
+        return JSON.parse(res) as {
+            id: string;
+            created_at: Date;
+            username: string;
+            email: string;
+            roles: string;
+        };
+    };
 
     getToken = async (token: string) => {
         const res = await redis.get(`refresh_token:${token}`);

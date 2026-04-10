@@ -1,10 +1,10 @@
 import { Context, Next } from "hono";
-import { HTTPException } from "hono/http-exception";
 import { sign, verify} from "hono/jwt"
-import { ContentfulStatusCode } from "hono/utils/http-status";
 import { adminHasUsed, userType } from "../../user/user.type";
 import { getConnInfo } from "hono/bun";
 import { env } from "../../config";
+import { toHttpException } from "../error/separated";
+import AppError from "../error";
 const key = String(env.SECRET_KEY);
 
 export const checkToken = async (c : Context , next: Next) => {
@@ -13,12 +13,7 @@ export const checkToken = async (c : Context , next: Next) => {
         await verify(String(token), key, "HS256");
         await next();
     } catch (error : any) {
-        const res = c.json({
-            status: 401,
-            message: 'unauthorized',
-            error: error.message
-        });
-        throw new HTTPException(res.status as ContentfulStatusCode, { res });
+        throw toHttpException(new AppError(401, "unauthorized" , "UNAUTHORIZED"));
     }
 }
 
@@ -29,10 +24,7 @@ export const hashPassword = async (password: string) => {
 export const verifyHash = async (hashed: string , password: string) => {
     const isMatch = await Bun.password.verify(password, hashed);
     if (isMatch) return;
-    throw {
-        status: 422,
-        message: "email or password wrong"
-    }
+    throw new AppError(422, "email or password wrong");
 }
 
 export const getUserHasUsed = async (c: Context , event_type : "login" | "logout" | "register") => {
