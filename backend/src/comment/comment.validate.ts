@@ -13,10 +13,6 @@ const updateComment = z.object({
 });
 
 export default class CommentValidate {
-    get = async () => {
-        
-    }
-    
     create = async (req: commentPayload) => {
         return createComment.parse(req);
     }

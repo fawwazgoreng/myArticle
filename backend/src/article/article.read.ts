@@ -6,9 +6,10 @@ import { findPage } from "../utils/db/findPage";
 import ArticleModel from "./article.model";
 import { article, articleMeta } from "./article.type";
 import AppError from "../utils/error";
+import { ArticleRepositoryRead } from "./article.repository";
 
 // Service responsible for reading articles with Redis caching
-export default class ReadArticle {
+export default class ReadArticle implements ArticleRepositoryRead {
     // Initialize dependencies for database and Redis operations
     constructor(
         private articleModel = new ArticleModel(),
@@ -124,12 +125,12 @@ export default class ReadArticle {
     };
 
     // Retrieve single article with Redis cache lookup
-    find = async (id: number) => {
+    findById = async (id: number) => {
         const redisCache = await this.readRedis.readShow(id);
 
         if (redisCache) return redisCache;
 
-        const article = await this.articleModel.find(id);
+        const article = await this.articleModel.findById(id);
 
         if (!article?.id) {
             throw new AppError(

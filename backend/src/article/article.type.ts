@@ -13,6 +13,12 @@ export type article = {
     }[];
 };
 
+export type articleWithAuthor = article & {
+    author_id: string;
+    created_at: Date;
+    updated_at: Date;
+};
+
 export type order = {
     id: Prisma.SortOrder;
     base_views?: Prisma.SortOrder;

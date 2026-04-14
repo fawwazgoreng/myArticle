@@ -1,8 +1,10 @@
 import prisma from "../infrastructure/database/prisma/prisma";
 import { Prisma } from "../infrastructure/database/generated/prisma";
+import { ArticleRepositoryModel } from "./article.repository";
+import { article } from "./article.type";
 
 // Article model responsible for database operations related to articles
-export default class ArticleModel {
+export default class ArticleModel implements ArticleRepositoryModel {
     // Fetch paginated articles with filtering and sorting
     show = async (params: {
         take: number;
@@ -72,6 +74,10 @@ export default class ArticleModel {
                 title: true,
                 content: true,
                 image: true,
+                author_id: true,
+                base_views: true,
+                created_at: true,
+                updated_at: true,
                 category: {
                     select: {
                         category: true,
@@ -82,7 +88,7 @@ export default class ArticleModel {
     };
 
     // Retrieve a single article by ID
-    find = async (id: number) => {
+    findById = async (id: number) => {
         // Fetch article with related categories
         return await prisma.article.findFirst({
             where: { id },
@@ -98,9 +104,9 @@ export default class ArticleModel {
                     },
                 },
             },
-        });
+        }) as article;
     };
-    
+
     // retrieve permission by author id
     checkPermisssion = async (id: number) => {
         // Fetch article with related categories
@@ -114,13 +120,14 @@ export default class ArticleModel {
     };
 
     // Update article and synchronize its category relations
-    update = async (id: number, data: {
+    update = async (data: {
+        id: number;
         title: string;
         content: string;
         image: string;
     }) => {
         return await prisma.article.update({
-            where: { id },
+            where: { id: data.id },
             data: {
                 title: data.title,
                 content: data.content,
@@ -148,7 +155,7 @@ export default class ArticleModel {
 
     // replace all categories (no diff logic)
     replaceCategories = async (articleId: number, categoryIds: number[]) => {
-        return await prisma.$transaction([
+        await prisma.$transaction([
             prisma.categoryOnArticle.deleteMany({
                 where: { article_id: articleId },
             }),
@@ -183,16 +190,12 @@ export default class ArticleModel {
     // Retrieve only the article image
     findImage = async (id: number) => {
         // Fetch minimal data to reduce query cost
-        const article = await prisma.article.findFirst({
+        return await prisma.article.findFirst({
             where: { id },
             select: {
                 id: true,
                 image: true,
             },
         });
-
-        if (!article?.id) return null;
-
-        return article;
     };
 }

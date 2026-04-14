@@ -11,3 +11,8 @@ export interface meta {
   lastPage : number,
   count : number,
 }
+
+export interface paginatedType<T> {
+    data: T,
+    count: number,
+}

@@ -8,9 +8,10 @@ import AppError from "../utils/error";
 import CategoryModel from "../category/category.model";
 import { Sql } from "../infrastructure/database/generated/prisma/runtime/client";
 import { Prisma } from "../infrastructure/database/generated/prisma";
+import { ArticleRepositoryWrite } from "./article.repository";
 
 // Service responsible for writing article data
-export default class WriteArticle {
+export default class WriteArticle implements ArticleRepositoryWrite {
     // Initialize validation, database model, image handler, and Redis writer
     constructor(
         private articleValidate = new ArticleValidate(),
@@ -54,26 +55,26 @@ export default class WriteArticle {
     };
 
     // Update article data and synchronize image if changed
-    update = async (id: number, req: articlePayload) => {
-        const validated = await this.articleValidate.update(req);
+    update = async (req: { id: number; articlePayload: articlePayload }) => {
+        const validated = await this.articleValidate.update(req.articlePayload);
 
-        if (req.profile.roles !== "admin") {
-            const permission = await this.articleModel.checkPermisssion(id);
+        if (req.articlePayload.profile.roles !== "admin") {
+            const permission = await this.articleModel.checkPermisssion(req.id);
 
             if (!permission?.id) {
                 throw new AppError(
                     404,
-                    `article id ${id} not found`,
+                    `article id ${req.id} not found`,
                     "ARTICLE_NOT_FOUND",
                 );
             }
 
-            await checkDatabasePermission(id, req.profile.author_id);
+            await checkDatabasePermission(req.id, req.articlePayload.profile.author_id);
         }
 
-        const lastImg = (await this.articleModel.findImage(id))?.image || "";
+        const lastImg = (await this.articleModel.findImage(req.id))?.image || "";
 
-        const url = this.articleImage.update(lastImg, req.image) || "";
+        const url = this.articleImage.update(lastImg, req.articlePayload.image) || "";
 
         const categories = await this.categoryModel.findCategoryByNames(
             validated.category,
@@ -83,40 +84,24 @@ export default class WriteArticle {
             throw new AppError(400, "Invalid category", "INVALID_CATEGORY");
         }
 
-        const article = await this.articleModel.update(id, {
+        const article = await this.articleModel.update({
+            id: req.id,
             title: validated.title,
             content: validated.content,
             image: url,
         });
 
         await this.articleModel.replaceCategories(
-            id,
+            req.id,
             categories.map((c: any) => c.id),
         );
 
-        return article;
+        return article as article;
     };
 
     // Delete article and remove associated image
-    delete = async (
-        id: number,
-        profile: { author_id: string; roles: "admin" | "writer" | "user" },
-    ) => {
-        if (profile.roles !== "admin") {
-            const permission = await this.articleModel.checkPermisssion(id);
-
-            if (!permission?.id) {
-                throw new AppError(
-                    404,
-                    `article id ${id} not found`,
-                    "ARTICLE_NOT_FOUND",
-                );
-            }
-
-            await checkDatabasePermission(id, profile.author_id);
-        }
-
-        const article = await this.articleModel.find(id);
+    delete = async (id: number) => {
+        const article = await this.articleModel.findById(id);
 
         if (!article?.id) {
             throw new AppError(
@@ -131,8 +116,6 @@ export default class WriteArticle {
         if (article.image) {
             this.articleImage.update(article.image);
         }
-
-        return true;
     };
 
     sync = async (req: { key: string; val: string | null }[]) => {
@@ -163,5 +146,27 @@ export default class WriteArticle {
       `;
 
         return await this.articleModel.raw(query);
+    };
+
+    checkPermission = async (
+        id: number,
+        profile: {
+            roles: string;
+            author_id: string;
+        },
+    ) => {
+        if (profile.roles !== "admin") {
+            const permission = await this.articleModel.checkPermisssion(id);
+
+            if (!permission?.id) {
+                throw new AppError(
+                    401,
+                    `Neither You dont have access to article id ${id} nor you are not the author`,
+                    "UNAUTHORIZED",
+                );
+            }
+
+            await checkDatabasePermission(id, profile.author_id);
+        }
     };
 }

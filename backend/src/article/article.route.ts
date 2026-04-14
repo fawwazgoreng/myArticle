@@ -87,7 +87,7 @@ index
         try {
             const id = Number(c.req.param("id"));
 
-            const article = await readArticle.find(id);
+            const article = await readArticle.findById(id);
 
             const views = await writeRedis.increment(
                 String(article.id) as RedisKey,
@@ -133,7 +133,7 @@ index
 
             const payload = await parseBodyToPayload(c);
 
-            const article = await writeArticle.update(id, payload);
+            const article = await writeArticle.update({ id, articlePayload: payload });
 
             await writeRedis.newArticle(article);
 
@@ -154,13 +154,13 @@ index
         try {
             const id = Number(c.req.param("id"));
             const profile = c.get("profile");
-
-            await writeArticle.delete(id, {
+            await writeArticle.checkPermission(id, {
                 ...profile,
                 author_id: profile.id,
             });
 
             await writeRedis.delete(String(id) as RedisKey);
+            await writeArticle.delete(id);
 
             return c.json({
                 status: 200,
