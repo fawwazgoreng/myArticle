@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
 import { StatusCode } from "hono/utils/http-status";
 import WriteCategory from "./category.write";
 import ReadCategory from "./category.read";

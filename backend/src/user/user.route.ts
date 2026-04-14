@@ -1,5 +1,4 @@
 import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
 import { encryptToken, randomUuid } from "../utils/auth/encrypt";
 import AdminModel from "./user.model";
 import { userType, monitoring } from "./user.type";

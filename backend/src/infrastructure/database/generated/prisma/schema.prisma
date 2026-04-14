@@ -18,6 +18,7 @@ model Article {
   updated_at DateTime            @default(now())
   category   CategoryOnArticle[]
   author     User[]
+  comment    CommentOnArticle[]
 }
 
 model Category {
@@ -45,11 +46,13 @@ model User {
 }
 
 model Comment {
-  id         Int      @id @default(autoincrement())
+  id         Int                @id @default(autoincrement())
   user_id    String
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
-  user       User     @relation(fields: [user_id], references: [id])
+  content    String
+  created_at DateTime           @default(now())
+  updated_at DateTime           @default(now())
+  user       User               @relation(fields: [user_id], references: [id])
+  article    CommentOnArticle[]
 }
 
 model Session_audit_trail {
@@ -74,6 +77,17 @@ model CategoryOnArticle {
   category    Category? @relation(fields: [category_id], references: [id])
 
   @@id([category_id, article_id])
+}
+
+model CommentOnArticle {
+  comment_id Int
+  article_id Int
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+  comment    Comment? @relation(fields: [comment_id], references: [id])
+  article    Article? @relation(fields: [article_id], references: [id])
+
+  @@id([comment_id, article_id])
 }
 
 model VerificationCode {

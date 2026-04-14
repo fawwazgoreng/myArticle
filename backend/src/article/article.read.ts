@@ -96,7 +96,7 @@ export default class ReadArticle {
             };
 
             if (String(req.title).length < 10 && dataDb.article.length > 0) {
-                await this.writeRedis.cacheSearch(cacheKey, res);
+                await this.writeRedis.cacheSearch<articleMeta>(cacheKey, res);
             }
 
             article = res;
