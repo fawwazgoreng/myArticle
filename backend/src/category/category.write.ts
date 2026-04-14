@@ -24,14 +24,8 @@ export default class WriteCategory {
         }
 
         // Insert category into database
-        const category: category = await this.categoryModel.create(validated);
-
-        // Build API response
-        return {
-            status: 201,
-            message: "success create new category",
-            category: category,
-        } as categoryResponse;
+        return await this.categoryModel.create(validated) as category;
+        
     };
 
     // Update category name by ID
@@ -40,16 +34,10 @@ export default class WriteCategory {
         const validated = await this.categoryValidate.create(req);
 
         // Update category in database
-        const category: category = await this.categoryModel.update(
+        return await this.categoryModel.update(
             req.id,
             validated,
-        );
-
-        return {
-            status: 200,
-            message: "success update new category",
-            category: category,
-        } as categoryResponse;
+        ) as category;
     };
 
     // Delete category by ID

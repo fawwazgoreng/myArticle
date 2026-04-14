@@ -17,16 +17,7 @@ export default class ReadCategory {
     // Retrieve all categories
     show = async () => {
         // Fetch category list from database
-        const category = await this.categoryModel.show();
-
-        // Build API response
-        const res: categoryResponses = {
-            status: 200,
-            message: "success get category",
-            category: category,
-        };
-
-        return res;
+        return await this.categoryModel.show();
     };
 
     // Retrieve category with related articles and pagination

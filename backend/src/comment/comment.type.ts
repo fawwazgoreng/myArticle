@@ -7,7 +7,7 @@ export type comment = {
     user_id: string;
     content: string;
     created_at: Date;
-    updated_at: Date;
+    updated_at?: Date;
     user: {
         id: string;
         username: string;
@@ -41,4 +41,5 @@ export interface commentResponse extends globalResponse {
 export type commentPayload = {
     user_id: string;
     content: string;
+    article_id: number;
 };

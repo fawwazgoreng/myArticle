@@ -79,6 +79,19 @@ export default class CommentModel {
                     },
                 },
             },
+            select: {
+                id: true,
+                user_id: true,
+                content: true,
+                created_at: true,
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        roles: true
+                    }
+                }
+            }
         });
     };
 
@@ -90,13 +103,26 @@ export default class CommentModel {
             data: {
                 content: params.content,
             },
+            select: {
+                id: true,
+                user_id: true,
+                content: true,
+                created_at: true,
+                user: {
+                    select: {
+                        id: true,
+                        username: true,
+                        roles: true
+                    }
+                }
+            }
         });
     };
 
-    delete = async (params: { id: number }) => {
+    delete = async (id: number ) => {
         return await prisma.comment.delete({
             where: {
-                id: params.id,
+                id,
             },
         });
     };

@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { StatusCode } from "hono/utils/http-status";
 import WriteCategory from "./category.write";
 import ReadCategory from "./category.read";
-import { category } from "./category.type";
+import { category, categoryResponse, categoryResponses } from "./category.type";
 import { checkToken } from "../utils/auth/jwtauth";
 import { checkPermisssion } from "../utils/auth/checkPermission";
 import { handleError } from "../utils/error/separated";
@@ -19,13 +19,15 @@ category
     // Retrieve all categories from the database
     .get("/", async (c) => {
         try {
-            const res = await readCategory.show();
+            const categories = await readCategory.show();
 
-            // If status code indicates an error, throw it to be handled by error middleware
-            if (res.status > 300) {
-                throw res;
-            }
-
+            // Build API response
+            const res: categoryResponses = {
+                status: 200,
+                message: "success get category",
+                category: categories,
+            };
+            
             c.status(res.status as StatusCode);
             return c.json(res);
         } catch (error) {
@@ -57,14 +59,16 @@ category
             };
 
             // Fetch category data
-            const res = await readCategory.find(payload);
-
-            c.status(200);
-            return c.json({
+            const category = await readCategory.find(payload);
+            
+            const res = {
                 status: 200,
                 message: "succes get category",
-                ...res,
-            });
+                ...category,
+            }
+
+            c.status(200);
+            return c.json(res);
         } catch (error) {
             throw handleError(error);
         }
@@ -82,11 +86,13 @@ category
             const request = await c.req.json();
 
             // Call write service to create category
-            const res = await writeCategori.create(request);
-
-            if (res.status > 300) {
-                throw res;
-            }
+            const category = await writeCategori.create(request);
+            
+            const res =  {
+                status: 201,
+                message: "success create new category",
+                category: category,
+            } as categoryResponse;
 
             c.status(res.status as StatusCode);
             return c.json(res);
@@ -97,16 +103,18 @@ category
 
     // PUT /category
     // Update an existing category
-    .put("/", async (c) => {
+    .put("/:id", async (c) => {
         try {
+            const id = Number(c.req.param("id"));
             const request = await c.req.json();
 
-            // Reusing create method (possibly acts as upsert)
-            const res = await writeCategori.create(request);
+            const category = await writeCategori.update({id,...request});
 
-            if (res.status > 300) {
-                throw res;
-            }
+            const res =  {
+                status: 200,
+                message: "success update new category",
+                category: category,
+            } as categoryResponse;
 
             c.status(res.status as StatusCode);
             return c.json(res);
