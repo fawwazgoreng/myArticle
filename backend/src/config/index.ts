@@ -8,12 +8,14 @@ const envTEST = z.object({
     "DATABASE_NAME":z.string(),
     "NODE_ENV": z.enum(["development" , "production" , "debugging"]),
     "APP_NAME":z.string(),
-    "REDIS_PORT":z.number(),
-    "REDIS_DB":z.number(),
+    "REDIS_PORT":z.string(),
+    "REDIS_DB":z.string(),
     "REDIS_HOST":z.string(),
     "REDIS_PASSWORD":z.string().nullable(),
     "FRONT_END_URL":z.url(),
-    "SECRET_KEY": z.string()
+    "SECRET_KEY": z.string(),
+    "ELASTICSEARCH_URL": z.string(),
+    "ELASTICSEARCH_API_KEY": z.string()
 });
 
 const parsedEnv = envTEST.safeParse(process.env);

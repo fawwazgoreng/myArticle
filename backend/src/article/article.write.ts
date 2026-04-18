@@ -1,5 +1,5 @@
 import { article, articlePayload } from "./article.type";
-import { writeFile } from "../utils/image.write";
+import { writeFile } from "../utils/etc/image.write";
 import WriteRedis from "../infrastructure/redis/redis.write";
 import { ArticleValidate } from "./article.validate";
 import ArticleModel from "./article.model";

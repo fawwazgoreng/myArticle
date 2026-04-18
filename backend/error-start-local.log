@@ -1,0 +1,6 @@
+Error: docker compose up --wait command failed!
+Start-local version: 0.14.0
+Docker engine: podman version 5.8.1
+Docker compose: 5.8.1
+Elastic Stack version: 9.3.3
+Distribution: CachyOS Linux

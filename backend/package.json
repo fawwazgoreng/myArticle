@@ -5,6 +5,7 @@
     "clean": "rm -rf node_modules/.cache"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^9.3.4",
     "@hono/node-server": "^1.19.9",
     "@prisma/adapter-pg": "^7.4.0",
     "@prisma/client": "^7.4.1",
