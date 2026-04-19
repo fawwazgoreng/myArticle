@@ -11,3 +11,4 @@ localhost-key.pem
 public/image
 /src/infrastructure/database/generated
 /src/infrastructure/database/migrations
+elastic-start-local
