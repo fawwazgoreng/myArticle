@@ -5,7 +5,7 @@ export type DocumentBody = {
 }
 
 export default class ElasticSearchModel {
-    private index: string = "myArticle";
+    private index: string = "article";
     constructor(private client = elasticSearchClient) { }
     get = async (id: string) => {
         await this.client.get({
@@ -14,20 +14,19 @@ export default class ElasticSearchModel {
         });
     };
     create = async (id: string, body: DocumentBody) => {
-        await this.client.create({
+        await this.client.index({
             index: this.index,
             id,
             document: body,
         });
     };
-    search = async (fieldName: string , query: string) => {
-        await this.client.search({
+    search = async (req: {from: number, size: number, query: any, sort: any}) => {
+        return await this.client.search({
             index: this.index,
-            query: {
-                match: {
-                    [fieldName]: query
-                }
-            }
+            from: req.from,
+            size: req.size,
+            query: req.query,
+            sort: req.sort,
         });
     };
     update = async (id: string, body: DocumentBody) => {

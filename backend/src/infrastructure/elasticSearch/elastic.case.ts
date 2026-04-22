@@ -1,9 +1,30 @@
-import { errors } from "@elastic/elasticsearch";
+import { errors, estypes } from "@elastic/elasticsearch";
 import ElasticSearchModel, { DocumentBody } from "./elastic.model";
-import AppError from "../error";
+import AppError from "../../utils/error";
 
 export default class ElasticSearchCase {
-    constructor(private model = new ElasticSearchModel()) {}
+    constructor(private model = new ElasticSearchModel()) { }
+    buildQuery = (req: any) => {
+        const must = [];
+        if (req.title) {
+            must.push({
+                match: {
+                    title: req.title,
+                    fuzziness: "AUTO",
+                },
+            });
+        }
+        
+        if (req.category) {
+                must.push({
+                    term: {
+                        "category.name.keyword": req.category
+                    }
+                });
+            }
+        
+        return {bool: {must}};
+    };
     create = async (id: string, body: DocumentBody) => {
         try {
             await this.model.create(id, body);
@@ -18,9 +39,9 @@ export default class ElasticSearchCase {
             this.errorHandling(error);
         }
     };
-    search = async (fieldName: string, query: string) => {
+    search = async (req: {from: number, size: number, query: any, sort: any}) => {
         try {
-            return await this.model.search(fieldName, query);
+            return await this.model.search(req);
         } catch (error) {
             this.errorHandling(error);
         }

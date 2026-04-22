@@ -9,6 +9,7 @@ import CategoryModel from "../category/category.model";
 import { Sql } from "../infrastructure/database/generated/prisma/runtime/client";
 import { Prisma } from "../infrastructure/database/generated/prisma";
 import { ArticleRepositoryWrite } from "./article.repository";
+import ElasticSearchCase from "../infrastructure/elasticSearch/elastic.case";
 
 // Service responsible for writing article data
 export default class WriteArticle implements ArticleRepositoryWrite {
@@ -19,6 +20,7 @@ export default class WriteArticle implements ArticleRepositoryWrite {
         private articleImage = new writeFile("article"),
         private writeRedis = new WriteRedis(),
         private categoryModel = new CategoryModel(),
+        private ESCase = new ElasticSearchCase()
     ) {}
 
     // Create a new article with validation, image upload, and Redis update
@@ -47,7 +49,27 @@ export default class WriteArticle implements ArticleRepositoryWrite {
         });
 
         await this.writeRedis.newArticle(article as article);
-
+        await this.ESCase.create(article.id.toString(), {
+            id: article.id,
+            title: article.title,
+            content: article.content,
+            image: article.image,
+            author_id: article.author_id,
+            base_views: article.base_views,
+            created_at: article.created_at,
+            updated_at: article.updated_at,
+            author: {
+                id: article.author_id,
+                username: article.author.map(c => c.username)
+            },
+            category: article.category.map((c: any) => {
+                return {
+                    id: c.id,
+                    name: c.name,
+                };
+            })
+        });
+        
         return {
             ...article,
             base_views: 0,
@@ -95,6 +117,14 @@ export default class WriteArticle implements ArticleRepositoryWrite {
             req.id,
             categories.map((c: any) => c.id),
         );
+        
+        await this.ESCase.update(article.id as unknown as string, {
+            id: req.id,
+            title: validated.title,
+            content: validated.content,
+            image: url,
+            category: categories.map((c: any) => ({ id: c.id, name: c.name })),
+        });
 
         return article as article;
     };
@@ -116,6 +146,7 @@ export default class WriteArticle implements ArticleRepositoryWrite {
         if (article.image) {
             this.articleImage.update(article.image);
         }
+        await this.ESCase.delete(article.id as unknown as string);
     };
 
     sync = async (req: { key: string; val: string | null }[]) => {

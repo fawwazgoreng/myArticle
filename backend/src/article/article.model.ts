@@ -74,13 +74,24 @@ export default class ArticleModel implements ArticleRepositoryModel {
                 title: true,
                 content: true,
                 image: true,
-                author_id: true,
                 base_views: true,
                 created_at: true,
                 updated_at: true,
+                author_id: true,
+                author: {
+                    select: {
+                        id: true,
+                        username: true,
+                    },
+                },
                 category: {
                     select: {
-                        category: true,
+                        category: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
                     },
                 },
             },
@@ -90,7 +101,7 @@ export default class ArticleModel implements ArticleRepositoryModel {
     // Retrieve a single article by ID
     findById = async (id: number) => {
         // Fetch article with related categories
-        return await prisma.article.findFirst({
+        return (await prisma.article.findFirst({
             where: { id },
             select: {
                 id: true,
@@ -104,7 +115,7 @@ export default class ArticleModel implements ArticleRepositoryModel {
                     },
                 },
             },
-        }) as article;
+        })) as article;
     };
 
     // retrieve permission by author id

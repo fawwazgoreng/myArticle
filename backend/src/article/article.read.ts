@@ -7,6 +7,7 @@ import ArticleModel from "./article.model";
 import { article, articleMeta } from "./article.type";
 import AppError from "../utils/error";
 import { ArticleRepositoryRead } from "./article.repository";
+import ElasticSearchCase from "../infrastructure/elasticSearch/elastic.case";
 
 // Service responsible for reading articles with Redis caching
 export default class ReadArticle implements ArticleRepositoryRead {
@@ -15,6 +16,7 @@ export default class ReadArticle implements ArticleRepositoryRead {
         private articleModel = new ArticleModel(),
         private readRedis = new ReadRedis(),
         private writeRedis = new WriteRedis(),
+        private ESCase = new ElasticSearchCase()
     ) {}
 
     // Retrieve paginated articles with Redis cache-first strategy
@@ -26,101 +28,65 @@ export default class ReadArticle implements ArticleRepositoryRead {
         category?: string;
     }) => {
         let cacheKey = `articles:${req.page}:${req.time}:${req.populer ? "populer" : "unpopuler"}${req.category ? ":" + req.category : ""}`;
-        if (String(req.title).length < 10)
-            cacheKey = cacheKey + `:${req.title}`;
-
-        let article: articleMeta = {
-            article: [],
-            meta: {
-                firstPage: 1,
-                lastPage: 1,
-                currentPage: 1,
-                count: 10,
-            },
-        };
-
+        if (String(req.title).length < 10) cacheKey += `:${req.title}`;
+    
+        let article: articleMeta;
+    
         const data = await this.readRedis.readAll(cacheKey);
-
         if (data) {
             article = JSON.parse(data);
         } else {
-            const page = findPage(req);
-
-            const isNew: Prisma.SortOrder =
-                page.time === "newest" ? "desc" : "asc";
-
-            const populer: Prisma.SortOrder = req.populer ? "desc" : "asc";
-
-            const orderBy: any[] = [];
-
-            if (req.populer) orderBy.push({ base_views: populer });
-            orderBy.push({ id: isNew });
-
             const take = 30;
-            const skip = (req.page - 1) * take;
-
-            const where: Prisma.ArticleWhereInput = {
-                title: {
-                    startsWith: req.title ?? "",
-                },
-                ...(req.category && {
-                    category: {
-                        every: {
-                            category: {
-                                name: {
-                                    equals: req.category,
-                                    mode: "insensitive",
-                                },
-                            },
-                        },
-                    },
-                }),
-            };
-
-            const dataDb = await this.articleModel.show({
-                take,
-                skip,
-                orderBy,
-                where,
-            });
-
-            const meta: meta = {
-                firstPage: 1,
-                currentPage: req.page,
-                lastPage: Math.ceil(dataDb.count / take),
-                count: dataDb.count,
-            };
-
-            const res: articleMeta = {
-                article: dataDb.article as article[],
-                meta,
-            };
-
-            if (String(req.title).length < 10 && dataDb.article.length > 0) {
-                await this.writeRedis.cacheSearch<articleMeta>(cacheKey, res);
+            const from = (req.page - 1) * take;
+    
+            const sort: any[] = [];
+            if (req.populer) {
+                sort.push({ base_views: { order: "desc" } });
             }
-
+            sort.push({ created_at: { order: req.time === "newest" ? "desc" : "asc" } });
+    
+            const esResponse = await this.ESCase.search({
+                from: from,
+                size: take,
+                query: this.ESCase.buildQuery(req),
+                sort: sort
+            });
+            
+            if (!esResponse) throw new AppError(404, "No results found", "NO_RESULTS_FOUND" );
+    
+            const hits = esResponse.hits.hits.map(hit => hit._source);
+            const total = typeof esResponse.hits.total === 'number' 
+                          ? esResponse.hits.total 
+                          : esResponse.hits.total?.value || 0;
+    
+            const res: articleMeta = {
+                article: hits as article[],
+                meta: {
+                    firstPage: 1,
+                    currentPage: req.page,
+                    lastPage: Math.ceil(total / take),
+                    count: total,
+                },
+            };
+    
+            if (String(req.title).length < 10 && hits.length > 0) {
+                await this.writeRedis.cacheSearch(cacheKey, res);
+            }
+    
             article = res;
         }
-
-        if (article.article.length < 1) return article;
-
-        const ids = article.article.map((item) => String(item.id));
-
-        const redisValue = await this.readRedis.readViews(ids);
-
-        for (const [key, value] of Object.entries(redisValue)) {
-            if (!value) continue;
-
-            const findable = article.article.find(
-                (item) => item.id === Number(key),
-            );
-
-            if (findable) {
-                findable.base_views = Number(value);
+    
+        if (article.article.length > 0) {
+            const ids = article.article.map((item) => String(item.id));
+            const redisValue = await this.readRedis.readViews(ids);
+    
+            for (const [key, value] of Object.entries(redisValue)) {
+                if (!value) continue;
+                const findable = article.article.find(item => item.id === Number(key));
+                if (findable) findable.base_views = Number(value);
             }
         }
-
+    
         return article;
     };
 
