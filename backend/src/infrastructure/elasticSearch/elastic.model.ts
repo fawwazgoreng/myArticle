@@ -1,4 +1,4 @@
-import elasticSearchClient from "../../infrastructure/elasticSearch";
+import elasticSearchClient from ".";
 
 export type DocumentBody = {
     [key: string]: any;
@@ -6,11 +6,18 @@ export type DocumentBody = {
 
 export default class ElasticSearchModel {
     private index: string = "myArticle";
-    constructor(private client = elasticSearchClient) {}
+    constructor(private client = elasticSearchClient) { }
     get = async (id: string) => {
         await this.client.get({
             index: this.index,
             id,
+        });
+    };
+    create = async (id: string, body: DocumentBody) => {
+        await this.client.create({
+            index: this.index,
+            id,
+            document: body,
         });
     };
     search = async (fieldName: string , query: string) => {
@@ -34,13 +41,6 @@ export default class ElasticSearchModel {
         await this.client.delete({
             index: this.index,
             id,
-        });
-    };
-    create = async (id: string, body: DocumentBody) => {
-        await this.client.create({
-            index: this.index,
-            id,
-            document: body,
         });
     };
 }
