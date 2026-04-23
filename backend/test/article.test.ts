@@ -2,7 +2,7 @@ import { describe, it, expect } from "bun:test";
 import { File } from "buffer";
 import prisma from "../src/infrastructure/database/prisma/prisma";
 import { getToken } from "./helpers/getToken";
-import { header } from "./category.test";
+import { header } from "../src/category/category.case.test";
 
 // Configuration for the local test environment
 const BASE_URL = "https://localhost:2000";
