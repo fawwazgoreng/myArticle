@@ -26,7 +26,7 @@ export class ReadRedis {
     // If cache miss, fetch article from database
     if (!res) {
 
-        const article = await (new articleModel().find(id));
+        const article = await (new articleModel().findById(id));
         if (!article) {
             throw new AppError(404 , `article id ${id} not found`);
         }

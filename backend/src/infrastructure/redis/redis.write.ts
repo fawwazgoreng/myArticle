@@ -82,9 +82,6 @@ export default class WriteRedis {
 
         if (!data) return;
 
-        // Log sync data for debugging
-        logger.info(data);
-
         // Sync Redis counters to database
         const res: any = await new WriteArticle().sync(data);
 
