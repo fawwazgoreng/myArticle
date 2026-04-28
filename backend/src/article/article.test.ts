@@ -1,8 +1,7 @@
 import { describe, it, expect } from "bun:test";
 import { File } from "buffer";
-import prisma from "../src/infrastructure/database/prisma/prisma";
-import { getToken } from "./helpers/getToken";
-import { header } from "../src/category/category.case.test";
+import prisma from "../infrastructure/database/prisma/prisma";
+import { getToken } from "../../test/helpers/getToken";
 
 // Configuration for the local test environment
 const BASE_URL = "https://localhost:2000";
@@ -17,6 +16,10 @@ export const headerFormVar = (token: string) => {
         "Origin": process.env.FRONT_END_URL || "http://localhost:3000",
         "Authorization": "Bearer " + token,
     };
+};
+
+const header = {
+    "Origin": process.env.FRONT_END_URL || "http://localhost:3000",
 };
 
 /**
