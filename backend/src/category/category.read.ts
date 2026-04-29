@@ -1,10 +1,10 @@
-import { ReadRedis } from "../infrastructure/redis/redis.read";
-import { category, categoryResponses } from "./category.type";
-import { meta } from "../type/global.type";
-import CategoryModel from "./category.model";
-import { findPage } from "../utils/db/findPage";
-import { Prisma } from "../infrastructure/database/generated/prisma";
-import AppError from "../utils/error";
+import { ReadRedis } from "@infra/redis/redis.read";
+import { category } from "@/category/category.type";
+import { meta } from "@type/global.type";
+import CategoryModel from "@/category/category.model";
+import { findPage } from "@utils/db/findPage";
+import { Prisma } from "@infra/database/generated/prisma";
+import AppError from "@utils/error";
 
 // Service responsible for reading category data
 export default class ReadCategory {

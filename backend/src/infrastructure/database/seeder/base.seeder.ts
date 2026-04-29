@@ -1,4 +1,4 @@
-import { PrismaClient } from '../generated/prisma'
+import { PrismaClient } from '@infra/database/generated/prisma'
 
 export abstract class BaseSeeder {
   constructor(protected prisma: PrismaClient) {}

@@ -1,5 +1,5 @@
-import { BaseSeeder } from "../base.seeder"
-import { PrismaClient } from "../../generated/prisma"
+import { BaseSeeder } from "@infra/database/seeder/base.seeder";
+import { PrismaClient } from "@infra/database/generated/prisma";
 
 export class ArticleSeeder extends BaseSeeder {
   constructor(prisma: PrismaClient) {

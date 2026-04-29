@@ -1,7 +1,7 @@
-import prisma from "../infrastructure/database/prisma/prisma";
-import { Prisma } from "../infrastructure/database/generated/prisma";
-import { ArticleRepositoryModel } from "./article.repository";
-import { article } from "./article.type";
+import prisma from "@infra/database/prisma/prisma";
+import { Prisma } from "@infra/database/generated/prisma";
+import { ArticleRepositoryModel } from "@/article/article.repository";
+import { article } from "@/article/article.type";
 
 // Article model responsible for database operations related to articles
 export default class ArticleModel implements ArticleRepositoryModel {

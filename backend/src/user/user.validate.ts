@@ -1,5 +1,5 @@
 import z from "zod";
-import { loginRequest, registerType } from "./user.type";
+import { loginRequest, registerType } from "@/user/user.type";
 
 const loginValidate = z.object({
     email: z.email().min(10).max(150),

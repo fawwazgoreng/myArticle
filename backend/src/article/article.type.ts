@@ -1,6 +1,6 @@
 import { RedisKey } from "ioredis";
 import { globalResponse, meta } from "../type/global.type";
-import { Prisma } from "../infrastructure/database/generated/prisma";
+import { Prisma } from "@infra/database/generated/prisma";
 
 export type article = {
     id: number;

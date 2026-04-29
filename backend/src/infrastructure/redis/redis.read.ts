@@ -1,6 +1,6 @@
-import redis from "./redis";
-import articleModel from "../../article/article.model";
-import AppError from "../../utils/error";
+import redis from "@infra/redis/redis";
+import articleModel from "@/article/article.model";
+import AppError from "@utils/error";
 
 const ttl = 60 * 60 * 24; // Cache expiration time (24 hours)
 

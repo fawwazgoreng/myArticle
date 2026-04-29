@@ -1,5 +1,5 @@
 import Redis, { RedisOptions } from "ioredis";
-import { env } from "../../config";
+import { env } from "@/config";
 const appName = env.APP_NAME ?? "";
 export const prfix = `${appName}:test:`;
 

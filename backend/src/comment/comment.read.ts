@@ -1,11 +1,11 @@
-import CommentModel from "./comment.model";
-import RedisWrite from "../infrastructure/redis/redis.write";
-import { findPage } from "../utils/db/findPage";
-import { ReadRedis } from "../infrastructure/redis/redis.read";
-import { comment, commentMeta } from "./comment.type";
-import { Prisma } from "../infrastructure/database/generated/prisma";
-import { meta } from "../type/global.type";
-import AppError from "../utils/error";
+import CommentModel from "@/comment/comment.model";
+import RedisWrite from "@infra/redis/redis.write";
+import { findPage } from "@utils/db/findPage";
+import { ReadRedis } from "@infra/redis/redis.read";
+import { comment, commentMeta } from "@/comment/comment.type";
+import { Prisma } from "@infra/database/generated/prisma";
+import { meta } from "@type/global.type";
+import AppError from "@utils/error";
 
 export default class ReadComment {
     constructor(

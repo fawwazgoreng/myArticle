@@ -1,8 +1,7 @@
-import { PrismaClient } from "../generated/prisma";
-import elasticSearchClient from "../../elasticSearch";
+import { PrismaClient } from "@infra/database/generated/prisma";
+import elasticSearchClient from "@infra/elasticSearch";
 
 const prisma = new PrismaClient();
-const client = elasticSearchClient;
 
 const migrate = async () => {
     const BATCH_SIZE = 500;

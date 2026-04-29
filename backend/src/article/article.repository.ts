@@ -1,6 +1,5 @@
-import { BaseRepositoryModel, BaseRepositoryRead, BaseRepositoryWrite } from "../infrastructure/base.repository";
-import { meta } from "../type/global.type";
-import { article, articleMeta } from "./article.type";
+import { BaseRepositoryModel, BaseRepositoryRead, BaseRepositoryWrite } from "@infra/base.repository";
+import { article, articleMeta } from "@/article/article.type";
 
 export abstract class ArticleRepositoryModel implements BaseRepositoryModel<
     article,

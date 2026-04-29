@@ -1,6 +1,6 @@
 import { errors, estypes } from "@elastic/elasticsearch";
-import ElasticSearchModel, { DocumentBody } from "./elastic.model";
-import AppError from "../../utils/error";
+import ElasticSearchModel, { DocumentBody } from "@infra/elasticSearch/elastic.model";
+import AppError from "@utils/error";
 
 export default class ElasticSearchCase {
     constructor(private model = new ElasticSearchModel()) { }

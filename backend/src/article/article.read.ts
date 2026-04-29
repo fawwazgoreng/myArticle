@@ -1,13 +1,10 @@
-import { Prisma } from "../infrastructure/database/generated/prisma";
-import { ReadRedis } from "../infrastructure/redis/redis.read";
-import WriteRedis from "../infrastructure/redis/redis.write";
-import { meta } from "../type/global.type";
-import { findPage } from "../utils/db/findPage";
-import ArticleModel from "./article.model";
-import { article, articleMeta } from "./article.type";
-import AppError from "../utils/error";
-import { ArticleRepositoryRead } from "./article.repository";
-import ElasticSearchCase from "../infrastructure/elasticSearch/elastic.case";
+import { ReadRedis } from "@infra/redis/redis.read";
+import WriteRedis from "@infra/redis/redis.write";
+import ArticleModel from "@/article/article.model";
+import { article, articleMeta } from "@/article/article.type";
+import AppError from "@utils/error";
+import { ArticleRepositoryRead } from "@/article/article.repository";
+import ElasticSearchCase from "@infra/elasticSearch/elastic.case";
 
 // Service responsible for reading articles with Redis caching
 export default class ReadArticle implements ArticleRepositoryRead {

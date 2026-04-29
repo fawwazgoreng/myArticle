@@ -1,8 +1,7 @@
 import { RedisKey } from "ioredis";
-import redis, { prfix } from "./redis";
-import { article, articleMeta } from "../../article/article.type";
-import { logger } from "../logger/log";
-import WriteArticle from "../../article/article.write";
+import redis, { prfix } from "@infra/redis/redis";
+import { article, articleMeta } from "@/article/article.type";
+import WriteArticle from "@/article/article.write";
 
 export const ttl = 60 * 60 * 24; // Cache expiration time (24 hours)
 

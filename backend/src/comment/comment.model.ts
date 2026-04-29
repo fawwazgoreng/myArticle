@@ -1,5 +1,4 @@
-import { Prisma } from "../infrastructure/database/generated/prisma";
-import prisma from "../infrastructure/database/prisma/prisma";
+import prisma from "@infra/database/prisma/prisma";
 
 export default class CommentModel {
     show = async (params: {

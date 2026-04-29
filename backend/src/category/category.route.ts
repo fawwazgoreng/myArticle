@@ -1,11 +1,11 @@
 import { Hono } from "hono";
 import { StatusCode } from "hono/utils/http-status";
-import WriteCategory from "./category.write";
-import ReadCategory from "./category.read";
-import { category, categoryResponse, categoryResponses } from "./category.type";
-import { checkToken } from "../utils/auth/jwtauth";
-import { checkPermisssion } from "../utils/auth/checkPermission";
-import { handleError } from "../utils/error/separated";
+import WriteCategory from "@/category/category.write";
+import ReadCategory from "@/category/category.read";
+import { category, categoryResponse, categoryResponses } from "@/category/category.type";
+import { checkToken } from "@utils/auth/jwtauth";
+import { checkPermisssion } from "@utils/auth/checkPermission";
+import { handleError } from "@utils/error/separated";
 
 // Create a new Hono router instance for category endpoints
 const category = new Hono();

@@ -1,5 +1,5 @@
-import RedisToken from "../infrastructure/redis/refreshToken";
-import { decryptToken } from "../utils/auth/encrypt";
+import RedisToken from "@infra/redis/refreshToken";
+import { decryptToken } from "@utils/auth/encrypt";
 
 // UserRead service responsible for retrieving administrative session data
 export default class UserRead {

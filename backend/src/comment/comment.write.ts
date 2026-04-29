@@ -1,6 +1,6 @@
-import CommentModel from "./comment.model";
-import { commentPayload } from "./comment.type";
-import CommentValidate from "./comment.validate";
+import CommentModel from "@/comment/comment.model";
+import { commentPayload } from "@/comment/comment.type";
+import CommentValidate from "@/comment/comment.validate";
 
 export default class WriteComment {
     constructor(

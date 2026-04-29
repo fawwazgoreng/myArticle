@@ -1,4 +1,4 @@
-import { commentPayload } from "./comment.type"
+import { commentPayload } from "@/comment/comment.type"
 import z from "zod"
 
 const createComment = z.object({

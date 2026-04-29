@@ -1,9 +1,9 @@
 import { Hono } from "hono";
-import { checkToken,  } from "../utils/auth/jwtauth";
-import { handleError } from "../utils/error/separated";
-import ReadComment from "./comment.read";
-import { comment, commentArrayResponse, commentResponse } from "./comment.type";
-import WriteComment from "./comment.write";
+import { checkToken,  } from "@utils/auth/jwtauth";
+import { handleError } from "@utils/error/separated";
+import ReadComment from "@/comment/comment.read";
+import { comment, commentArrayResponse, commentResponse } from "@/comment/comment.type";
+import WriteComment from "@/comment/comment.write";
 import { StatusCode } from "hono/utils/http-status";
 
 // Create Hono app instance for user-related routing

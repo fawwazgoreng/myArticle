@@ -1,5 +1,5 @@
-import prisma from "../infrastructure/database/prisma/prisma";
-import { delCategoryRelation } from "../utils/db/checkCategory";
+import prisma from "@infra/database/prisma/prisma";
+import { delCategoryRelation } from "@utils/db/checkCategory";
 
 // Category model responsible for database operations related to categories
 export default class CategoryModel {

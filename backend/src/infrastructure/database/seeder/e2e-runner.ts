@@ -1,5 +1,5 @@
 import path from "path";
-import prisma from "../prisma/prisma";
+import prisma from "@infra/database/prisma/prisma";
 
 const runDynamicSeeder = async () => {
     const fileName = process.argv[2];

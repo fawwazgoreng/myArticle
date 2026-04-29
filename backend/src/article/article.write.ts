@@ -1,15 +1,15 @@
-import { article, articlePayload } from "./article.type";
-import { writeFile } from "../utils/etc/image.write";
-import WriteRedis from "../infrastructure/redis/redis.write";
-import { ArticleValidate } from "./article.validate";
-import ArticleModel from "./article.model";
-import { checkDatabasePermission } from "../utils/auth/checkPermission";
-import AppError from "../utils/error";
-import CategoryModel from "../category/category.model";
-import { Sql } from "../infrastructure/database/generated/prisma/runtime/client";
-import { Prisma } from "../infrastructure/database/generated/prisma";
-import { ArticleRepositoryWrite } from "./article.repository";
-import ElasticSearchCase from "../infrastructure/elasticSearch/elastic.case";
+import { article, articlePayload } from "@/article/article.type";
+import { writeFile } from "@utils/etc/image.write";
+import WriteRedis from "@infra/redis/redis.write";
+import { ArticleValidate } from "@/article/article.validate";
+import ArticleModel from "@/article/article.model";
+import { checkDatabasePermission } from "@utils/auth/checkPermission";
+import AppError from "@utils/error";
+import CategoryModel from "@/category/category.model";
+import { Sql } from "@infra/database/generated/prisma/runtime/client";
+import { Prisma } from "@infra/database/generated/prisma";
+import { ArticleRepositoryWrite } from "@/article/article.repository";
+import ElasticSearchCase from "@infra/elasticSearch/elastic.case";
 
 // Service responsible for writing article data
 export default class WriteArticle implements ArticleRepositoryWrite {

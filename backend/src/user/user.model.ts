@@ -1,4 +1,4 @@
-import { loginRequest, monitoring, registerType } from "./user.type";
+import { loginRequest, monitoring, registerType } from "@/user/user.type";
 
 // user model responsible for database operations and authentication related to administrators
 export default class UserModel {

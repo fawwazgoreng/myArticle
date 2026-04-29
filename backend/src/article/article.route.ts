@@ -1,17 +1,17 @@
 import { Hono } from "hono";
 import { StatusCode } from "hono/utils/http-status";
-import WriteArticle from "./article.write";
-import ReadArticle from "./article.read";
-import WriteRedis from "../infrastructure/redis/redis.write";
+import WriteArticle from "@/article/article.write";
+import ReadArticle from "@/article/article.read";
+import WriteRedis from "@infra/redis/redis.write";
 import {
     articleArrayResponse,
     articlePayload,
     articleResponse,
-} from "./article.type";
+} from "@/article/article.type";
 import { RedisKey } from "ioredis";
-import { checkToken } from "../utils/auth/jwtauth";
-import { checkPermisssion } from "../utils/auth/checkPermission";
-import { handleError } from "../utils/error/separated";
+import { checkToken } from "@utils/auth/jwtauth";
+import { checkPermisssion } from "@utils/auth/checkPermission";
+import { handleError } from "@utils/error/separated";
 
 type variable = {
     profile: {

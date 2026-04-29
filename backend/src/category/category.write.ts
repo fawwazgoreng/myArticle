@@ -1,9 +1,7 @@
-import { ZodError } from "zod";
-import { globalResponse } from "../type/global.type";
-import { category, categoryResponse } from "./category.type";
-import CategoryModel from "./category.model";
-import { CategoryValidate } from "./category.validate";
-import AppError from "../utils/error";
+import { category } from "@/category/category.type";
+import CategoryModel from "@/category/category.model";
+import { CategoryValidate } from "@/category/category.validate";
+import AppError from "@utils/error";
 
 // Service responsible for writing category data
 export default class WriteCategory {

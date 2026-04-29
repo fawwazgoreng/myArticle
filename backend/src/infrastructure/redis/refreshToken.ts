@@ -1,4 +1,4 @@
-import redis from "./redis";
+import redis from "@infra/redis/redis";
 
 const ttl = 60 * 60 * 24; // Cache expiration time (24 hours)
 
