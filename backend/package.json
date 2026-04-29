@@ -2,6 +2,11 @@
   "name": "redis",
   "scripts": {
     "dev": "redis-server redis.conf & NODE_OPTIONS='--max-old-space-size=556 --expose-gc' & bun run --hot src/index.ts",
+    "db:seed:data": "bun src/infrastructure/database/seeder/data",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:reset": "prisma migrate reset",
     "clean": "rm -rf node_modules/.cache"
   },
   "dependencies": {
