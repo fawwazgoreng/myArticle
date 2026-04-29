@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import AppError from "../error";
+import AppError from "@/utils/error";
 
 // Utility for handling image file storage
 export class writeFile {

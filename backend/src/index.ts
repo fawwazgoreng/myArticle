@@ -4,15 +4,15 @@ import { csrf } from "hono/csrf";
 import { getConnInfo, serveStatic } from "hono/bun";
 import { rateLimiter } from "hono-rate-limiter";
 import { prettyJSON } from "hono/pretty-json";
-import { logger } from "./infrastructure/logger/log";
-import category from "./category/category.route";
-import index from "./article/article.route";
-import admin from "./user/user.route";
+import { logger } from "@/infrastructure/logger/log";
+import category from "@/category/category.route";
+import index from "@/article/article.route";
+import admin from "@/user/user.route";
 import schedule from "node-schedule";
-import WriteRedis from "./infrastructure/redis/redis.write";
+import WriteRedis from "@/infrastructure/redis/redis.write";
 import { HTTPException } from "hono/http-exception";
 import { StatusCode } from "hono/utils/http-status";
-import { env } from "./config";
+import { env } from "@/config";
 
 type Variables = {
     requestId: string;

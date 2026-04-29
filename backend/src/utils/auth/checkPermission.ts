@@ -1,10 +1,10 @@
 import { Context, Next } from "hono";
 import { HTTPException } from "hono/http-exception";
-import { decryptCookie } from "./decryptUserToken";
+import { decryptCookie } from "@utils/auth/decryptUserToken";
 import { ContentfulStatusCode } from "hono/utils/http-status";
-import ArticleModel from "../../article/article.model";
-import { toHttpException } from "../error/separated";
-import AppError from "../error";
+import ArticleModel from "@/article/article.model";
+import { toHttpException } from "@utils/error/separated";
+import AppError from "@utils/error";
 
 export const checkPermisssion = async (
     c: Context,

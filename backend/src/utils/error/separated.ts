@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 import AppError from ".";
-import { PrismaClientKnownRequestError } from "../../infrastructure/database/generated/prisma/runtime/client";
+import { PrismaClientKnownRequestError } from "@infra/database/generated/prisma/runtime/client";
 import { ContentfulStatusCode } from "hono/utils/http-status";
 import { HTTPException } from "hono/http-exception";
 

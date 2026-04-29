@@ -1,5 +1,5 @@
-import { env } from "../../config";
-import AppError from "../error";
+import { env } from "@/config";
+import AppError from "@utils/error";
 
 export const encode = (text: string) => new TextEncoder().encode(text);
 export const decode = (buffer: ArrayBuffer) => new TextDecoder().decode(buffer);

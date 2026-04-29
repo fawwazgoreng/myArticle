@@ -3,6 +3,14 @@
     "strict": true,
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
-    "esModuleInterop":true
+    "esModuleInterop":true,
+    "baseUrl": ".",
+    "paths": {
+        "@/*" : ["./src/*"],
+        "@utils/*" : ["./src/utils/*"],
+        "@infra/*" : ["./src/infrastructure/*"],
+        "@type/*" : ["./src/type/*"],
+        "@config/*" : ["./src/config/*"],
+    }
   }
 }
