@@ -13,7 +13,7 @@ export class ArticleSeeder extends BaseSeeder {
       where: { roles: { in: ['admin', 'editor'] } }
     })
 
-    if (editors.length === 0) throw new Error('No editors found, run UserSeeder first')
+    if (editors.length === 0) throw new Error('No editors found, run User Seeder first')
 
     const articles = [
       {
@@ -67,3 +67,4 @@ export class ArticleSeeder extends BaseSeeder {
     this.log(`Seeded ${articles.length} articles`)
   }
 }
+
