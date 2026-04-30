@@ -1,7 +1,8 @@
 import { PrismaClient } from '@infra/database/generated/prisma'
+import * as  Prisma from '@infra/database/prisma/prisma';
 
 export abstract class BaseSeeder {
-  constructor(protected prisma: PrismaClient) {}
+  constructor(protected prisma: PrismaClient = Prisma.default) {}
 
   abstract run(): Promise<void>
 
