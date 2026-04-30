@@ -1,10 +1,6 @@
 import { BaseSeeder } from "@infra/database/seeder/base.seeder";
-import { PrismaClient } from "@infra/database/generated/prisma";
 
 export class UserSeeder extends BaseSeeder {
-  constructor(prisma: PrismaClient) {
-    super(prisma)
-  }
 
   async run(): Promise<void> {
     await this.truncate('User')

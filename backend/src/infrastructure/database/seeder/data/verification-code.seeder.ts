@@ -1,10 +1,6 @@
 import { BaseSeeder } from "@infra/database/seeder/base.seeder";
-import { PrismaClient } from "@infra/database/generated/prisma";
 
 export class VerificationCodeSeeder extends BaseSeeder {
-  constructor(prisma: PrismaClient) {
-    super(prisma)
-  }
 
   private generateCode(): string {
     return Math.random().toString(36).substring(2, 8).toUpperCase()

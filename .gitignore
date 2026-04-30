@@ -3,3 +3,5 @@
 */localhost.pem
 */localhost-key.pem
 backend/public/image
+logs
+*/logs
