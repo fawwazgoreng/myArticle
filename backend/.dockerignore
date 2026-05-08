@@ -1,0 +1,7 @@
+node_modules
+/logs
+/docs
+/elastic-start-local
+/test
+.env
+.env.example
