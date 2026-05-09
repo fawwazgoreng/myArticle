@@ -13,6 +13,8 @@ import WriteRedis from "@/infrastructure/redis/redis.write";
 import { HTTPException } from "hono/http-exception";
 import { StatusCode } from "hono/utils/http-status";
 import { env } from "@/config";
+import redis from "./infrastructure/redis/redis";
+import elasticSearchClient from "./infrastructure/elasticSearch";
 
 type Variables = {
     requestId: string;
@@ -82,10 +84,38 @@ const job = schedule.scheduleJob("*/5 * * * *", async () => {
     logger.info(redis);
 });
 
-// Root health endpoint
+// base Root
 app.get("/", async (c) => {
     c.status(200);
     return c.json({ message: "hello from server" });
+});
+
+// Root health endpoint
+app.get("/health", async (c) => {
+    const checks = {
+        prisma: "pending",
+        redis: "pending",
+        elasticsearch: "pending"
+    };
+
+    try {
+        await prisma.$queryRaw`SELECT 1`;
+        checks.prisma = "ok";
+        
+        await redis.ping();
+        checks.redis = "ok";
+        
+        await elasticSearchClient.ping();
+        checks.elasticsearch = "ok";
+
+        return c.json({ status: "healthy", checks }, 200);
+    } catch (error) {
+        return c.json({ 
+            status: "unhealthy", 
+            checks, 
+            error: error instanceof Error ? error.message : "Unknown error" 
+        }, 500);
+    }
 });
 
 // Register API routes and static file server
