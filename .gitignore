@@ -5,3 +5,4 @@
 backend/public/image
 logs
 */logs
+.env
