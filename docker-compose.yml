@@ -40,7 +40,7 @@ services:
 
   web:
     build:
-      context: ./front
+      context: ./frontend
       dockerfile: Dockerfile
     container_name: myArticle_web
     restart: always
