@@ -6,7 +6,7 @@ const envTEST = z.object({
     "DATABASE_PASSWORD": z.string(),
     "DATABASE_USER": z.string(),
     "DATABASE_NAME":z.string(),
-    "NODE_ENV": z.enum(["development" , "production" , "debugging"]),
+    "NODE_ENV": z.enum(["development" , "production" , "debugging" , "test"]),
     "APP_NAME":z.string(),
     "REDIS_PORT":z.string(),
     "REDIS_DB":z.string(),
