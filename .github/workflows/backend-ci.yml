@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   detect_changes:
+    name: Detect Changes
     runs-on: ubuntu-latest
     outputs:
       backend: ${{ steps.filter.outputs.backend }}
