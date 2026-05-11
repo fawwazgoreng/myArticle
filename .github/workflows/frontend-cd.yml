@@ -1,14 +1,15 @@
 name: FRONTEND CD -- Deploy
 on:
     workflow_run:
-         workflows: ["FRONTEND CI -- Build & Test"]
-         types: [completed]
-         branches: [main]
+        workflows: ["FRONTEND CI -- Build & Test"]
+        types: [completed]
+        branches: [main]
 
 jobs:
     docker_build:
         name: Docker Build & Push
         runs-on: ubuntu-latest
+        # Only run if the preceding CI workflow was successful
         if: ${{ github.event.workflow_run.conclusion == 'success' }}
         strategy:
             matrix:
@@ -31,7 +32,7 @@ jobs:
               id: meta
               uses: docker/metadata-action@v4
               with:
-                  images: ${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}
+                  images: registry.example.com/sosmed/${{ matrix.service }}
                   tags: |
                       type=sha,format=long
                       type=raw,value=latest,enable={{is_default_branch}}
@@ -45,7 +46,6 @@ jobs:
                   target: production
                   tags: ${{ steps.meta.outputs.tags }}
                   labels: ${{ steps.meta.outputs.labels }}
-
                   cache-from: type=registry,ref=registry.example.com/sosmed/${{ matrix.service }}:buildcache
                   cache-to: type=registry,ref=registry.example.com/sosmed/${{ matrix.service }}:buildcache,mode=max
                   build-args: |
@@ -53,39 +53,64 @@ jobs:
                       GIT_SHA=${{ github.sha }}
 
     deploy_staging:
-         name: Deploy to Staging
-         needs: docker_build
-         runs-on: ubuntu-latest
-         strategy:
-             matrix:
-                 service: [frontend]
-             fail-fast: false
-         environment:
-             name: staging
-             url: https://staging.example.com
-         steps:
-           - uses: actions/checkout@v4
+        name: Deploy to Staging
+        needs: docker_build
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                service: [frontend]
+                port: [80] # Defined port for health check
+            fail-fast: false
+        environment:
+            name: staging
+            url: https://staging.example.com
+        steps:
+            - uses: actions/checkout@v4
 
-           - name: Deploy staging to server via ssh
-             uses: appleboy/ssh-action@v1
-             with:
-               host: ${{ secrets.STAGING_HOST }}
-               username: ${{ secrets.STAGING_USERNAME }}
-               key: ${{ secrets.STAGING_SSH_KEY }}
-               script:
-                    cd /opt/sosmed
-
-                    export TAG=build-${{ github.run_number }}
-                    docker pull registry.example.com/sosmed/${{ matrix.service }}:$TAG
-                    docker tag registry.example.com/sosmed/${{ matrix.service }}:$TAG
-
-                    FRONTEND_TAG=${TAG} \
-                    docker-compose up -d --no-deps frontend
-
-                    sleep 10
-                    curl -sf http://localhost:3001/health || exit 1
-                    curl -sf http://localhost:3000 || exit 1
-                    echo "deploy staging success"
-                    
-                    
-                    docker image prune -af --filter "until=72h"
+            - name: Deploy staging to server via ssh
+              uses: appleboy/ssh-action@v1
+              with:
+                  host: ${{ secrets.STAGING_HOST }}
+                  username: ${{ secrets.STAGING_USERNAME }}
+                  key: ${{ secrets.STAGING_SSH_KEY }}
+                  script: |
+                      BASE_PATH=/opt/sosmed 
+                      RELEASE_PATH=$BASE_PATH/releases/build-${{ github.run_number }}
+                      CURRENT_PATH=$BASE_PATH/current
+                      SHARED_PATH=$BASE_PATH/shared
+                      
+                      # Create release directory and link environment
+                      mkdir -p $RELEASE_PATH
+                      ln -sf $SHARED_PATH/.env $RELEASE_PATH/.env
+                      
+                      # Pull the specific build version
+                      export TAG=build-${{ github.run_number }}
+                      docker pull registry.example.com/sosmed/${{ matrix.service }}:$TAG
+                      
+                      # Start the new container
+                      cd $RELEASE_PATH
+                      ln -sf $SHARED_PATH/docker-compose.yml $RELEASE_PATH/docker-compose.yml
+                      FRONTEND_TAG=${TAG} docker-compose up -d --no-deps ${{ matrix.service }}
+                      
+                      # Health check loop
+                      echo "Performing health check..."
+                      MAX_RETRIES=10
+                      RETRY_COUNT=0
+                      until curl -sf http://localhost:${{ matrix.port }}/health | grep -q "ok"; do
+                          RETRY_COUNT=$((RETRY_COUNT + 1))
+                          if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+                              echo "Service is not healthy"
+                              docker-compose stop ${{ matrix.service }}
+                              exit 1
+                          fi
+                          printf "."
+                          sleep 5
+                      done
+                      
+                      # Atomically switch to the new release
+                      ln -sfn $RELEASE_PATH $CURRENT_PATH
+                      
+                      # Maintenance: Cleanup old images and keep only last 5 releases
+                      echo "Deployment completed. Cleaning up..."
+                      docker image prune -af --filter "until=72h"
+                      cd $BASE_PATH/releases && ls -t | tail -n +6 | xargs rm -rf --force
