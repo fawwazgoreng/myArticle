@@ -15,7 +15,9 @@ const envTEST = z.object({
     "FRONT_END_URL":z.url(),
     "SECRET_KEY": z.string(),
     "ELASTICSEARCH_URL": z.string(),
-    "ELASTICSEARCH_API_KEY": z.string()
+    "ELASTICSEARCH_API_KEY": z.string(),
+    "ELASTICSEARCH_USERNAME": z.string(),
+    "ELASTICSEARCH_PASSWORD": z.string(),
 });
 
 const parsedEnv = envTEST.safeParse(process.env);

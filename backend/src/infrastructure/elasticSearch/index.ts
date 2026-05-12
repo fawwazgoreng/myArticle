@@ -1,10 +1,15 @@
-import { Client } from "@elastic/elasticsearch";
+import { env } from "@/config";
+import { Client , HttpConnection } from "@elastic/elasticsearch";
 
 const elasticSearchClient = new Client({
-    node: process.env.ELASTICSEARCH_URL,
+    node: env.ELASTICSEARCH_URL,
     auth: {
-        apiKey: String(process.env.ELASTICSEARCH_API_KEY)
-    }
+        username: env.ELASTICSEARCH_USERNAME,
+        password: env.ELASTICSEARCH_PASSWORD,
+    },
+    requestTimeout: 5000,
+    maxRetries: 2,
+    Connection: HttpConnection
 });
 
 export default elasticSearchClient;
