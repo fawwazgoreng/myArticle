@@ -4,8 +4,7 @@ import { Client , HttpConnection } from "@elastic/elasticsearch";
 const elasticSearchClient = new Client({
     node: env.ELASTICSEARCH_URL,
     auth: {
-        username: env.ELASTICSEARCH_USERNAME,
-        password: env.ELASTICSEARCH_PASSWORD,
+        apiKey: env.ELASTICSEARCH_API_KEY
     },
     requestTimeout: 5000,
     maxRetries: 2,
