@@ -5,7 +5,7 @@ export type DocumentBody = {
 }
 
 export default class ElasticSearchModel {
-    private index: string = "article";
+    private index: string = "articles";
     constructor(private client = elasticSearchClient) { }
     get = async (id: string) => {
         await this.client.get({

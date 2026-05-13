@@ -15,7 +15,6 @@ import { StatusCode } from "hono/utils/http-status";
 import { env } from "@/config";
 import redis from "./infrastructure/redis/redis";
 import elasticSearchClient from "./infrastructure/elasticSearch";
-import { Client } from "@elastic/elasticsearch";
 
 type Variables = {
     requestId: string;
