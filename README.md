@@ -1,20 +1,21 @@
 # MyArticle
 
 > A modern blog platform built with **Nuxt 3** (Frontend) and **Hono** (Backend API).  
-> Uses **PostgreSQL** as the main database and **Redis** for caching and view counters.
+> Uses **PostgreSQL** as the main database, **Redis** for caching and view counters, and **Elasticsearch** for search functionality.
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|------|-------------|
-| Frontend | Nuxt 3 |
-| Styling | Tailwind CSS |
-| Backend | Hono (REST API) |
-| Database | PostgreSQL |
-| Cache | Redis |
-| Runtime | Bun / Node.js |
+| Layer    | Technology      |
+| -------- | --------------- |
+| Frontend | Nuxt 3          |
+| Styling  | Tailwind CSS    |
+| Backend  | Hono (REST API) |
+| Database | PostgreSQL      |
+| Cache    | Redis           |
+| Runtime  | Bun / Node.js   |
+| Search   | Elasticsearch   |
 
 ---
 
@@ -50,7 +51,7 @@ Make sure you have these installed:
 - **npm** or **bun**
 - **PostgreSQL**
 - **Redis**
-
+- **Elasticsearch**
 ---
 
 # 🖥️ Frontend — Nuxt
@@ -171,14 +172,14 @@ Base URL:
 http://localhost:3000
 ```
 
-| Method | Endpoint | Description |
-|------|---------|-------------|
-| GET | /article | Get articles |
-| GET | /article/:id | Get single article |
-| POST | /article | Create article |
-| PUT | /article/:id | Update article |
-| DELETE | /article/:id | Delete article |
-| GET | /category | Get categories |
+| Method | Endpoint     | Description        |
+| ------ | ------------ | ------------------ |
+| GET    | /article     | Get articles       |
+| GET    | /article/:id | Get single article |
+| POST   | /article     | Create article     |
+| PUT    | /article/:id | Update article     |
+| DELETE | /article/:id | Delete article     |
+| GET    | /category    | Get categories     |
 
 ---
 
