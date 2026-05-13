@@ -4,7 +4,7 @@ import prisma from "@infra/database/prisma/prisma";
 import { getToken } from "@utils/testHelper/getToken";
 
 // Configuration for the local test environment
-const BASE_URL = "https://localhost:2000";
+const BASE_URL = "https://localhost:3000";
 
 /**
  * Helper to generate headers for FormData/Multipart requests

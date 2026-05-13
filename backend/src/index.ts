@@ -168,16 +168,6 @@ app.onError(async (error: any, c) => {
     // Set CORS header for error responses
     c.res.headers.set("Access-Control-Allow-Origin", env.FRONT_END_URL);
 
-    if (error instanceof HTTPException) {
-        const errorResponse = await error
-            .getResponse()
-            .clone()
-            .json()
-            .catch(() => null);
-        c.status(status as StatusCode);
-        return c.json(errorResponse || { status, message: error.message });
-    }
-
     // Default Production Response
     c.status(status as StatusCode);
     return c.json({

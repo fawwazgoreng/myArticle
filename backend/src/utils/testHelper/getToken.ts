@@ -1,7 +1,7 @@
 import { it , expect} from "bun:test";
 
 // Configuration for the local test environment
-const BASE_URL = "https://localhost:2000";
+const BASE_URL = "https://localhost:3000";
 const headerVar = {
   "Origin": process.env.FRONT_END_URL || "http://localhost:3000"
 };
