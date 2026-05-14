@@ -1,7 +1,6 @@
-import { PrismaClient } from "@infra/database/generated/prisma";
 import elasticSearchClient from "@infra/elasticSearch";
+import prisma from "./prisma";
 
-const prisma = new PrismaClient();
 
 const migrate = async () => {
     const BATCH_SIZE = 500;
@@ -42,7 +41,7 @@ const migrate = async () => {
         
         const ops = articles.flatMap((article) => {
             return [
-                { index: { _index: "articles", _id: article.id } },
+                { index: { _index: "articles_v2", _id: article.id } },
                 article,
             ];
         });

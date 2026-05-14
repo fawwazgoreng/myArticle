@@ -1,4 +1,4 @@
-import { errors, estypes } from "@elastic/elasticsearch";
+import { errors } from "@elastic/elasticsearch";
 import ElasticSearchModel, { DocumentBody } from "@infra/elasticSearch/elastic.model";
 import AppError from "@utils/error";
 
