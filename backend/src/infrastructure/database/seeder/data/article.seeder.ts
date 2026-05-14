@@ -5,7 +5,7 @@ export class ArticleSeeder extends BaseSeeder {
     await this.truncate('Article')
 
     const editors = await this.prisma.user.findMany({
-      where: { roles: { in: ['admin', 'editor'] } }
+      where: { roles: { in: ['admin', 'writer'] } }
     })
 
     if (editors.length === 0) throw new Error('No editors found, run User Seeder first')

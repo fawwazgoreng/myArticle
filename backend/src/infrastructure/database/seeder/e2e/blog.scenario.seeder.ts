@@ -84,8 +84,8 @@ export class ArticleWithoutCategorySeeder extends BaseSeeder {
 
     await this.prisma.article.create({
       data: {
-        title: 'Artikel Tanpa Kategori',
-        content: 'Ini adalah tes untuk melihat apakah layout tetap stabil jika kategori kosong.',
+        title: 'Articles without Category',
+        content: 'Testing layout stability when category is empty.',
         author_id: String(editor?.id ?? 1),
       }
     });

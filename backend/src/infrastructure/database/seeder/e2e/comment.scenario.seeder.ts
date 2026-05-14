@@ -16,7 +16,7 @@ export class LongCommentThreadScenarioSeeder extends BaseSeeder {
             const comment = await this.prisma.comment.create({
                 data: {
                     user_id: users[i % users.length].id,
-                    content: `Ini adalah komentar ke-${i} untuk menguji scroll dan pagination pada section komentar.`,
+                    content: `This comment is use to test scroll and pagination on the comment section - ${i}.`,
                 },
             });
 
