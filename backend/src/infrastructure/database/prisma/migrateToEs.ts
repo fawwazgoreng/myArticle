@@ -1,6 +1,7 @@
 import elasticSearchClient from "@infra/elasticSearch";
 import prisma from "./prisma";
 
+    
 
 const migrate = async () => {
     const BATCH_SIZE = 500;
@@ -35,13 +36,13 @@ const migrate = async () => {
                     },
                 },
             },
-        });
-        
+        });   
         if (articles.length === 0) break;
+        
         
         const ops = articles.flatMap((article) => {
             return [
-                { index: { _index: "articles_v2", _id: article.id } },
+                { index: { _index: "articles_v1", _id: article.id } },
                 article,
             ];
         });

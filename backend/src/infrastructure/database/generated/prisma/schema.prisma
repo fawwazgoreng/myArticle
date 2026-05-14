@@ -17,8 +17,8 @@ model Article {
   created_at DateTime            @default(now())
   updated_at DateTime            @default(now())
   category   CategoryOnArticle[]
-  author     User[]
   comment    CommentOnArticle[]
+  author     User                @relation(fields: [author_id], references: [id])
 }
 
 model Category {
