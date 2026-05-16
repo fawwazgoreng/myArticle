@@ -1,9 +1,11 @@
 import { errors } from "@elastic/elasticsearch";
-import ElasticSearchModel, { DocumentBody } from "@infra/elasticSearch/elastic.model";
+import ElasticSearchModel, {
+    DocumentBody,
+} from "@infra/elasticSearch/elastic.model";
 import AppError from "@utils/error";
 
 export default class ElasticSearchCase {
-    constructor(private model = new ElasticSearchModel()) { }
+    constructor(private model = new ElasticSearchModel()) {}
     buildQuery = (req: any) => {
         const must = [];
         if (req.title) {
@@ -16,16 +18,16 @@ export default class ElasticSearchCase {
                 },
             });
         }
-        
+
         if (req.category) {
-                must.push({
-                    term: {
-                        "category.name.keyword": req.category
-                    }
-                });
-            }
-        
-        return {bool: {must}};
+            must.push({
+                term: {
+                    "category.category.name": req.category,
+                },
+            });
+        }
+
+        return { bool: { must } };
     };
     create = async (id: string, body: DocumentBody) => {
         try {
@@ -41,7 +43,12 @@ export default class ElasticSearchCase {
             this.errorHandling(error);
         }
     };
-    search = async (req: {from: number, size: number, query: any, sort: any}) => {
+    search = async (req: {
+        from: number;
+        size: number;
+        query: any;
+        sort: any;
+    }) => {
         try {
             return await this.model.search(req);
         } catch (error) {
