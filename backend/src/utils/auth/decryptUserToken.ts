@@ -4,6 +4,7 @@ import RedisToken from "@infra/redis/refreshToken";
 import UserWrite from "@/user/user.write";
 import UserRead from "@/user/user.read";
 import AppError from "@utils/error";
+import { decryptToken } from "./encrypt";
 
 export const decryptCookie = async (c: Context) => {
     const refreshToken = String(getCookie(c, "refresh-token"));
@@ -24,14 +25,14 @@ export const decryptCookie = async (c: Context) => {
     let profile = hashed;
     const oneDay = 1000 * 60 * 60 * 24;
     let isRefresh = false;
-
     // Logic: Check if cache is still valid (under 24 hours)
     if (now - time < oneDay) {                
-        const res = await new RedisToken().findToken(profile.id);
-        if (!res) {
+        const encrypted = await new RedisToken().findToken(profile.id);
+        if (!encrypted) {
             isRefresh = true; // Cache missing, force re-sync
         } else {    
-            profile = res;
+            const data = await decryptToken(encrypted);
+            profile = JSON.parse(data);
         }
     } else {
         isRefresh = true; // Token older than 24 hours, force re-sync from DB

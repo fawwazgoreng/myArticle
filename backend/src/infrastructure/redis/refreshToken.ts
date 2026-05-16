@@ -15,15 +15,7 @@ export default class RedisToken {
     };
 
     findToken = async (id: string) => {
-        const res = await redis.get(`admin:${id}`);
-        if (!res) return false;
-        return JSON.parse(res) as {
-            id: string;
-            created_at: Date;
-            username: string;
-            email: string;
-            roles: string;
-        };
+        return await redis.get(`admin:${id}`);
     };
 
     getToken = async (token: string) => {

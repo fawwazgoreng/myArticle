@@ -32,8 +32,8 @@ it('should get token', async () => {
 
 export const getToken = async () => {
     const request = {
-        email: "write@gmail.com",
-        password: "Writer123{}[]"
+        email: "admin@myarticle.com",
+        password: "Admin@123"
     };
     const refreshToken = await fetch(`${BASE_URL}/login`, {
       method: "POST",
