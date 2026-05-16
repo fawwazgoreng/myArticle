@@ -9,8 +9,10 @@ export default class ElasticSearchCase {
         if (req.title) {
             must.push({
                 match: {
-                    title: req.title,
-                    fuzziness: "AUTO",
+                    title: {
+                        query: req.title,
+                        fuzziness: "AUTO",
+                    },
                 },
             });
         }
