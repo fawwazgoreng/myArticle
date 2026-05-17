@@ -10,7 +10,8 @@ import { checkToken, getUserHasUsed, signToken } from "@utils/auth/jwtauth";
 import { decryptCookie } from "@utils/auth/decryptUserToken";
 import UserWrite from "@/user/user.write";
 import { env } from "@/config";
-import { handleError } from "@/utils/error/separated";
+import { handleError, toHttpException } from "@/utils/error/separated";
+import AppError from "@/utils/error";
 
 // Create Hono app instance for user-related routing
 const app = new Hono();
@@ -133,7 +134,7 @@ app
             const refreshToken = getCookie(c, "refresh-token");
 
             if (!refreshToken) {
-                throw { status: 401, message: "unauthorized" };
+                throw toHttpException(new AppError(401, "unauthorized" , "UNAUTHORIZED"));
             }
 
             // Invalidate session in Redis

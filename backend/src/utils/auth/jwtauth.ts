@@ -3,8 +3,8 @@ import { sign, verify} from "hono/jwt"
 import { adminHasUsed, userType } from "@/user/user.type";
 import { getConnInfo } from "hono/bun";
 import { env } from "@/config";
-import { toHttpException } from "@utils/error/separated";
 import AppError from "@utils/error";
+import { toHttpException } from "../error/separated";
 const key = String(env.SECRET_KEY);
 
 export const checkToken = async (c : Context , next: Next) => {

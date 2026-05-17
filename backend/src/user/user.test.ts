@@ -141,6 +141,7 @@ mock.module("hono/bun", () => ({
 import UserRead from "./user.read";
 import UserWrite from "./user.write";
 import app from "./user.route"; // the Hono router from the provided route file
+import { getToken } from "@/utils/testHelper/getToken";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -297,7 +298,7 @@ describe("UserWrite.refreshData", () => {
 describe("POST /login", () => {
     it("returns 200 with token and sets httpOnly cookie on valid credentials", async () => {
         const res = await req("POST", "/login", {
-            body: { email: "admin@test.com", password: "secret" },
+            body: { email: "admin@myarticle.com", password: "Admin@123" },
         });
 
         expect(res.status).toBe(200);
@@ -372,10 +373,11 @@ describe("GET /profile", () => {
 
 describe("POST /register", () => {
     it("returns 201 on successful admin creation (roles defaults to 'user' for unknown)", async () => {
+        await prisma?.user.delete({ where: { email: "new@test.com" } });
         const res = await req("POST", "/register", {
             body: {
                 email: "new@test.com",
-                password: "pass",
+                password: "Pass123?",
                 username: "newadmin",
                 roles: "unknown-role", // should coerce to "user"
             },
@@ -391,7 +393,7 @@ describe("POST /register", () => {
         const res = await req("POST", "/register", {
             body: {
                 email: "writer@test.com",
-                password: "pass",
+                password: "Pass123?",
                 username: "writeruser",
                 roles: "writer",
             },
@@ -424,8 +426,9 @@ describe("POST /register", () => {
 
 describe("DELETE /logout", () => {
     it("returns 200 and clears cookie when refresh token is valid", async () => {
+        const token = await getToken();
         const res = await req("DELETE", "/logout", {
-            headers: { Authorization: "Bearer mock-jwt" },
+            headers: { Authorization: `Bearer ${token}` },
             cookies: { "refresh-token": "valid-refresh-token" },
         });
 
@@ -436,11 +439,11 @@ describe("DELETE /logout", () => {
     });
 
     it("returns 401 when refresh-token cookie is absent", async () => {
+        const token = await getToken();
         const res = await req("DELETE", "/logout", {
-            headers: { Authorization: "Bearer mock-jwt" },
-            // no cookies
+            headers: { Authorization: `Bearer ${token}` },
         });
-
+        console.log(await res.json());
         expect(res.status).toBe(401);
     });
 
