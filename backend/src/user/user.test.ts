@@ -94,7 +94,7 @@ mock.module("./user.validate", () => ({
 mock.module("../utils/error", () => ({
     default: class AppError extends Error {
         constructor(
-            public status: number,
+            public statusCode: number,
             message: string,
             public error: string,
         ) {
@@ -123,7 +123,7 @@ mock.module("../infrastructure/redis/redis.write", () => ({
 mock.module("../config", () => ({
     env: {
         FRONT_END_URL: "localhost",
-        JWT_SECRET: "test-secret",
+        SECRET_KEY: "test-secret",
     },
 }));
 
@@ -390,6 +390,7 @@ describe("POST /register", () => {
     });
 
     it("sets roles to 'writer' when explicitly passed as writer", async () => {
+        await prisma?.user.delete({ where: { email: "writer@test.com" } });
         const res = await req("POST", "/register", {
             body: {
                 email: "writer@test.com",
@@ -398,7 +399,7 @@ describe("POST /register", () => {
                 roles: "writer",
             },
         });
-
+        console.log(await res.json());
         expect(res.status).toBe(201);
     });
 
@@ -432,9 +433,9 @@ describe("DELETE /logout", () => {
             cookies: { "refresh-token": token.refreshToken },
         });
 
+        console.log(await res.text());
         // expect(res.status).toBe(200);
         // const json = await res.json();
-        console.log(res);
         // expect(json.status).toBe(200);
         // expect(json.message).toBe("logout successfully");
     });
@@ -451,8 +452,8 @@ describe("DELETE /logout", () => {
     it("returns error when Redis token lookup fails during logout", async () => {
         const token = await getToken();
         const res = await req("DELETE", "/logout", {
-            headers: { Authorization: token.res.token },
-            cookies: { "refresh-token": "invalid-token" },
+            headers: { Authorization: "Bearer mock-jwt" },
+            cookies: { "refresh-token": "valid-refresh-token" },
         });
 
         expect(res.status).toBeGreaterThanOrEqual(400);
@@ -466,7 +467,7 @@ describe("DELETE /logout", () => {
 describe("Response Shape Contracts", () => {
     it("login: always returns { status, message, token }", async () => {
         const res = await req("POST", "/login", {
-            body: { email: "admin@test.com", password: "secret" },
+            body: { email: "admin@myarticle.com", password: "Admin@123" },
         });
         const json = await res.json();
         expect(json).toHaveProperty("status");
@@ -484,10 +485,16 @@ describe("Response Shape Contracts", () => {
     });
 
     it("register: always returns { status, message }", async () => {
+        await prisma?.user.delete({
+            where: {
+                email: "x@test.com"
+            }
+        })
         const res = await req("POST", "/register", {
-            body: { email: "x@test.com", password: "p", username: "u" },
+            body: { email: "x@test.com", password: "UnitTest123]", username: "username123" },
         });
         const json = await res.json();
+        console.log(json);
         expect(json).toHaveProperty("status");
         expect(json).toHaveProperty("message");
     });

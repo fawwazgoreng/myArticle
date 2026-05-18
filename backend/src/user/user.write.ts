@@ -53,7 +53,7 @@ export default class UserWrite {
             );
         }
 
-        // Return sanitized admin data (excluding sensitive fields like password)
+        // Return sanitized admin data (excluding sensitive fields like password)getToken
         return {
             id: admin.id,
             username: admin.username,

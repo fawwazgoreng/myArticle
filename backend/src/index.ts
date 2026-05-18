@@ -99,7 +99,7 @@ app.get("/health", async (c) => {
     };
     
     try {
-        await prisma.$queryRaw`SELECT 1`;
+        if (prisma) await prisma.$queryRaw`SELECT 1`;;
         checks.prisma = "ok";
         
         await redis.ping();

@@ -5,16 +5,19 @@ import { getConnInfo } from "hono/bun";
 import { env } from "@/config";
 import AppError from "@utils/error";
 import { toHttpException } from "../error/separated";
-const key = String(env.SECRET_KEY);
+const key = Bun.SHA256.hash(env.SECRET_KEY,"hex");
 
-export const checkToken = async (c : Context , next: Next) => {
-    try {
-        const token = c.req.header("Authorization")?.split("Bearer ")[1].trim();
-        await verify(String(token), key, "HS256");
-        await next();
-    } catch (error : any) {
-        throw toHttpException(new AppError(401, "unauthorized" , "UNAUTHORIZED"));
+export const checkToken = async (c: Context, next: Next) => {
+    const token = c.req.header("Authorization")?.split("Bearer ")[1]?.trim()
+    if (!token) {
+        throw toHttpException(new AppError(401, "unauthorized", "UNAUTHORIZED"))
     }
+    try {
+        await verify(String(token), key, "HS256")
+    } catch {
+        throw toHttpException(new AppError(401, "invalid or expired token", "TOKEN_INVALID"))
+    }
+    await next()
 }
 
 export const hashPassword = async (password: string) => {
@@ -43,7 +46,7 @@ export const signToken = async (admin: userType) => {
     const payload = {
         username: admin.username,
         role: admin.roles,
-        exp: Math.floor((Date.now() / 1000) * 60 * 15),
+        exp: Math.floor(Date.now() / 1000) + 60 * 15,
         email: admin.email,
         id: admin.id
     }
