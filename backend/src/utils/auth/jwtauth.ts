@@ -5,7 +5,7 @@ import { getConnInfo } from "hono/bun";
 import { env } from "@/config";
 import AppError from "@utils/error";
 import { toHttpException } from "../error/separated";
-const key = Bun.SHA256.hash(env.SECRET_KEY,"hex");
+const key = env.SECRET_KEY;
 
 export const checkToken = async (c: Context, next: Next) => {
     const token = c.req.header("Authorization")?.split("Bearer ")[1]?.trim()

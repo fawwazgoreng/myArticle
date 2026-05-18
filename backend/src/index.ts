@@ -95,26 +95,29 @@ app.get("/health", async (c) => {
     const checks = {
         prisma: "pending",
         redis: "pending",
-        elasticsearch: "pending"
+        elasticsearch: "pending",
     };
-    
+
     try {
-        if (prisma) await prisma.$queryRaw`SELECT 1`;;
+        if (prisma) await prisma.$queryRaw`SELECT 1`;
         checks.prisma = "ok";
-        
+
         await redis.ping();
         checks.redis = "ok";
-        
+
         await elasticSearchClient.ping();
         checks.elasticsearch = "ok";
 
         return c.json({ status: "healthy", checks }, 200);
     } catch (error) {
-        return c.json({ 
-            status: "unhealthy", 
-            checks, 
-            error: error instanceof Error ? error.message : "Unknown error" 
-        }, 500);
+        return c.json(
+            {
+                status: "unhealthy",
+                checks,
+                error: error instanceof Error ? error.message : "Unknown error",
+            },
+            500,
+        );
     }
 });
 
@@ -139,11 +142,20 @@ app.onError(async (error: any, c) => {
 
     let errorDetails = null;
     if (error instanceof HTTPException) {
-        errorDetails = await error
-            .getResponse()
-            .clone()
-            .json()
-            .catch(() => null);
+        const response = error.getResponse();
+        try {
+            const plainText = await response.clone().text();
+            if (
+                plainText.trim().startsWith("{") ||
+                plainText.trim().startsWith("[")
+            ) {
+                errorDetails = JSON.parse(plainText);
+            } else {
+                errorDetails = { message: plainText };
+            }
+        } catch (error: any) {
+            errorDetails = { message: error.message };
+        }
     }
 
     const logMetadata = {

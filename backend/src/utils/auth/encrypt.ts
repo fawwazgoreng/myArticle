@@ -40,9 +40,10 @@ export const randomUuid = async () => {
 }
 
 export const decryptToken = async (token: string) => {
+    try {
     const key = await getKey();
     
-    const combined = Uint8Array.from(atob(token).split("").map(c => c.charCodeAt(0)));
+    const combined = new Uint8Array(Buffer.from(token, "base64"));
     
     const iv = combined.slice(0, 12);
     const ciphertext = combined.slice(12);
@@ -53,4 +54,7 @@ export const decryptToken = async (token: string) => {
         ciphertext
     );
     return decode(decrypt);
+    } catch (error: any) {
+        throw new AppError(500, "Error decrypt token", "DECRYPT_ERROR")
+    }
 }

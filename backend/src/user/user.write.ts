@@ -17,7 +17,10 @@ export default class UserWrite {
 
     // Handle new administrator registration, including validation and password hashing
     register = async (req: registerType) => {
-        // Validate the registration request against the Zod schema
+        // Validate the registration request against the Zod schema        expect(res.status).toBe(200)
+        const json = await res.json()
+        expect(json.status).toBe(200)
+        expect(json.message).toBe("logout successfully")
         const validated = this.userValidate.register(req);
 
         // Hash the plain-text password before database storage
@@ -64,12 +67,28 @@ export default class UserWrite {
 
     // Terminate admin session by removing tokens from the cache
     logout = async (refreshToken: string) => {
-        const res = await this.redisToken.getToken(refreshToken);
-        const admin: userType = JSON.parse(await decryptToken(res));
-
-        await this.redisToken.deleteToken(refreshToken, admin.id);
-        return admin;
-    };
+        const encryptedSession = await this.redisToken.getToken(refreshToken)
+        const sessionRaw = await decryptToken(encryptedSession)
+        let session: { id: string; created_at: string; roles: string }
+        try {
+            session = JSON.parse(sessionRaw.trim())
+        } catch {
+            throw new AppError(400, "invalid token format", "TOKEN_MALFORMED")
+        }
+        const encryptedUser = await this.redisToken.findToken(session.id)
+        if (!encryptedUser) {
+            throw new AppError(401, "session not found", "SESSION_NOT_FOUND")
+        }
+        const userRaw = await decryptToken(encryptedUser)
+        let user: userType
+        try {
+            user = JSON.parse(userRaw.trim())
+        } catch {
+            throw new AppError(400, "invalid user data", "TOKEN_MALFORMED")
+        }
+        await this.redisToken.deleteToken(refreshToken, session.id)
+        return user;
+    }
 
     // Synchronize latest database profile data into the Redis session store
     refreshData = async (id: string) => {
