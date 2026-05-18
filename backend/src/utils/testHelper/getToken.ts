@@ -27,7 +27,7 @@ it('should created new writer', async () => {
 it('should get token', async () => {
     const res = await getToken();
     console.log(res);
-    expect(res.status).toBe(200);
+    expect(res.res.status).toBe(200);
 })
 
 export const getToken = async () => {
@@ -49,5 +49,8 @@ export const getToken = async () => {
         },
     })
     const res = await token.json();
-    return res;
+    return {
+        refreshToken: authorization.token,
+        res,
+    };
 }
