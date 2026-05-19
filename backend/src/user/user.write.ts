@@ -17,10 +17,7 @@ export default class UserWrite {
 
     // Handle new administrator registration, including validation and password hashing
     register = async (req: registerType) => {
-        // Validate the registration request against the Zod schema        expect(res.status).toBe(200)
-        const json = await res.json()
-        expect(json.status).toBe(200)
-        expect(json.message).toBe("logout successfully")
+        // Validate the registration request against the Zod schema
         const validated = this.userValidate.register(req);
 
         // Hash the plain-text password before database storage

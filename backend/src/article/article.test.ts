@@ -45,7 +45,7 @@ describe("Article API Integration Tests", () => {
 
         const res = await fetch(`${BASE_URL}/article`, {
             method: "POST",
-            headers: headerFormVar(auth.token),
+            headers: headerFormVar(auth.res.token),
             body: form,
         });
 

@@ -82,7 +82,6 @@ index
             throw handleError(error);
         }
     })
-
     .get("/:id", async (c) => {
         try {
             const id = Number(c.req.param("id"));
