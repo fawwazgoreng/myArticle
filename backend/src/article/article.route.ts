@@ -108,6 +108,7 @@ index
     .use("/", (c, next) => checkPermisssion(c, next, ["admin", "writer"]))
 
     .post("/", async (c) => {
+        return c.json("test");
         try {
             const payload = await parseBodyToPayload(c);
 
