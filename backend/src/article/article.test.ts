@@ -19,7 +19,6 @@ mock.module("@/article/article.model", () => ({
             image: data.image, base_views: 0,
             created_at: new Date(), updated_at: new Date(),
             author_id: data.author_id,
-            author: { id: "admin-1", username: "admin" },
             category: [],
         }))
         findById = mock(async (id: number) => {
@@ -158,7 +157,7 @@ mock.module("hono/bun", () => ({
 // ---------------------------------------------------------------------------
 import index       from "./article.route"
 import ReadArticle  from "./article.read"
-import { getToken } from "@/utils/testHelper/getToken"
+import { getTokenMock } from "@/utils/testHelper/getToken.mock"
 
 // ---------------------------------------------------------------------------
 // Helper
@@ -192,8 +191,7 @@ async function req(
     return index.fetch(new Request(url, init))
 }
 
-const mockProfile = { id: "admin-1", username: "admin", email: "admin@test.com", roles: "admin" as const }
-const authHeaders = { Authorization: "Bearer mock-jwt-access-token" }
+const authHeaders = (token: string) => ({ Authorization: `Bearer ${token}` })
 
 // ---------------------------------------------------------------------------
 // Route Tests
@@ -237,33 +235,32 @@ describe("POST /", () => {
     })
 
     it("returns 201 on successful article creation", async () => {
-        const refreshToken = await getToken(); 
+        const refreshToken = await getTokenMock(); 
         const form = new FormData()
         form.append("title", "Integration Test Article")
         form.append("content", "Test content body.")
         form.append("category", "tech")
         form.append("image", new File(["data"], "test.jpg", { type: "image/jpeg" }) as any)
         const res = await req("POST", "/", {
-            body: form, headers: authHeaders, cookies: {
+            body: form, headers: authHeaders(refreshToken.res.token), cookies: {
             "refresh-token": refreshToken.refreshToken
         }})
         const json = await res.json()
-        console.log(json);
-        // expect(res.status).toBe(201)
-        // expect(json.article).toHaveProperty("title")
+        expect(res.status).toBe(201)
+        expect(json.article).toHaveProperty("title")
     })
 })
 
 describe("PUT /:id", () => {
     it("returns 200 on successful update", async () => {
-        const refreshToken = await getToken(); 
+        const refreshToken = await getTokenMock(); 
         const form = new FormData()
         form.append("title", "Updated Title")
         form.append("content", "Updated content.")
         form.append("category", "tech")
         form.append("image", new File(["data"], "updated.jpg", { type: "image/jpeg" }) as any)
         const res = await req("PUT", "/1", {
-            body: form, headers: authHeaders, cookies: {
+            body: form, headers: authHeaders(refreshToken.res.token), cookies: {
                 "refresh-token": refreshToken.refreshToken
         }})
         const json = await res.json()
@@ -274,9 +271,9 @@ describe("PUT /:id", () => {
 
 describe("DELETE /:id", () => {
     it("returns 200 on successful delete", async () => {
-        const refreshToken = await getToken(); 
+        const refreshToken = await getTokenMock(); 
         const res = await req("DELETE", "/1", {
-            headers: authHeaders, cookies: {
+            headers: authHeaders(refreshToken.res.token), cookies: {
                 "refresh-token": refreshToken.refreshToken
         }})
         const json = await res.json()

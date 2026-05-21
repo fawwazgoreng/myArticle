@@ -161,6 +161,7 @@ import UserRead from "./user.read";
 import UserWrite from "./user.write";
 import app from "./user.route"; // the Hono router from the provided route file
 import { getToken } from "@/utils/testHelper/getToken";
+import { getTokenMock } from "@/utils/testHelper/getToken.mock";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -446,7 +447,7 @@ describe("POST /register", () => {
 
 describe("DELETE /logout", () => {
     it("returns 200 and clears cookie when refresh token is valid", async () => {
-        const token = await getToken()
+        const token = await getTokenMock()
         const res = await req("DELETE", "/logout", {
             headers: { Authorization: `Bearer ${token.res.token}` },
             cookies: { "refresh-token": token.refreshToken },
@@ -454,21 +455,21 @@ describe("DELETE /logout", () => {
         
         expect(res.status).toBe(200)
         const json = await res.json()
+        console.log(json);
         expect(json.status).toBe(200)
         expect(json.message).toBe("logout successfully")
     })
 
     it("returns 401 when refresh-token cookie is absent", async () => {
-        const token = await getToken()
+        const token = await getTokenMock()
         const res = await req("DELETE", "/logout", {
             headers: { Authorization: `Bearer ${token.res.token}` },
-            // tidak ada cookies
         })
         expect(res.status).toBe(401)
     })
 
     it("returns 401 when Redis token lookup fails", async () => {
-        const token = await getToken()
+        const token = await getTokenMock()
         const res = await req("DELETE", "/logout", {
             headers: { Authorization: `Bearer ${token.res.token}` },
             // "invalid-token" tidak ada di mock Redis → throw 401
