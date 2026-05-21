@@ -15,6 +15,7 @@ import { StatusCode } from "hono/utils/http-status";
 import { env } from "@/config";
 import redis from "./infrastructure/redis/redis";
 import elasticSearchClient from "./infrastructure/elasticSearch";
+import commentRoute from "./comment/comment.route";
 
 type Variables = {
     requestId: string;
@@ -123,6 +124,7 @@ app.get("/health", async (c) => {
 
 // Register API routes and static file server
 app.route("/article", index)
+    .route('/comment' , commentRoute)
     .route("/category", category)
     .route("/", admin)
 

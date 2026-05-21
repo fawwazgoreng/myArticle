@@ -20,7 +20,6 @@ export default class ReadComment {
         articleId: number;
     }) => {
         let cacheKey = `comments:${req.page}:${req.time}:${req.articleId}`;
-
         let comment: commentMeta = {
             comment: [],
             meta: {
@@ -32,12 +31,11 @@ export default class ReadComment {
         };
 
         const data = await this.readRedis.readAll(cacheKey);
-
+        
         if (data) {
             comment = JSON.parse(data);
         } else {
-            const page = findPage(req);
-
+            const page = findPage({...req , limit: 10});
             const isNew: Prisma.SortOrder =
                 page.time === "newest" ? "desc" : "asc";
 
@@ -45,15 +43,15 @@ export default class ReadComment {
 
             orderBy.push({ id: isNew });
 
-            const take = 30;
+            const take = 10;
             const skip = (req.page - 1) * take;
 
             const where: Prisma.CommentWhereInput = {
                 article: {
                     some: {
-                        article_id: req.articleId,
-                    },
-                },
+                        article_id: req.articleId
+                    }
+                }
             };
 
             const dataDb = await this.commentModel.show({

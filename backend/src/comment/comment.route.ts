@@ -7,17 +7,17 @@ import WriteComment from "@/comment/comment.write";
 import { StatusCode } from "hono/utils/http-status";
 
 // Create Hono app instance for user-related routing
-const app = new Hono();
+const commentRoute = new Hono();
 const readComment = new ReadComment();
 const writeComment = new WriteComment();
 
-app
+commentRoute
     // Secure the logout route using JWT verification middleware
-    .get("/comment", async (c) => {
+    .get("/", async (c) => {
         try {
             const { page, time, articleId } = c.req.query();
             const comment = await readComment.show({
-                page: Number(page),
+                page: page ? Number(page) : 1,
                 time: time as "newest" | "oldest",
                 articleId: Number(articleId),
             });
@@ -34,7 +34,7 @@ app
             throw handleError(error);
         }
     })
-    .get("/comment/:id", async (c) => {
+    .get("/:id", async (c) => {
         try {
             const id = c.req.param("id");
             const comment = await readComment.findById(Number(id));
@@ -48,8 +48,8 @@ app
             throw handleError(error);
         }
     })
-    .use("*", checkToken)
-    .post("/comment", async (c) => {
+    // .use("*", checkToken)
+    .post("/", async (c) => {
         try {
             const request = await c.req.json();
             const comment = await writeComment.create(request) as comment;
@@ -64,7 +64,7 @@ app
             throw handleError(error);
         }
     })
-    .delete("/comment/:id", async (c) => {
+    .delete("/:id", async (c) => {
         try {
             const id = Number(c.req.param("id"));
             await writeComment.delete(id);
@@ -77,7 +77,7 @@ app
         } catch (error: any) {
             throw handleError(error);
         }
-    }).put("/comment/:id", async (c) => {
+    }).put("/:id", async (c) => {
         try {
             const id = Number(c.req.param("id"));
             const request = await c.req.json();
@@ -95,4 +95,4 @@ app
     })
 ;
 
-export default app;
+export default commentRoute;
