@@ -153,6 +153,7 @@ exports.Prisma.UserScalarFieldEnum = {
 exports.Prisma.CommentScalarFieldEnum = {
   id: 'id',
   user_id: 'user_id',
+  article_id: 'article_id',
   content: 'content',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -172,13 +173,6 @@ exports.Prisma.Session_audit_trailScalarFieldEnum = {
 
 exports.Prisma.CategoryOnArticleScalarFieldEnum = {
   category_id: 'category_id',
-  article_id: 'article_id',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-};
-
-exports.Prisma.CommentOnArticleScalarFieldEnum = {
-  comment_id: 'comment_id',
   article_id: 'article_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -215,7 +209,6 @@ exports.Prisma.ModelName = {
   Comment: 'Comment',
   Session_audit_trail: 'Session_audit_trail',
   CategoryOnArticle: 'CategoryOnArticle',
-  CommentOnArticle: 'CommentOnArticle',
   VerificationCode: 'VerificationCode'
 };
 
