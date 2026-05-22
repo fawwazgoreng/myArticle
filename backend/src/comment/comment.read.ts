@@ -46,19 +46,11 @@ export default class ReadComment {
             const take = 10;
             const skip = (req.page - 1) * take;
 
-            const where: Prisma.CommentWhereInput = {
-                article: {
-                    some: {
-                        article_id: req.articleId
-                    }
-                }
-            };
-
             const dataDb = await this.commentModel.show({
                 take,
                 skip,
                 orderBy,
-                where,
+                articleId: req.articleId,
             });
 
             const meta: meta = {

@@ -20,6 +20,7 @@
         "zod": "^4.3.6",
       },
       "devDependencies": {
+        "@faker-js/faker": "^10.4.0",
         "@types/bun": "latest",
         "@types/node-schedule": "^2.1.8",
         "dotenv": "^17.3.1",
@@ -44,6 +45,8 @@
     "@electric-sql/pglite-socket": ["@electric-sql/pglite-socket@0.0.20", "", { "peerDependencies": { "@electric-sql/pglite": "0.3.15" }, "bin": { "pglite-server": "dist/scripts/server.js" } }, "sha512-J5nLGsicnD9wJHnno9r+DGxfcZWh+YJMCe0q/aCgtG6XOm9Z7fKeite8IZSNXgZeGltSigM9U/vAWZQWdgcSFg=="],
 
     "@electric-sql/pglite-tools": ["@electric-sql/pglite-tools@0.2.20", "", { "peerDependencies": { "@electric-sql/pglite": "0.3.15" } }, "sha512-BK50ZnYa3IG7ztXhtgYf0Q7zijV32Iw1cYS8C+ThdQlwx12V5VZ9KRJ42y82Hyb4PkTxZQklVQA9JHyUlex33A=="],
+
+    "@faker-js/faker": ["@faker-js/faker@10.4.0", "", {}, "sha512-sDBWI3yLy8EcDzgobvJTWq1MJYzAkQdpjXuPukga9wXonhpMRvd1Izuo2Qgwey2OiEoRIBr35RMU9HJRoOHzpw=="],
 
     "@hono/node-server": ["@hono/node-server@1.19.9", "", { "peerDependencies": { "hono": "^4" } }, "sha512-vHL6w3ecZsky+8P5MD+eFfaGTyCeOHUIFYMGpQGbrBTSmNNoxv0if69rEZ5giu36weC5saFuznL411gRX7bJDw=="],
 

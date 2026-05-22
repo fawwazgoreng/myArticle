@@ -5,14 +5,16 @@ export default class CommentModel {
         take: number;
         skip: number;
         orderBy: any;
-        where?: any;
+        articleId: number;
     }) => {
         const [comment, count] = await prisma.$transaction([
             prisma.comment.findMany({
                 take: params.take,
                 skip: params.skip,
                 orderBy: params.orderBy,
-                where: params.where,
+                where: {
+                    article_id: params.articleId,
+                },
                 select: {
                     id: true,
                     user_id: true,
@@ -28,7 +30,11 @@ export default class CommentModel {
                 },
             }),
             // Count total articles for pagination metadata
-            prisma.comment.count({ where: params.where }),
+            prisma.comment.count({
+                where: {
+                    article_id: params.articleId,
+                },
+            }),
         ]);
 
         return { comment, count };
@@ -50,14 +56,10 @@ export default class CommentModel {
                 },
                 article: {
                     select: {
-                        article: {
-                            select: {
-                                id: true,
-                                title: true,
-                                created_at: true,
-                            },
-                        },
-                    },
+                        id: true,
+                        title: true,
+                        created_at: true,
+                    }
                 },
             },
         });
@@ -72,11 +74,7 @@ export default class CommentModel {
             data: {
                 content: params.content,
                 user_id: params.user_id,
-                article: {
-                    create: {
-                        article_id: params.article_id,
-                    },
-                },
+                article_id: params.article_id
             },
             select: {
                 id: true,
