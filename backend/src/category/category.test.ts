@@ -103,12 +103,24 @@ mock.module("../src/utils/auth/jwtauth", () => ({
 }));
 
 // --- handleError ---
-mock.module("../src/utils/error/separated", () => ({
-    handleError: mock((err: any) => {
-        const { HTTPException } = require("hono/http-exception");
-        const status = err?.status ?? 500;
-        return new HTTPException(status, { message: err?.message || "Internal server error" });
-    }),
+mock.module("@utils/error/separated", () => ({
+    toHttpException: mock((err: any) => {
+            const { HTTPException } = require("hono/http-exception");            
+            const status = err?.statusCode || err?.status || 500;
+            const message = err?.message || "Internal server error";
+            const jsonResponse = new Response(
+                JSON.stringify({
+                    status: status,
+                    message: message,
+                    error: err?.error || "INTERNAL_SERVER_ERROR"
+                }),
+                {
+                    status: status,
+                    headers: { "Content-Type": "application/json" }
+                }
+            );
+            throw new HTTPException(status, { res: jsonResponse });
+        }),
 }));
 
 // --- Config ---

@@ -20,6 +20,7 @@ export default class CommentModel {
                     user_id: true,
                     content: true,
                     created_at: true,
+                    article_id: true,
                     user: {
                         select: {
                             id: true,

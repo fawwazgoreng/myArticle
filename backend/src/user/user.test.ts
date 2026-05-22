@@ -123,14 +123,24 @@ mock.module("../utils/error", () => ({
 }));
 
 // --- handleError ---
-mock.module("../utils/error/separated", () => ({
-    handleError: mock((err: any) => {
-        const { HTTPException } = require("hono/http-exception");
-        const status = err?.status ?? 500;
-        return new HTTPException(status, {
-            message: err?.message || "Internal server error",
-        });
-    }),
+mock.module("@utils/error/separated", () => ({
+    toHttpException: mock((err: any) => {
+            const { HTTPException } = require("hono/http-exception");            
+            const status = err?.statusCode || err?.status || 500;
+            const message = err?.message || "Internal server error";
+            const jsonResponse = new Response(
+                JSON.stringify({
+                    status: status,
+                    message: message,
+                    error: err?.error || "INTERNAL_SERVER_ERROR"
+                }),
+                {
+                    status: status,
+                    headers: { "Content-Type": "application/json" }
+                }
+            );
+            throw new HTTPException(status, { res: jsonResponse });
+        }),
 }));
 
 // --- Redis TTL config ---
@@ -160,7 +170,6 @@ mock.module("hono/bun", () => ({
 import UserRead from "./user.read";
 import UserWrite from "./user.write";
 import app from "./user.route"; // the Hono router from the provided route file
-import { getToken } from "@/utils/testHelper/getToken";
 import { getTokenMock } from "@/utils/testHelper/getToken.mock";
 
 // ---------------------------------------------------------------------------

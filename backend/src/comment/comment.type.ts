@@ -8,6 +8,7 @@ export type comment = {
     content: string;
     created_at: Date;
     updated_at?: Date;
+    article_id: number;
     user: {
         id: string;
         username: string;

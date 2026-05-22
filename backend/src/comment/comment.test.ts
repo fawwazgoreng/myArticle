@@ -8,8 +8,9 @@ import { describe, it, expect, mock } from "bun:test";
 mock.module("@/comment/comment.read", () => ({
     default: class MockReadComment {
         show = mock(async (query: any) => {
-            // Simulate empty result for unknown articleId
-            if (query.articleId === 99999) {
+            // Simulate empty result for unknown article_id
+            const targetId = Number(query.article_id);
+            if (targetId > 100) {
                 return { comment: [], meta: { total: 0, page: 1 } };
             }
             return {
@@ -17,14 +18,14 @@ mock.module("@/comment/comment.read", () => ({
                     {
                         id: 1,
                         content: "First comment",
-                        article_id: query.articleId ?? 1,
+                        article_id: query.article_id ?? 1,
                         user_id: "user-1",
                         created_at: new Date().toISOString(),
                     },
                     {
                         id: 2,
                         content: "Second comment",
-                        article_id: query.articleId ?? 1,
+                        article_id: query.article_id ?? 1,
                         user_id: "user-2",
                         created_at: new Date().toISOString(),
                     },
@@ -34,7 +35,8 @@ mock.module("@/comment/comment.read", () => ({
         });
 
         findById = mock(async (id: number) => {
-            if (id === 99999) {
+            const targetId = Number(id);
+            if (targetId > 100) {
                 throw { status: 404, message: "Comment not found", error: "NOT_FOUND" };
             }
             return {
@@ -45,6 +47,7 @@ mock.module("@/comment/comment.read", () => ({
                 created_at: new Date().toISOString(),
             };
         });
+        
     },
 }));
 
@@ -68,14 +71,16 @@ mock.module("@/comment/comment.write", () => ({
         });
 
         delete = mock(async (id: number) => {
-            if (id === 99999) {
+            const targetId = Number(id);
+            if (targetId > 100) {
                 throw { status: 404, message: "Comment not found", error: "NOT_FOUND" };
             }
             return { id };
         });
 
         update = mock(async (id: number, body: any) => {
-            if (id === 99999) {
+            const targetId = Number(id);
+            if (targetId > 100) {
                 throw { status: 404, message: "Comment not found", error: "NOT_FOUND" };
             }
             return {
@@ -103,13 +108,23 @@ mock.module("@utils/auth/jwtauth", () => ({
 
 // --- handleError ---
 mock.module("@utils/error/separated", () => ({
-    handleError: mock((err: any) => {
-        const { HTTPException } = require("hono/http-exception");
-        const status = err?.status ?? 500;
-        return new HTTPException(status, {
-            message: err?.message || "Internal server error",
-        });
-    }),
+    toHttpException: mock((err: any) => {
+            const { HTTPException } = require("hono/http-exception");            
+            const status = err?.statusCode || err?.status || 500;
+            const message = err?.message || "Internal server error";
+            const jsonResponse = new Response(
+                JSON.stringify({
+                    status: status,
+                    message: message,
+                    error: err?.error || "INTERNAL_SERVER_ERROR"
+                }),
+                {
+                    status: status,
+                    headers: { "Content-Type": "application/json" }
+                }
+            );
+            throw new HTTPException(status, { res: jsonResponse });
+        }),
 }));
 
 // ---------------------------------------------------------------------------
@@ -172,7 +187,7 @@ describe("Comment Unit Tests", () => {
     describe("GET /comment — list with pagination & filters", () => {
         it("returns 200 with array of comments and meta (no auth required)", async () => {
             const res = await req("GET", "/", {
-                query: { page: 1, articleId: 1, time: "newest" },
+                query: { page: 1, article_id: 1, time: "newest" },
             });
 
             expect(res.status).toBe(200);
@@ -183,9 +198,9 @@ describe("Comment Unit Tests", () => {
             expect(json).toHaveProperty("meta");
         });
 
-        it("returns 200 with empty array when articleId has no comments", async () => {
+        it("returns 200 with empty array when article_id has no comments", async () => {
             const res = await req("GET", "/", {
-                query: { page: 1, articleId: 99999 },
+                query: { page: 1, article_id: 99999 },
             });
 
             expect(res.status).toBe(200);
@@ -204,7 +219,7 @@ describe("Comment Unit Tests", () => {
 
         it("returns comments filtered by time=oldest", async () => {
             const res = await req("GET", "/", {
-                query: { page: 1, articleId: 1, time: "oldest" },
+                query: { page: 1, article_id: 1, time: "oldest" },
             });
 
             expect(res.status).toBe(200);
@@ -214,7 +229,7 @@ describe("Comment Unit Tests", () => {
 
         it("each comment item has id, content, article_id fields", async () => {
             const res = await req("GET", "/", {
-                query: { articleId: 1 },
+                query: { article_id: 1 },
             });
 
             const json = await res.json();
@@ -232,16 +247,15 @@ describe("Comment Unit Tests", () => {
         it("returns 200 with correct comment when ID exists", async () => {
             const res = await req("GET", "/1");
 
-            // expect(res.status).toBe(200);
+            expect(res.status).toBe(200);
             const json = await res.json();
-            console.log(json);
-            // expect(json.status).toBe(200);
-            // expect(json.message).toBe("success find comment");
-            // expect(json.comment).toHaveProperty("id", 1);
+            expect(json.status).toBe(200);
+            expect(json.message).toBe("success find comment");
+            expect(json.comment).toHaveProperty("id", 1);
         });
 
         it("returns 404 when comment ID does not exist", async () => {
-            const res = await req("GET", "/9999");
+            const res = await req("GET", "/99999");
 
             expect(res.status).toBe(404);
             const json = await res.json();
@@ -251,12 +265,11 @@ describe("Comment Unit Tests", () => {
         it("returns comment with all required fields", async () => {
             const res = await req("GET", "/2");
             const json = await res.json();
-            console.log(json.comment.article);
 
-            // expect(json.comment).toHaveProperty("id");
-            // expect(json.comment).toHaveProperty("content");
-            // expect(json.comment.article).toHaveProperty("id");
-            // expect(json.comment.article).toHaveProperty("created_at");
+            expect(json.comment).toHaveProperty("id");
+            expect(json.comment).toHaveProperty("content");
+            expect(json.comment.article).toHaveProperty("id");
+            expect(json.comment.article).toHaveProperty("created_at");
         });
     });
 
@@ -264,7 +277,7 @@ describe("Comment Unit Tests", () => {
 
     describe("POST /comment — create", () => {
         it("returns 201 with new comment data on valid payload", async () => {
-            const res = await req("POST", "/comment", {
+            const res = await req("POST", "/", {
                 headers: validAuthHeader,
                 body: { content: "Great article!", article_id: 1 },
             });
@@ -395,7 +408,7 @@ describe("Comment Unit Tests", () => {
 
     describe("Response Shape Contracts", () => {
         it("GET /comment: always returns { status, message, comment[], meta }", async () => {
-            const res = await req("GET", "/comment", { query: { articleId: 1 } });
+            const res = await req("GET", "/", { query: { article_id: 1 } });
             const json = await res.json();
 
             expect(json).toHaveProperty("status");
@@ -406,7 +419,7 @@ describe("Comment Unit Tests", () => {
         });
 
         it("GET /comment/:id: always returns { status, message, comment }", async () => {
-            const res = await req("GET", "/comment/1");
+            const res = await req("GET", "/1");
             const json = await res.json();
 
             expect(json).toHaveProperty("status");
@@ -416,7 +429,7 @@ describe("Comment Unit Tests", () => {
         });
 
         it("POST /comment: always returns { status, message, comment }", async () => {
-            const res = await req("POST", "/comment", {
+            const res = await req("POST", "/", {
                 headers: validAuthHeader,
                 body: { content: "Contract test comment", article_id: 1 },
             });

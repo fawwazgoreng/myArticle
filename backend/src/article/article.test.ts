@@ -115,19 +115,25 @@ mock.module("@utils/error", () => ({
 }))
 
 // --- handleError ---
-mock.module("@utils/error/separated", () => {
-    const { HTTPException } = require("hono/http-exception")
-    const handleError = (err: any) => {
-        if (err instanceof HTTPException) return err
-        return new HTTPException(err.statusCode ?? 500, {
-            res: new Response(
-                JSON.stringify({ status: err.statusCode ?? 500, message: err.message, error: err.errorCode ?? "INTERNAL_ERROR", details: err.details ?? null }),
-                { status: err.statusCode ?? 500, headers: { "Content-Type": "application/json" } }
-            ),
-        })
-    }
-    return { handleError: mock(handleError), toHttpException: mock(handleError) }
-})
+mock.module("@utils/error/separated", () => ({
+    toHttpException: mock((err: any) => {
+            const { HTTPException } = require("hono/http-exception");            
+            const status = err?.statusCode || err?.status || 500;
+            const message = err?.message || "Internal server error";
+            const jsonResponse = new Response(
+                JSON.stringify({
+                    status: status,
+                    message: message,
+                    error: err?.error || "INTERNAL_SERVER_ERROR"
+                }),
+                {
+                    status: status,
+                    headers: { "Content-Type": "application/json" }
+                }
+            );
+            throw new HTTPException(status, { res: jsonResponse });
+        }),
+}));
 
 // --- checkToken ---
 mock.module("@utils/auth/jwtauth", () => ({

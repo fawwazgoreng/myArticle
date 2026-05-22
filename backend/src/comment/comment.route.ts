@@ -28,7 +28,6 @@ commentRoute
                 comment: comment.comment,
                 meta: comment.meta,
             };
-            
             return c.json(res);
         } catch (error: any) {
             throw handleError(error);
