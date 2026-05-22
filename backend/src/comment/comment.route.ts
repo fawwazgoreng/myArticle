@@ -15,11 +15,11 @@ commentRoute
     // Secure the logout route using JWT verification middleware
     .get("/", async (c) => {
         try {
-            const { page, time, articleId } = c.req.query();
+            const { page, time, article_id } = c.req.query();
             const comment = await readComment.show({
                 page: page ? Number(page) : 1,
                 time: time as "newest" | "oldest",
-                articleId: Number(articleId),
+                articleId: article_id ? Number(article_id) : 1,
             });
 
             const res: commentArrayResponse = {
