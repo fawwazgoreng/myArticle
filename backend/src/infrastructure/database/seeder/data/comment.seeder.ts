@@ -1,4 +1,5 @@
 import { BaseSeeder } from "@infra/database/seeder/base.seeder";
+import { faker } from "@faker-js/faker";
 
 export class CommentSeeder extends BaseSeeder {
     async run(): Promise<void> {
@@ -10,39 +11,15 @@ export class CommentSeeder extends BaseSeeder {
             throw new Error("No users found, run UserSeeder first");
 
         const comments = [
-            {
-                user_id: users[0].id,
-                content:
-                    "This is a very insightful article. Thanks for sharing!",
-                article_id: article[0].id,
-            },
-            {
-                user_id: users[1].id,
-                content:
-                    "I disagree with some points here, but overall a good read.",
-                article_id: article[1].id,
-            },
-            {
-                user_id: users[2]?.id ?? users[0].id,
-                content: "Can you elaborate more on the second section?",
-                article_id: article[2].id,
-            },
-            {
-                user_id: users[3]?.id ?? users[1].id,
-                content: "Sharing this with my colleagues. Very relevant!",
-                article_id: article[4].id,
-            },
-            {
-                user_id: users[0].id,
-                content: "Looking forward to more articles like this.",
-                article_id: article[1].id,
-            },
-            {
-                user_id: users[1].id,
-                content: "The data presented here is quite compelling.",
-                article_id: article[0].id,
-            },
         ];
+        
+        for (let i = 0; i < 10; i++) {
+            comments.push({
+                user_id: users[Math.floor(Math.random() * users.length)].id,
+                content: faker.lorem.paragraph(),
+                article_id: article[i].id,
+            })
+        }
 
         await this.prisma.comment.createMany({ data: comments });
         this.log(`Seeded ${comments.length} comments`);
