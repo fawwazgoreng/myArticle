@@ -1,11 +1,12 @@
 import { describe, it, expect, mock, } from "bun:test";
+import { env } from "@/config";
 
 // ---------------------------------------------------------------------------
 // Module Mocks — must be declared before any import that pulls the real module
 // ---------------------------------------------------------------------------
 
 // --- Redis ---
-mock.module("../infrastructure/redis/refreshToken", () => ({
+mock.module("@infa/redis/refreshToken", () => ({
     default: class MockRedisToken {
         getToken = mock(async (token: string) => {
             if (token === "valid-refresh-token") {
@@ -37,26 +38,14 @@ mock.module("../infrastructure/redis/refreshToken", () => ({
 }))
 
 // --- Encrypt utils ---
-mock.module("../utils/auth/encrypt", () => ({
+mock.module("@utils/auth/encrypt", () => ({
     encryptToken: mock(async (raw: string) => `enc::${raw}`),
     decryptToken: mock(async (raw: string) => raw.replace(/^enc::/, "")),
     randomUuid: mock(async () => "mock-uuid-1234"),
 }));
 
-// --- JWT / auth utils ---
-mock.module("../utils/auth/jwtauth", () => ({
-    hashPassword: mock(async (_plain: string) => "hashed-password"),
-    checkToken: mock(async (_c: any, next: any) => next()),
-    getUserHasUsed: mock(async (_c: any, _event: string) => ({
-        ip_address: "127.0.0.1",
-        device_type: "desktop",
-        event_type: "login",
-    })),
-    signToken: mock(async (_user: any) => "mock-jwt-access-token"),
-}));
-
 // --- decryptCookie ---
-mock.module("../utils/auth/decryptUserToken", () => ({
+mock.module("@utils/auth/decryptUserToken", () => ({
     decryptCookie: mock(async (_c: any) => ({
         id: "admin-1",
         username: "admin",
@@ -66,7 +55,7 @@ mock.module("../utils/auth/decryptUserToken", () => ({
 }));
 
 // --- UserModel ---
-mock.module("./user.model", () => ({
+mock.module("@/user/user.model", () => ({
     default: class MockUserModel {
         login = mock(async (req: any) => {
             if (req.email === "admin@test.com" && req.password === "secret") {
@@ -102,7 +91,7 @@ mock.module("./user.model", () => ({
 }));
 
 // --- UserValidate ---
-mock.module("./user.validate", () => ({
+mock.module("@/user/user.validate", () => ({
     UserValidate: class MockUserValidate {
         login = mock((req: any) => req);
         register = mock((req: any) => req);
@@ -110,7 +99,7 @@ mock.module("./user.validate", () => ({
 }));
 
 // --- AppError ---
-mock.module("../utils/error", () => ({
+mock.module("@utils/error", () => ({
     default: class AppError extends Error {
         constructor(
             public statusCode: number,
@@ -152,7 +141,7 @@ mock.module("../infrastructure/redis/redis.write", () => ({
 mock.module("../config", () => ({
     env: {
         FRONT_END_URL: "localhost",
-        SECRET_KEY: "test-secret",
+        SECRET_KEY: env.SECRET_KEY,
     },
 }));
 
@@ -165,12 +154,20 @@ mock.module("hono/bun", () => ({
 }));
 
 // ---------------------------------------------------------------------------
+// Bypass JWT auth
+// ---------------------------------------------------------------------------
+
+import { createJwtMock } from "@/utils/testHelper/tokenHelper.test";
+const jwt = createJwtMock("test-jwt-secret", "bypass");
+jwt.bypass();
+
+// ---------------------------------------------------------------------------
 // Import subjects AFTER mocks are registered
 // ---------------------------------------------------------------------------
-import UserRead from "./user.read";
-import UserWrite from "./user.write";
-import app from "./user.route"; // the Hono router from the provided route file
-import { getTokenMock } from "@/utils/testHelper/getToken.mock";
+
+import UserRead from "@/user/user.read";
+import UserWrite from "@/user/user.write";
+import app from "@/user/user.route"; // the Hono router from the provided route file
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -209,7 +206,7 @@ describe("UserRead.profile", () => {
         // getToken returns "encrypted-payload" → decryptToken strips enc:: prefix
         // but payload here is raw JSON stored as "encrypted-payload" (mock-only),
         // so we override decryptToken to return valid JSON for this specific test
-        const { decryptToken } = await import("../utils/auth/encrypt");
+        const { decryptToken } = await import("@utils/auth/encrypt");
         (decryptToken as any).mockImplementation(async () =>
             JSON.stringify({
                 id: "admin-1",
@@ -281,7 +278,7 @@ describe("UserWrite.register", () => {
 describe("UserWrite.logout", () => {
     it("decrypts token, calls deleteToken, and returns admin data", async () => {
         // Override decryptToken to return a valid admin JSON
-        const { decryptToken } = await import("../utils/auth/encrypt");
+        const { decryptToken } = await import("@utils/auth/encrypt");
         (decryptToken as any).mockImplementation(async () =>
             JSON.stringify({
                 id: "admin-1",
@@ -385,7 +382,7 @@ describe("GET /profile", () => {
 
     it("returns error when decryptCookie fails (invalid session)", async () => {
         const { decryptCookie } = await import(
-            "../utils/auth/decryptUserToken"
+            "@utils/auth/decryptUserToken"
         );
         (decryptCookie as any).mockImplementationOnce(async () => {
             throw { status: 401, message: "Session expired" };
@@ -434,7 +431,7 @@ describe("POST /register", () => {
 
     it("returns error when registration fails", async () => {
         // Make UserModel.register throw
-        const UserModel = (await import("./user.model")).default;
+        const UserModel = (await import("@/user/user.model")).default;
         const proto = UserModel.prototype as any;
         const original = proto.register;
         proto.register = mock(async () => {
@@ -456,32 +453,30 @@ describe("POST /register", () => {
 
 describe("DELETE /logout", () => {
     it("returns 200 and clears cookie when refresh token is valid", async () => {
-        const token = await getTokenMock()
+        const token = await jwt.generateToken({id: "admin-1" , role: "admin"})
         const res = await req("DELETE", "/logout", {
-            headers: { Authorization: `Bearer ${token.res.token}` },
-            cookies: { "refresh-token": token.refreshToken },
+            headers: { Authorization: `Bearer ${token}` },
+            cookies: { "refresh-token": "valid-refresh-token" },
         })
         
         expect(res.status).toBe(200)
-        const json = await res.json()
-        console.log(json);
         expect(json.status).toBe(200)
         expect(json.message).toBe("logout successfully")
     })
 
     it("returns 401 when refresh-token cookie is absent", async () => {
-        const token = await getTokenMock()
+        const token = await jwt.generateToken({id: "admin-1" , role: "admin"})
         const res = await req("DELETE", "/logout", {
-            headers: { Authorization: `Bearer ${token.res.token}` },
+            headers: { Authorization: `Bearer ${token}` },
         })
         expect(res.status).toBe(401)
     })
 
     it("returns 401 when Redis token lookup fails", async () => {
-        const token = await getTokenMock()
+        const token = await jwt.generateToken({id: "admin-1" , role: "admin"})
         const res = await req("DELETE", "/logout", {
-            headers: { Authorization: `Bearer ${token.res.token}` },
-            // "invalid-token" tidak ada di mock Redis → throw 401
+            headers: { Authorization: `Bearer ${token}` },
+            // "invalid-token"
             cookies: { "refresh-token": "invalid-token" },
         })
         expect(res.status).toBe(401)

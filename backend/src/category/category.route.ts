@@ -11,7 +11,7 @@ import { handleError } from "@utils/error/separated";
 const category = new Hono();
 
 // Initialize service classes for write and read operations
-const writeCategori = new WriteCategory();
+const writeCategory = new WriteCategory();
 const readCategory = new ReadCategory();
 
 category
@@ -86,7 +86,7 @@ category
             const request = await c.req.json();
 
             // Call write service to create category
-            const category = await writeCategori.create(request);
+            const category = await writeCategory.create(request);
             
             const res =  {
                 status: 201,
@@ -108,7 +108,7 @@ category
             const id = Number(c.req.param("id"));
             const request = await c.req.json();
 
-            const category = await writeCategori.update({id,...request});
+            const category = await writeCategory.update({id,...request});
 
             const res =  {
                 status: 200,
@@ -130,7 +130,7 @@ category
             const id: number = Number(c.req.param("id"));
 
             // Call write service to delete category
-            await writeCategori.delete(id);
+            await writeCategory.delete(id);
 
             c.status(200);
             return c.json({

@@ -2,7 +2,7 @@ import { userType, loginRequest, registerType } from "@/user/user.type";
 import { UserValidate } from "@/user/user.validate";
 import UserModel from "@/user/user.model";
 import RedisToken from "@infra/redis/refreshToken";
-import { decryptToken, decryptToken, encryptToken } from "@utils/auth/encrypt";
+import { decryptToken, encryptToken } from "@utils/auth/encrypt";
 import { hashPassword } from "@utils/auth/jwtauth";
 import AppError from "@utils/error";
 
