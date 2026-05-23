@@ -28,7 +28,7 @@ export const encryptToken = async (value: string) => {
     const combined = new Uint8Array(iv.length + encryped.byteLength);
     combined.set(iv);
     combined.set(new Uint8Array(encryped), iv.length);
-        return Buffer.from(combined).toString("base64");
+    return Buffer.from(combined).toString("base64");
     } catch (error : any) {
         throw new AppError(500, "Error encript token");
     }

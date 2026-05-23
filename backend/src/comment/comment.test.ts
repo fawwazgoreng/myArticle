@@ -434,14 +434,13 @@ describe("Comment Unit Tests", () => {
                 body: { content: "Contract test comment", article_id: 1 },
             });
             const json = await res.json();
-
             expect(json).toHaveProperty("status");
             expect(json).toHaveProperty("message");
             expect(json).toHaveProperty("comment");
         });
 
         it("DELETE /comment/:id: always returns { status, message }", async () => {
-            const res = await req("DELETE", "/comment/2", {
+            const res = await req("DELETE", "/2", {
                 headers: validAuthHeader,
             });
             const json = await res.json();
@@ -451,7 +450,7 @@ describe("Comment Unit Tests", () => {
         });
 
         it("PUT /comment/:id: always returns { status, message, comment }", async () => {
-            const res = await req("PUT", "/comment/2", {
+            const res = await req("PUT", "/2", {
                 headers: validAuthHeader,
                 body: { content: "Contract update", article_id: 1 },
             });

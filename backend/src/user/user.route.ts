@@ -56,10 +56,10 @@ app
             setCookie(c, "refresh-token", token, {
                 path: "/",
                 secure: true,
-                domain: env.FRONT_END_URL,
+                // domain: env.FRONT_END_URL,
                 expires: dateExp,
                 maxAge: 7,
-                sameSite: "Strict",
+                sameSite: "Lax",
                 httpOnly: true,
             });
 
@@ -139,6 +139,7 @@ app
 
             // Invalidate session in Redis
             const user = await userWrite.logout(refreshToken);
+
             // Clear the browser cookie
             deleteCookie(c, "refresh-token");
 

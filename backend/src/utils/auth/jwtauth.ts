@@ -13,7 +13,7 @@ export const checkToken = async (c: Context, next: Next) => {
         throw toHttpException(new AppError(401, "unauthorized", "UNAUTHORIZED"))
     }
     try {
-        await verify(String(token), key, "HS256")
+        await verify(token, key, "HS256")
     } catch {
         throw toHttpException(new AppError(401, "invalid or expired token", "TOKEN_INVALID"))
     }

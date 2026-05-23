@@ -2,7 +2,7 @@ import { userType, loginRequest, registerType } from "@/user/user.type";
 import { UserValidate } from "@/user/user.validate";
 import UserModel from "@/user/user.model";
 import RedisToken from "@infra/redis/refreshToken";
-import { decryptToken, encryptToken } from "@utils/auth/encrypt";
+import { decryptToken, decryptToken, encryptToken } from "@utils/auth/encrypt";
 import { hashPassword } from "@utils/auth/jwtauth";
 import AppError from "@utils/error";
 
@@ -65,8 +65,8 @@ export default class UserWrite {
     // Terminate admin session by removing tokens from the cache
     logout = async (refreshToken: string) => {
         const encryptedSession = await this.redisToken.getToken(refreshToken)
-        const sessionRaw = await decryptToken(encryptedSession)
-        let session: { id: string; created_at: string; roles: string }
+        const sessionRaw = await decryptToken(encryptedSession);
+        let session: { id: string; created_at: string; roles: string };
         try {
             session = JSON.parse(sessionRaw.trim())
         } catch {

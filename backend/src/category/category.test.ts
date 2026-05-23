@@ -175,13 +175,14 @@ describe("Category Unit Tests", () => {
 
     describe("POST /category — create", () => {
         it("returns 201 with success message on valid payload", async () => {
-            const res = await req("POST", "/category", {
+            const res = await req("POST", "/", {
                 headers: validAuthHeader,
                 body: { name: "economy" },
             });
 
             expect(res.status).toBe(201);
             const json = await res.json();
+            console.log(json);
             expect(json.message).toContain("success");
         });
 
@@ -189,7 +190,7 @@ describe("Category Unit Tests", () => {
             const names = ["health", "international", "sports", "space"];
 
             for (const name of names) {
-                const res = await req("POST", "/category", {
+                const res = await req("POST", "/", {
                     headers: validAuthHeader,
                     body: { name },
                 });
@@ -200,7 +201,7 @@ describe("Category Unit Tests", () => {
         });
 
         it("returns 422 when name is empty string", async () => {
-            const res = await req("POST", "/category", {
+            const res = await req("POST", "/", {
                 headers: validAuthHeader,
                 body: { name: "" },
             });
@@ -211,7 +212,7 @@ describe("Category Unit Tests", () => {
         });
 
         it("returns 422 when body is missing name field", async () => {
-            const res = await req("POST", "/category", {
+            const res = await req("POST", "/", {
                 headers: validAuthHeader,
                 body: {},
             });
@@ -222,7 +223,7 @@ describe("Category Unit Tests", () => {
         });
 
         it("returns 401 when Authorization header is absent", async () => {
-            const res = await req("POST", "/category", {
+            const res = await req("POST", "/", {
                 headers: noAuthHeader,
                 body: { name: "unauthorized_test" },
             });
@@ -231,7 +232,7 @@ describe("Category Unit Tests", () => {
         });
 
         it("returns 401 when Authorization token is invalid", async () => {
-            const res = await req("POST", "/category", {
+            const res = await req("POST", "/", {
                 headers: {
                     ...noAuthHeader,
                     Authorization: "Bearer bad-token",
@@ -244,13 +245,13 @@ describe("Category Unit Tests", () => {
 
         it("returns 4xx when creating a duplicate category name", async () => {
             // First create
-            await req("POST", "/category", {
+            await req("POST", "/", {
                 headers: validAuthHeader,
                 body: { name: "politics" },
             });
 
             // Duplicate
-            const res = await req("POST", "/category", {
+            const res = await req("POST", "/", {
                 headers: validAuthHeader,
                 body: { name: "politics" },
             });
@@ -263,7 +264,7 @@ describe("Category Unit Tests", () => {
 
     describe("GET /category — list all", () => {
         it("returns 200 with array of categories without auth", async () => {
-            const res = await req("GET", "/category");
+            const res = await req("GET", "/");
 
             expect(res.status).toBe(200);
             const json = await res.json();
@@ -271,7 +272,7 @@ describe("Category Unit Tests", () => {
         });
 
         it("each category item has id and name fields", async () => {
-            const res = await req("GET", "/category");
+            const res = await req("GET", "/");
             const json = await res.json();
 
             for (const cat of json.category) {
@@ -285,7 +286,7 @@ describe("Category Unit Tests", () => {
 
     describe("GET /category/:id — find by id", () => {
         it("returns 200 with the correct category when ID exists", async () => {
-            const res = await req("GET", "/category/1");
+            const res = await req("GET", "/1");
 
             expect(res.status).toBe(200);
             const json = await res.json();
@@ -293,7 +294,7 @@ describe("Category Unit Tests", () => {
         });
 
         it("returns 404 when category ID does not exist", async () => {
-            const res = await req("GET", "/category/999999");
+            const res = await req("GET", "/999999");
 
             expect(res.status).toBe(404);
         });
@@ -303,7 +304,7 @@ describe("Category Unit Tests", () => {
 
     describe("DELETE /category/:id — delete", () => {
         it("returns 200 with success message when category is deleted", async () => {
-            const res = await req("DELETE", "/category/5", {
+            const res = await req("DELETE", "/5", {
                 headers: validAuthHeader,
             });
 
@@ -313,7 +314,7 @@ describe("Category Unit Tests", () => {
         });
 
         it("returns 404 when deleting a non-existent category", async () => {
-            const res = await req("DELETE", "/category/999999", {
+            const res = await req("DELETE", "/999999", {
                 headers: validAuthHeader,
             });
 
@@ -321,7 +322,7 @@ describe("Category Unit Tests", () => {
         });
 
         it("returns 401 when deleting without auth token", async () => {
-            const res = await req("DELETE", "/category/1", {
+            const res = await req("DELETE", "/1", {
                 headers: noAuthHeader,
             });
 
@@ -333,7 +334,7 @@ describe("Category Unit Tests", () => {
 
     describe("Response Shape Contracts", () => {
         it("create: response always has { status, message } keys", async () => {
-            const res = await req("POST", "/category", {
+            const res = await req("POST", "/", {
                 headers: validAuthHeader,
                 body: { name: "contract-test" },
             });
@@ -343,7 +344,7 @@ describe("Category Unit Tests", () => {
         });
 
         it("list: response always has { category } key as array", async () => {
-            const res = await req("GET", "/category");
+            const res = await req("GET", "/");
             const json = await res.json();
             expect(json).toHaveProperty("category");
             expect(Array.isArray(json.category)).toBe(true);
@@ -357,7 +358,7 @@ describe("Category Unit Tests", () => {
         });
 
         it("delete: response always has { status, message } keys", async () => {
-            const res = await req("DELETE", "/category/2", {
+            const res = await req("DELETE", "/2", {
                 headers: validAuthHeader,
             });
             const json = await res.json();
