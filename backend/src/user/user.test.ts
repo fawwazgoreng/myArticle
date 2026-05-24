@@ -1,463 +1,461 @@
-import { describe, it, expect, mock, } from "bun:test";
-import { env } from "@/config";
+import { describe, it, expect, mock, beforeEach, afterEach } from "bun:test"
+import { env } from "@/config"
 
 // ---------------------------------------------------------------------------
-// Module Mocks — must be declared before any import that pulls the real module
+// Module Mocks — declared before any import that pulls the real module
 // ---------------------------------------------------------------------------
 
-// --- Redis ---
-mock.module("@infa/redis/refreshToken", () => ({
+// Redis refresh token store mock
+mock.module("@infra/redis/refreshToken", () => ({
     default: class MockRedisToken {
         getToken = mock(async (token: string) => {
             if (token === "valid-refresh-token") {
                 return `enc::${JSON.stringify({
                     id: "admin-1",
                     created_at: new Date().toISOString(),
-                    roles: "admin",
+                    role: "admin",
                 })}`
             }
             throw { status: 401, message: "Token not found" }
         })
-
         findToken = mock(async (id: string) => {
             if (id === "admin-1") {
                 return `enc::${JSON.stringify({
                     id: "admin-1",
                     username: "admin",
                     email: "admin@test.com",
-                    roles: "admin",
+                    role: "admin",
                 })}`
             }
             return null
         })
-
-        setToken  = mock(async () => undefined)
+        setToken    = mock(async () => undefined)
         deleteToken = mock(async () => undefined)
         refreshData = mock(async () => undefined)
     },
 }))
 
-// --- Encrypt utils ---
+// Encrypt / decrypt / uuid utilities mock
 mock.module("@utils/auth/encrypt", () => ({
     encryptToken: mock(async (raw: string) => `enc::${raw}`),
     decryptToken: mock(async (raw: string) => raw.replace(/^enc::/, "")),
-    randomUuid: mock(async () => "mock-uuid-1234"),
-}));
+    randomUuid:   mock(async () => "mock-uuid-1234"),
+}))
 
-// --- decryptCookie ---
+// Cookie decryption mock — returns deterministic admin payload
 mock.module("@utils/auth/decryptUserToken", () => ({
     decryptCookie: mock(async (_c: any) => ({
-        id: "admin-1",
+        id:       "admin-1",
         username: "admin",
-        email: "admin@test.com",
-        roles: "admin",
+        email:    "admin@test.com",
+        role:    "admin",
     })),
-}));
+}))
 
-// --- UserModel ---
+// User model mock — credentials gate kept at email + password level
 mock.module("@/user/user.model", () => ({
     default: class MockUserModel {
         login = mock(async (req: any) => {
             if (req.email === "admin@test.com" && req.password === "secret") {
-                return {
-                    id: "admin-1",
-                    username: "admin",
-                    email: "admin@test.com",
-                    roles: "admin",
-                };
+                return { id: "admin-1", username: "admin", email: "admin@test.com", roles: "admin" }
             }
-            return null; // triggers 422 in UserWrite.login
-        });
-
-        register = mock(async (payload: any) => ({
-            id: "new-admin-1",
-            ...payload,
-        }));
-
-        find = mock(async (id: string) => {
-            if (id === "admin-1") {
-                return {
-                    id: "admin-1",
-                    username: "admin",
-                    email: "admin@test.com",
-                    roles: "admin",
-                };
-            }
-            return null;
-        });
-
-        monitoring = mock(async () => undefined);
+            return null // triggers 422 upstream
+        })
+        register    = mock(async (payload: any) => ({ id: "new-admin-1", ...payload }))
+        find        = mock(async (id: string) => {
+            if (id === "admin-1") return { id: "admin-1", username: "admin", email: "admin@test.com", role: "admin" }
+            return null
+        })
+        monitoring  = mock(async () => undefined)
     },
-}));
+}))
 
-// --- UserValidate ---
+// Validation mock — pass-through, no schema enforcement in unit tests
 mock.module("@/user/user.validate", () => ({
     UserValidate: class MockUserValidate {
-        login = mock((req: any) => req);
-        register = mock((req: any) => req);
+        login    = mock((req: any) => req)
+        register = mock((req: any) => req)
     },
-}));
+}))
 
-// --- AppError ---
+// AppError base class mock
 mock.module("@utils/error", () => ({
     default: class AppError extends Error {
-        constructor(
-            public statusCode: number,
-            message: string,
-            public error: string,
-        ) {
-            super(message);
+        statusCode: number
+        error:      string
+        constructor(statusCode: number, message: string, error: string) {
+            super(message)
+            this.statusCode = statusCode
+            this.error      = error
         }
     },
-}));
+}))
 
-// --- handleError ---
+// HTTP exception factory mock — throws HTTPException so Hono catches it
 mock.module("@utils/error/separated", () => ({
     toHttpException: mock((err: any) => {
-            const { HTTPException } = require("hono/http-exception");            
-            const status = err?.statusCode || err?.status || 500;
-            const message = err?.message || "Internal server error";
-            const jsonResponse = new Response(
-                JSON.stringify({
-                    status: status,
-                    message: message,
-                    error: err?.error || "INTERNAL_SERVER_ERROR"
-                }),
-                {
-                    status: status,
-                    headers: { "Content-Type": "application/json" }
-                }
-            );
-            throw new HTTPException(status, { res: jsonResponse });
-        }),
-}));
+        const { HTTPException } = require("hono/http-exception")
+        const status  = err?.statusCode || err?.status || 500
+        const message = err?.message    || "Internal server error"
+        throw new HTTPException(status, {
+            res: new Response(
+                JSON.stringify({ status, message, error: err?.error || "INTERNAL_SERVER_ERROR" }),
+                { status, headers: { "Content-Type": "application/json" } }
+            ),
+        })
+    }),
+    // handleError wraps toHttpException — re-throws if already HTTPException
+    handleError: mock((err: any) => {
+        const { HTTPException } = require("hono/http-exception")
+        if (err instanceof HTTPException) throw err
+        const { toHttpException } = require("@utils/error/separated")
+        toHttpException(err)
+    }),
+}))
 
-// --- Redis TTL config ---
-mock.module("../infrastructure/redis/redis.write", () => ({
-    ttl: 604800,
-}));
+// Redis write TTL config mock
+mock.module("@infra/redis/redis.write", () => ({ ttl: 604800 }))
 
-// --- Config env ---
-mock.module("../config", () => ({
+// App config mock — uses real SECRET_KEY so cookie signing stays consistent
+mock.module("@/config", () => ({
     env: {
         FRONT_END_URL: "localhost",
-        SECRET_KEY: env.SECRET_KEY,
+        SECRET_KEY:    env.SECRET_KEY,
     },
-}));
+}))
 
-// --- hono/bun ---
+// Hono Bun adapter mock — getConnInfo returns loopback address
 mock.module("hono/bun", () => ({
-    getConnInfo: mock((_c: any) => ({
-        remote: { address: "127.0.0.1" },
-    })),
+    getConnInfo: mock((_c: any) => ({ remote: { address: "127.0.0.1" } })),
     serveStatic: mock(() => async (_c: any, next: any) => next()),
-}));
+}))
 
 // ---------------------------------------------------------------------------
-// Bypass JWT auth
+// JWT mock helper — bypass mode so checkToken always calls next()
+// Import AFTER mock.module() registrations, BEFORE app import
 // ---------------------------------------------------------------------------
+import { createJwtMock } from "@/utils/testHelper/tokenHelper.test"
 
-import { createJwtMock } from "@/utils/testHelper/tokenHelper.test";
-const jwt = createJwtMock("test-jwt-secret", "bypass");
-jwt.bypass();
-
-// ---------------------------------------------------------------------------
-// Import subjects AFTER mocks are registered
-// ---------------------------------------------------------------------------
-
-import UserRead from "@/user/user.read";
-import UserWrite from "@/user/user.write";
-import app from "@/user/user.route"; // the Hono router from the provided route file
+const jwt = createJwtMock(env.SECRET_KEY ?? "test-jwt-secret", "bypass")
+jwt.bypass() // patch checkToken → always next(), no verify() called
 
 // ---------------------------------------------------------------------------
-// Helpers
+// Subject imports — pulled AFTER all mocks are registered
+// ---------------------------------------------------------------------------
+import UserRead  from "@/user/user.read"
+import UserWrite from "@/user/user.write"
+import app       from "@/user/user.route"
+
+// ---------------------------------------------------------------------------
+// Default mock implementations — used for afterEach restoration
+// ---------------------------------------------------------------------------
+const DEFAULT_DECRYPT_TOKEN  = async (raw: string) => raw.replace(/^enc::/, "")
+const DEFAULT_DECRYPT_COOKIE = async (_c: any) => ({
+    id: "admin-1", username: "admin", email: "admin@test.com", role: "admin",
+})
+
+// ---------------------------------------------------------------------------
+// HTTP request helper — thin wrapper around app.fetch
 // ---------------------------------------------------------------------------
 async function req(
     method: string,
     path: string,
     opts: {
-        body?: Record<string, any>;
-        headers?: Record<string, string>;
-        cookies?: Record<string, string>;
+        body?:    Record<string, any>
+        headers?: Record<string, string>
+        cookies?: Record<string, string>
     } = {},
 ) {
-    const url = `http://localhost${path}`;
+    const url     = `http://localhost${path}`
     const headers: Record<string, string> = {
         "Content-Type": "application/json",
-        ...( opts.headers ?? {}),
-    };
+        ...(opts.headers ?? {}),
+    }
     if (opts.cookies) {
         headers["Cookie"] = Object.entries(opts.cookies)
             .map(([k, v]) => `${k}=${v}`)
-            .join("; ");
+            .join("; ")
     }
-    const init: RequestInit = { method, headers };
-    if (opts.body) init.body = JSON.stringify(opts.body);
-    return app.fetch(new Request(url, init));
+    const init: RequestInit = { method, headers }
+    if (opts.body) init.body = JSON.stringify(opts.body)
+    return app.fetch(new Request(url, init))
 }
 
-
-// 1. UserRead
-
+// ---------------------------------------------------------------------------
+// 1. UserRead — unit tests (no HTTP layer)
+// ---------------------------------------------------------------------------
 
 describe("UserRead.profile", () => {
+    // restore decryptToken to default after each test in this block
+    afterEach(async () => {
+        const { decryptToken } = await import("@utils/auth/encrypt")
+        ;(decryptToken as any).mockImplementation(DEFAULT_DECRYPT_TOKEN)
+    })
+
     it("returns decrypted profile from a valid refresh token", async () => {
-        const userRead = new UserRead();
-        // getToken returns "encrypted-payload" → decryptToken strips enc:: prefix
-        // but payload here is raw JSON stored as "encrypted-payload" (mock-only),
-        // so we override decryptToken to return valid JSON for this specific test
-        const { decryptToken } = await import("@utils/auth/encrypt");
-        (decryptToken as any).mockImplementation(async () =>
+        const { decryptToken } = await import("@utils/auth/encrypt")
+        // override once — auto-reverts after this call
+        ;(decryptToken as any).mockImplementationOnce(async () =>
             JSON.stringify({
-                id: "admin-1",
+                id:         "admin-1",
                 created_at: new Date().toISOString(),
-                roles: "admin",
-            }),
-        );
+                role:      "admin",
+            })
+        )
 
-        const result = await userRead.profile("valid-refresh-token");
+        const userRead = new UserRead()
+        const result   = await userRead.profile("valid-refresh-token")
 
-        expect(result).toHaveProperty("id", "admin-1");
-        expect(result).toHaveProperty("roles", "admin");
-        expect(result).toHaveProperty("created_at");
-    });
+        expect(result).toHaveProperty("id", "admin-1")
+        expect(result).toHaveProperty("role", "admin")
+        expect(result).toHaveProperty("created_at")
+    })
 
-    it("throws when refresh token is invalid / not in Redis", async () => {
-        const userRead = new UserRead();
-        expect(userRead.profile("invalid-token")).rejects.toMatchObject({
-            status: 401,
-        });
-    });
-});
+    it("throws 401 when refresh token is not present in Redis", async () => {
+        const userRead = new UserRead()
+        expect(userRead.profile("invalid-token")).rejects.toMatchObject({ status: 401 })
+    })
+})
 
-
-// 2. UserWrite
-
+// ---------------------------------------------------------------------------
+// 2. UserWrite — unit tests (no HTTP layer)
+// ---------------------------------------------------------------------------
 
 describe("UserWrite.login", () => {
     it("returns sanitized user data on valid credentials", async () => {
-        const userWrite = new UserWrite();
-        const result = await userWrite.login({
-            email: "admin@test.com",
-            password: "secret",
-        });
-
+        const userWrite = new UserWrite()
+        const result    = await userWrite.login({ email: "admin@test.com", password: "secret" })
         expect(result).toEqual({
-            id: "admin-1",
-            username: "admin",
-            email: "admin@test.com",
-            roles: "admin",
-        });
-    });
-
-    it("throws AppError 422 when credentials are wrong", async () => {
-        const userWrite = new UserWrite();
+            id: "admin-1", username: "admin", email: "admin@test.com", roles: "admin",
+        })
+    })
+    
+    it("throws AppError 422 when credentials do not match", async () => {
+        const userWrite = new UserWrite()
         expect(
-            userWrite.login({ email: "wrong@test.com", password: "bad" }),
-        ).rejects.toMatchObject({ status: 422 });
-    });
-});
+            userWrite.login({ email: "wrong@test.com", password: "bad" })
+        ).rejects.toMatchObject({ statusCode: 422 })
+    })
+})
 
 describe("UserWrite.register", () => {
-    it("hashes password and persists admin record", async () => {
-        const userWrite = new UserWrite();
-        const result = await userWrite.register({
-            email: "new@test.com",
-            password: "plaintext",
-            username: "newadmin",
-            roles: "writer",
+    it("hashes password and persists new admin record", async () => {
+        const userWrite = new UserWrite()
+        const result    = await userWrite.register({
+            email:     "new@test.com",
+            password:  "plaintext",
+            username:  "newadmin",
+            roles:     "writer",
             is_verify: false,
-        });
+        })
 
-        expect(result?.email).toBe("new@test.com");
-        // Password must have been replaced by hashed version
-        expect(result?.id).toBeDefined();
-    });
-});
+        expect(result?.email).toBe("new@test.com")
+        expect(result?.id).toBeDefined()
+    })
+})
 
 describe("UserWrite.logout", () => {
+    // restore decryptToken to default after each test
+    afterEach(async () => {
+        const { decryptToken } = await import("@utils/auth/encrypt")
+        ;(decryptToken as any).mockImplementation(DEFAULT_DECRYPT_TOKEN)
+    })
+
     it("decrypts token, calls deleteToken, and returns admin data", async () => {
-        // Override decryptToken to return a valid admin JSON
-        const { decryptToken } = await import("@utils/auth/encrypt");
-        (decryptToken as any).mockImplementation(async () =>
+        const { decryptToken } = await import("@utils/auth/encrypt")
+        // use Once so next test gets the default implementation back
+        ;(decryptToken as any).mockImplementationOnce(async () =>
             JSON.stringify({
-                id: "admin-1",
-                username: "admin",
-                email: "admin@test.com",
-                roles: "admin",
-            }),
-        );
+                id: "admin-1", username: "admin", email: "admin@test.com", role: "admin",
+            })
+        )
 
-        const userWrite = new UserWrite();
-        const result = await userWrite.logout("valid-refresh-token");
+        const userWrite = new UserWrite()
+        const result    = await userWrite.logout("valid-refresh-token")
 
-        expect(result.id).toBe("admin-1");
-    });
+        expect(result.id).toBe("admin-1")
+    })
 
     it("throws when refresh token is not found in Redis", async () => {
-        const userWrite = new UserWrite();
-        expect(userWrite.logout("bad-token")).rejects.toBeDefined();
-    });
-});
+        const userWrite = new UserWrite()
+        expect(userWrite.logout("bad-token")).rejects.toBeDefined()
+    })
+})
 
 describe("UserWrite.refreshData", () => {
-    it("fetches admin from DB, encrypts, and stores in Redis", async () => {
-        const userWrite = new UserWrite();
-        const result = await userWrite.refreshData("admin-1");
+    it("fetches admin from DB, encrypts payload, and stores in Redis", async () => {
+        const userWrite = new UserWrite()
+        const result    = await userWrite.refreshData("admin-1")
 
-        expect(result.id).toBe("admin-1");
-        expect(result.email).toBe("admin@test.com");
-    });
+        expect(result.id).toBe("admin-1")
+        expect(result.email).toBe("admin@test.com")
+    })
 
-    it("throws 404 when admin is not found in DB", async () => {
-        const userWrite = new UserWrite();
-        expect(userWrite.refreshData("nonexistent-id")).rejects.toMatchObject({
-            status: 404,
-        });
-    });
-});
+    it("throws 404 when admin id does not exist in DB", async () => {
+        const userWrite = new UserWrite()
+        expect(userWrite.refreshData("nonexistent-id")).rejects.toMatchObject({ status: 404 })
+    })
+})
 
-
+// ---------------------------------------------------------------------------
 // 3. Route — POST /login
-
+// ---------------------------------------------------------------------------
 
 describe("POST /login", () => {
     it("returns 200 with token and sets httpOnly cookie on valid credentials", async () => {
-        const res = await req("POST", "/login", {
+        const res  = await req("POST", "/login", {
             body: { email: "admin@myarticle.com", password: "Admin@123" },
-        });
+        })
+        const json = await res.json()
 
-        expect(res.status).toBe(200);
-        const json = await res.json();
-        expect(json.status).toBe(200);
-        expect(json.message).toBe("login successfully");
-        expect(json.token).toBe("mock-uuid-1234");
+        expect(res.status).toBe(200)
+        expect(json.status).toBe(200)
+        expect(json.message).toBe("login successfully")
+        expect(json.token).toBe("mock-uuid-1234")
 
-        const setCookie = res.headers.get("set-cookie") ?? "";
-        expect(setCookie).toContain("refresh-token=");
-        expect(setCookie.toLowerCase()).toContain("httponly");
-        expect(setCookie.toLowerCase()).toContain("secure");
-        expect(setCookie.toLowerCase()).toContain("samesite=strict");
-    });
+        // cookie must carry security flags for production safety
+        const setCookie = res.headers.get("set-cookie") ?? ""
+        expect(setCookie).toContain("refresh-token=")
+        expect(setCookie.toLowerCase()).toContain("httponly")
+        expect(setCookie.toLowerCase()).toContain("secure")
+        expect(setCookie.toLowerCase()).toContain("samesite=strict")
+    })
 
-    it("returns error when credentials are invalid", async () => {
+    it("returns 4xx when credentials are invalid", async () => {
         const res = await req("POST", "/login", {
             body: { email: "hacker@test.com", password: "wrong" },
-        });
+        })
+        expect(res.status).toBeGreaterThanOrEqual(400)
+    })
 
-        // UserWrite.login throws 422, handleError converts to HTTPException
-        expect(res.status).toBeGreaterThanOrEqual(400);
-    });
-
-    it("handles malformed JSON body gracefully", async () => {
+    it("returns 4xx when request body is malformed JSON", async () => {
         const res = await app.fetch(
             new Request("http://localhost/login", {
-                method: "POST",
+                method:  "POST",
                 headers: { "Content-Type": "application/json" },
-                body: "{{invalid-json",
-            }),
-        );
-        expect(res.status).toBeGreaterThanOrEqual(400);
-    });
-});
+                body:    "{{invalid-json",
+            })
+        )
+        expect(res.status).toBeGreaterThanOrEqual(400)
+    })
+})
 
-
+// ---------------------------------------------------------------------------
 // 4. Route — GET /profile
-
+// ---------------------------------------------------------------------------
 
 describe("GET /profile", () => {
+    // restore decryptCookie to default after each test
+    afterEach(async () => {
+        const { decryptCookie } = await import("@utils/auth/decryptUserToken")
+        ;(decryptCookie as any).mockImplementation(DEFAULT_DECRYPT_COOKIE)
+    })
+
     it("returns 200 with profile and short-lived JWT access token", async () => {
-        const res = await req("GET", "/profile");
+        // checkToken is bypassed — no Authorization header needed
+        const res  = await req("GET", "/profile")
+        const json = await res.json()
 
-        expect(res.status).toBe(200);
-        const json = await res.json();
-        expect(json.status).toBe(200);
-        expect(json.message).toBe("success get profile");
-        expect(json.token).toBe("mock-jwt-access-token");
-        expect(json.profile).toMatchObject({
-            id: "admin-1",
-            email: "admin@test.com",
-        });
-    });
+        expect(res.status).toBe(200)
+        expect(json.status).toBe(200)
+        expect(json.message).toBe("success get profile")
+        expect(json.token).toBe("mock-jwt-access-token")
+        expect(json.profile).toMatchObject({ id: "admin-1", email: "admin@test.com" })
+    })
 
-    it("returns error when decryptCookie fails (invalid session)", async () => {
-        const { decryptCookie } = await import(
-            "@utils/auth/decryptUserToken"
-        );
-        (decryptCookie as any).mockImplementationOnce(async () => {
-            throw { status: 401, message: "Session expired" };
-        });
+    it("returns 401 when decryptCookie throws (expired or invalid session)", async () => {
+        const { decryptCookie } = await import("@utils/auth/decryptUserToken")
+        // use Once — reverts automatically after this single invocation
+        ;(decryptCookie as any).mockImplementationOnce(async () => {
+            throw { status: 401, message: "Session expired" }
+        })
 
-        const res = await req("GET", "/profile");
-        expect(res.status).toBe(401);
-    });
-});
+        const res = await req("GET", "/profile")
+        expect(res.status).toBe(401)
+    })
+})
 
-
+// ---------------------------------------------------------------------------
 // 5. Route — POST /register
-
+// No prisma calls — UserModel.register is fully mocked
+// ---------------------------------------------------------------------------
 
 describe("POST /register", () => {
-    it("returns 201 on successful admin creation (roles defaults to 'user' for unknown)", async () => {
-        await prisma?.user.delete({ where: { email: "new@test.com" } });
-        const res = await req("POST", "/register", {
+    it("returns 201 when role is an unknown value (coerces to 'user')", async () => {
+        const res  = await req("POST", "/register", {
             body: {
-                email: "new@test.com",
+                email:    "new@test.com",
                 password: "Pass123?",
                 username: "newadmin",
-                roles: "unknown-role", // should coerce to "user"
+                role:    "unknown-role",
             },
-        });
+        })
+        const json = await res.json()
+        expect(res.status).toBe(201)
+        expect(json.status).toBe(201)
+        expect(json.message).toBe("success created admin")
+    })
 
-        expect(res.status).toBe(201);
-        const json = await res.json();
-        expect(json.status).toBe(201);
-        expect(json.message).toBe("success created admin");
-    });
-
-    it("sets roles to 'writer' when explicitly passed as writer", async () => {
-        await prisma?.user.delete({ where: { email: "writer@test.com" } });
-        const res = await req("POST", "/register", {
+    it("returns 201 when role is explicitly 'writer'", async () => {
+        const res  = await req("POST", "/register", {
             body: {
-                email: "writer@test.com",
+                email:    "writer@test.com",
                 password: "Pass123?",
                 username: "writeruser",
-                roles: "writer",
+                role:    "writer",
             },
-        });
-        console.log(await res.json());
-        expect(res.status).toBe(201);
-    });
+        })
+        const json = await res.json()
 
-    it("returns error when registration fails", async () => {
-        // Make UserModel.register throw
-        const UserModel = (await import("@/user/user.model")).default;
-        const proto = UserModel.prototype as any;
-        const original = proto.register;
+        expect(res.status).toBe(201)
+        expect(json.status).toBe(201)
+    })
+
+    it("returns 4xx when UserModel.register throws", async () => {
+        const UserModel = (await import("@/user/user.model")).default
+        const proto     = UserModel.prototype as any
+        const original  = proto.register
+
+        // temporarily override register to simulate a conflict error
         proto.register = mock(async () => {
-            throw { status: 409, message: "Email already exists" };
-        });
+            throw { status: 409, message: "Email already exists" }
+        })
 
         const res = await req("POST", "/register", {
             body: { email: "dup@test.com", password: "pass", username: "dup" },
-        });
+        })
 
-        expect(res.status).toBeGreaterThanOrEqual(400);
-        proto.register = original;
-    });
-});
+        expect(res.status).toBeGreaterThanOrEqual(400)
 
+        // restore original mock so subsequent tests are not affected
+        proto.register = original
+    })
+})
 
+// ---------------------------------------------------------------------------
 // 6. Route — DELETE /logout
-
+// Uses real JWT token generated by jwt.generateToken()
+// checkToken (real) will verify this token — bypass mode is OFF for this block
+// ---------------------------------------------------------------------------
 
 describe("DELETE /logout", () => {
-    it("returns 200 and clears cookie when refresh token is valid", async () => {
-        const token = await jwt.generateToken({id: "admin-1" , role: "admin"})
-        const res = await req("DELETE", "/logout", {
+    // restore decryptToken and decryptCookie defaults after each test
+    afterEach(async () => {
+        const { decryptToken }  = await import("@utils/auth/encrypt")
+        const { decryptCookie } = await import("@utils/auth/decryptUserToken")
+        ;(decryptToken as any).mockImplementation(DEFAULT_DECRYPT_TOKEN)
+        ;(decryptCookie as any).mockImplementation(DEFAULT_DECRYPT_COOKIE)
+    })
+
+    it("returns 200 and clears cookie when token and refresh-token are valid", async () => {
+        // generate a real HS256-signed token that passes checkToken.verify()
+        const token = await jwt.generateToken({ id: "admin-1", role: "admin" })
+
+        const res  = await req("DELETE", "/logout", {
             headers: { Authorization: `Bearer ${token}` },
             cookies: { "refresh-token": "valid-refresh-token" },
         })
+        const json = await res.json()
         
         expect(res.status).toBe(200)
         expect(json.status).toBe(200)
@@ -465,68 +463,80 @@ describe("DELETE /logout", () => {
     })
 
     it("returns 401 when refresh-token cookie is absent", async () => {
-        const token = await jwt.generateToken({id: "admin-1" , role: "admin"})
+        const token = await jwt.generateToken({ id: "admin-1", role: "admin" })
+
         const res = await req("DELETE", "/logout", {
             headers: { Authorization: `Bearer ${token}` },
+            // no cookie — should trigger 401 in route guard
         })
         expect(res.status).toBe(401)
     })
 
-    it("returns 401 when Redis token lookup fails", async () => {
-        const token = await jwt.generateToken({id: "admin-1" , role: "admin"})
+    it("returns 401 when refresh-token is not found in Redis", async () => {
+        const token = await jwt.generateToken({ id: "admin-1", role: "admin" })
+
         const res = await req("DELETE", "/logout", {
             headers: { Authorization: `Bearer ${token}` },
-            // "invalid-token"
-            cookies: { "refresh-token": "invalid-token" },
+            cookies: { "refresh-token": "invalid-token" }, // not in mock Redis
         })
         expect(res.status).toBe(401)
     })
 })
-// 7. Response Shape Contracts
 
+// ---------------------------------------------------------------------------
+// 7. Response Shape Contracts — verify envelope structure across all endpoints
+// ---------------------------------------------------------------------------
 
 describe("Response Shape Contracts", () => {
-    it("login: always returns { status, message, token }", async () => {
-        const res = await req("POST", "/login", {
+    afterEach(async () => {
+        const { decryptToken }  = await import("@utils/auth/encrypt")
+        const { decryptCookie } = await import("@utils/auth/decryptUserToken")
+        ;(decryptToken as any).mockImplementation(DEFAULT_DECRYPT_TOKEN)
+        ;(decryptCookie as any).mockImplementation(DEFAULT_DECRYPT_COOKIE)
+    })
+
+    it("login: response always contains { status, message, token }", async () => {
+        const res  = await req("POST", "/login", {
             body: { email: "admin@myarticle.com", password: "Admin@123" },
-        });
-        const json = await res.json();
-        expect(json).toHaveProperty("status");
-        expect(json).toHaveProperty("message");
-        expect(json).toHaveProperty("token");
-    });
-
-    it("profile: always returns { status, message, profile, token }", async () => {
-        const res = await req("GET", "/profile");
-        const json = await res.json();
-        expect(json).toHaveProperty("status");
-        expect(json).toHaveProperty("message");
-        expect(json).toHaveProperty("profile");
-        expect(json).toHaveProperty("token");
-    });
-
-    it("register: always returns { status, message }", async () => {
-        await prisma?.user.delete({
-            where: {
-                email: "x@test.com"
-            }
         })
-        const res = await req("POST", "/register", {
-            body: { email: "x@test.com", password: "UnitTest123]", username: "username123" },
-        });
-        const json = await res.json();
-        console.log(json);
-        expect(json).toHaveProperty("status");
-        expect(json).toHaveProperty("message");
-    });
+        const json = await res.json()
 
-    it("logout: always returns { status, message }", async () => {
-        const res = await req("DELETE", "/logout", {
-            headers: { Authorization: "Bearer mock-jwt" },
+        expect(json).toHaveProperty("status")
+        expect(json).toHaveProperty("message")
+        expect(json).toHaveProperty("token")
+    })
+
+    it("profile: response always contains { status, message, profile, token }", async () => {
+        const res  = await req("GET", "/profile")
+        const json = await res.json()
+
+        expect(json).toHaveProperty("status")
+        expect(json).toHaveProperty("message")
+        expect(json).toHaveProperty("profile")
+        expect(json).toHaveProperty("token")
+    })
+
+    it("register: response always contains { status, message }", async () => {
+        const res  = await req("POST", "/register", {
+            body: { email: "x@test.com", password: "UnitTest123]", username: "username123" },
+        })
+        const json = await res.json()
+
+        expect(json).toHaveProperty("status")
+        expect(json).toHaveProperty("message")
+    })
+
+    it("logout: response always contains { status, message }", async () => {
+        // use a real token so checkToken does not reject the request
+        const token = await jwt.generateToken({ id: "admin-1", role: "admin" })
+
+        const res  = await req("DELETE", "/logout", {
+            headers: { Authorization: `Bearer ${token}` },
             cookies: { "refresh-token": "valid-refresh-token" },
-        });
-        const json = await res.json();
-        expect(json).toHaveProperty("status");
-        expect(json).toHaveProperty("message");
-    });
-});
+        })
+        const json = await res.json()
+
+        expect(json).toHaveProperty("status")
+        expect(json).toHaveProperty("message")
+    })
+})
