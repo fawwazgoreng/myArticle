@@ -9,7 +9,6 @@ import RedisToken from "@infra/redis/refreshToken";
 import { checkToken, getUserHasUsed, signToken } from "@utils/auth/jwtauth";
 import { decryptCookie } from "@utils/auth/decryptUserToken";
 import UserWrite from "@/user/user.write";
-import { env } from "@/config";
 import { handleError, toHttpException } from "@/utils/error/separated";
 import AppError from "@/utils/error";
 
