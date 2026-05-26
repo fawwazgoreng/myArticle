@@ -22,7 +22,7 @@ const MockRedisModule = {
                     roles:      "admin",
                 })}`
             }
-            throw { status: 401, message: "INI DARI MOCK — cookie expired" }
+            throw { status: 401, message: "cookie expired please login first!" }
         }
         async findToken(id: string) {
             if (id === "admin-1") {

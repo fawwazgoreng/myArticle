@@ -11,6 +11,7 @@ import { decryptCookie } from "@utils/auth/decryptUserToken";
 import UserWrite from "@/user/user.write";
 import { handleError, toHttpException } from "@/utils/error/separated";
 import AppError from "@/utils/error";
+import { env } from "@/config";
 
 // Create Hono app instance for user-related routing
 const app = new Hono();
@@ -55,10 +56,10 @@ app
             setCookie(c, "refresh-token", token, {
                 path: "/",
                 secure: true,
-                // domain: env.FRONT_END_URL,
+                domain: env.FRONT_END_URL,
                 expires: dateExp,
                 maxAge: 7,
-                sameSite: "Lax",
+                sameSite: "lax",
                 httpOnly: true,
             });
 
