@@ -47,8 +47,7 @@ commentRoute
             throw handleError(error);
         }
     })
-    // .use("*", checkToken)
-    .post("/", async (c) => {
+    .post("/", checkToken, async (c) => {
         try {
             const request = await c.req.json();
             const comment = await writeComment.create(request) as comment;
@@ -63,7 +62,7 @@ commentRoute
             throw handleError(error);
         }
     })
-    .delete("/:id", async (c) => {
+    .delete("/:id", checkToken, async (c) => {
         try {
             const id = Number(c.req.param("id"));
             await writeComment.delete(id);
@@ -76,7 +75,8 @@ commentRoute
         } catch (error: any) {
             throw handleError(error);
         }
-    }).put("/:id", async (c) => {
+    })
+    .put("/:id", checkToken, async (c) => {
         try {
             const id = Number(c.req.param("id"));
             const request = await c.req.json();
