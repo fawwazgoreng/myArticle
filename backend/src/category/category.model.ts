@@ -56,6 +56,8 @@ export default class CategoryModel {
                                     id: true,
                                     title: true,
                                     base_views: true,
+                                    image: true,
+                                    created_at: true,
                                     author: {
                                         select: {
                                             id: true,
