@@ -5,24 +5,23 @@ import { delCategoryRelation } from "@/category/category.helper";
 export default class CategoryModel {
     // Retrieve all categories
     show = async () => {
-        return  await prisma.category.findMany({
+        return await prisma.category.findMany({
             select: {
                 id: true,
                 name: true,
             },
         });
-
     };
 
     // Create a new category
     create = async (req: { name: string }) => {
-        return  await prisma.category.create({
+        return await prisma.category.create({
             data: {
                 name: req.name,
             },
         });
     };
-    
+
     findFirst = async (name: string) => {
         return await prisma.category.findFirst({
             where: {
@@ -32,14 +31,10 @@ export default class CategoryModel {
                 },
             },
         });
-    }
+    };
 
     // Retrieve a category with its articles and pagination
-    find = async (req: {
-        take: number;
-        orderBy: any;
-        id: number
-    }) => {
+    find = async (req: { take: number; orderBy: any; id: number }) => {
         // Fetch category data and article count in a transaction
         return await prisma.$transaction([
             prisma.category.findFirst({
@@ -56,7 +51,19 @@ export default class CategoryModel {
                         orderBy: req.orderBy,
                         select: {
                             article_id: true,
-                            article: true,
+                            article: {
+                                select: {
+                                    id: true,
+                                    title: true,
+                                    base_views: true,
+                                    author: {
+                                        select: {
+                                            id: true,
+                                            username: true,
+                                        },
+                                    },
+                                },
+                            },
                         },
                     },
                 },
