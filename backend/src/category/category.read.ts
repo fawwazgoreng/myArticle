@@ -106,6 +106,7 @@ export default class ReadCategory {
             category: {
                 id: category.id,
                 name: category.name,
+                article: res.article.data
             } as category,
             meta: res.article.meta,
         };
