@@ -49,7 +49,7 @@ export default class ReadCategory {
         const [category, count] = await this.categoryModel.find(request);
         // Throw error if category not found
         if (!category?.id) {
-            throw new AppError(404,"category id " + req.id + " not found",);
+            throw new AppError(404, "category id " + req.id + " not found");
         }
 
         // Build pagination metadata
@@ -100,14 +100,25 @@ export default class ReadCategory {
 
         // Build final categoruponse structure
         const result: {
-            category: category;
+            category: category & {
+            };
             meta: meta;
         } = {
             category: {
                 id: category.id,
                 name: category.name,
-                article: res.article.data
-            } as category,
+                article: res.article.data as {
+                    id: number;
+                    title: string;
+                    image: string | null;
+                    base_views: number;
+                    created_at: Date;
+                    author: {
+                        id: string;
+                        username: string;
+                    };
+                }[],
+            },
             meta: res.article.meta,
         };
 

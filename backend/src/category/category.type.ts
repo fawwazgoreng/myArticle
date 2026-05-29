@@ -2,20 +2,30 @@ import { article } from "@/article/article.type";
 import { globalResponse } from "@type/global.type";
 
 export interface categoryOnArticle {
-  category_id : number,
-  article_id : number,
-  article?: article,
+    category_id: number;
+    article_id: number;
+    article?: article;
 }
 
 export type category = {
-  id: number,
-  name: string
-  article?: { id: number; title: string; content: string; image: string | null; base_views: number; created_at: Date; updated_at: Date; }[] | null
-}
+    id: number;
+    name: string;
+    article?: {
+        id: number;
+        title: string;
+        image: string | null;
+        base_views: number;
+        created_at: Date;
+        author: {
+            id: string;
+            username: string;
+        };
+    }[];
+};
 export interface categoryResponse extends globalResponse {
-  category?: category
+    category?: category;
 }
 
 export interface categoryResponses extends globalResponse {
-  category?: category[]
+    category?: category[];
 }
