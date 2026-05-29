@@ -19,6 +19,8 @@ model Article {
     category   CategoryOnArticle[]
     comment    Comment[]
     author     User                @relation(fields: [author_id], references: [id])
+
+    @@map("article")
 }
 
 model Category {
@@ -27,33 +29,43 @@ model Category {
     article    CategoryOnArticle[]
     created_at DateTime            @default(now())
     updated_at DateTime            @default(now())
+
+    @@map("category")
 }
 
 model User {
     id                String                @id @default(uuid())
     email             String                @unique
-    username          String
+    name              String                @map("username")
     password          String?
     authlogs          Session_audit_trail[]
     roles             String
-    is_verify         Boolean
+    emailVerified     Boolean               @map("is_verify")
     verified_at       DateTime?
-    created_at        DateTime              @default(now())
-    updated_at        DateTime              @default(now())
+    image             String?
+    createdAt         DateTime              @map("created_at") @default(now())
+    updatedAt         DateTime              @map("updated_at") @default(now())
     comment           Comment[]
     article           Article[]
     verificationCodes VerificationCode[]
+    sessions          Session[]
+    accounts          Account[]
+
+    @@map("user")
 }
 
-model Comment {
-    id         Int      @id @default(autoincrement())
-    user_id    String
-    article_id Int
-    content    String
-    created_at DateTime @default(now())
-    updated_at DateTime @default(now())
-    user       User     @relation(fields: [user_id], references: [id])
-    article    Article  @relation(fields: [article_id], references: [id])
+model Session {
+    id        String   @id
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
+    token     String   @unique
+    expiresAt DateTime @db.Timestamptz(3)
+    ipAddress String?
+    userAgent String?
+    createdAt DateTime @db.Timestamptz(3)
+    updatedAt DateTime @db.Timestamptz(3)
+
+    @@map("session")
 }
 
 model Session_audit_trail {
@@ -67,6 +79,51 @@ model Session_audit_trail {
     created_at      DateTime @default(now())
     updated_at      DateTime @default(now())
     admin           User?    @relation(fields: [admin_id], references: [id])
+
+    @@map("session_audit_trail")
+}
+
+model Account {
+    id                    String    @id
+    user                  User      @relation(fields: [userId], references: [id])
+    userId                String
+    accountId             String
+    providerId            String
+    accessToken           String?
+    refreshToken          String?
+    accessTokenExpiresAt  DateTime? @db.Timestamptz(3)
+    refreshTokenExpiresAt DateTime? @db.Timestamptz(3)
+    scope                 String?
+    idToken               String?
+    password              String?
+    createdAt             DateTime  @db.Timestamptz(3)
+    updatedAt             DateTime  @db.Timestamptz(3)
+
+    @@map("account")
+}
+
+model Verification {
+    id         String   @id
+    identifier String
+    value      String
+    expiresAt  DateTime @db.Timestamptz(3)
+    createdAt  DateTime @db.Timestamptz(3)
+    updatedAt  DateTime @db.Timestamptz(3)
+
+    @@map("verification")
+}
+
+model Comment {
+    id         Int      @id @default(autoincrement())
+    user_id    String
+    article_id Int
+    content    String
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now())
+    user       User     @relation(fields: [user_id], references: [id])
+    article    Article  @relation(fields: [article_id], references: [id])
+
+    @@map("comment")
 }
 
 model CategoryOnArticle {
@@ -78,6 +135,7 @@ model CategoryOnArticle {
     category    Category? @relation(fields: [category_id], references: [id])
 
     @@id([category_id, article_id])
+    @@map("category_on_article")
 }
 
 model VerificationCode {
@@ -87,4 +145,6 @@ model VerificationCode {
     created_at DateTime @default(now())
     expired_at DateTime @default(now())
     user       User     @relation(fields: [user_id], references: [id])
+
+    @@map("verification_code")
 }

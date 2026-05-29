@@ -141,22 +141,25 @@ exports.Prisma.CategoryScalarFieldEnum = {
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
-  username: 'username',
+  name: 'name',
   password: 'password',
   roles: 'roles',
-  is_verify: 'is_verify',
+  emailVerified: 'emailVerified',
   verified_at: 'verified_at',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
+  image: 'image',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
-exports.Prisma.CommentScalarFieldEnum = {
+exports.Prisma.SessionScalarFieldEnum = {
   id: 'id',
-  user_id: 'user_id',
-  article_id: 'article_id',
-  content: 'content',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
+  userId: 'userId',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.Session_audit_trailScalarFieldEnum = {
@@ -167,6 +170,40 @@ exports.Prisma.Session_audit_trailScalarFieldEnum = {
   ip_address: 'ip_address',
   success: 'success',
   failure_session: 'failure_session',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.AccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  accountId: 'accountId',
+  providerId: 'providerId',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  accessTokenExpiresAt: 'accessTokenExpiresAt',
+  refreshTokenExpiresAt: 'refreshTokenExpiresAt',
+  scope: 'scope',
+  idToken: 'idToken',
+  password: 'password',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VerificationScalarFieldEnum = {
+  id: 'id',
+  identifier: 'identifier',
+  value: 'value',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CommentScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  article_id: 'article_id',
+  content: 'content',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
@@ -206,8 +243,11 @@ exports.Prisma.ModelName = {
   Article: 'Article',
   Category: 'Category',
   User: 'User',
-  Comment: 'Comment',
+  Session: 'Session',
   Session_audit_trail: 'Session_audit_trail',
+  Account: 'Account',
+  Verification: 'Verification',
+  Comment: 'Comment',
   CategoryOnArticle: 'CategoryOnArticle',
   VerificationCode: 'VerificationCode'
 };
