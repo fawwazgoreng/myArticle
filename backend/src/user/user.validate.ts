@@ -16,7 +16,7 @@ const loginValidate = z.object({
 });
 const registerValidate = z.object({
     email: z.email().min(10).max(150),
-    username: z.string().min(6).max(100),
+    name: z.string().min(6).max(100),
     password: z
         .string()
         .min(6)

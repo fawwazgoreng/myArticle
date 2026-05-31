@@ -163,7 +163,6 @@ mock.module("hono/bun", () => ({
 // ---------------------------------------------------------------------------
 import index       from "./article.route"
 import ReadArticle  from "./article.read"
-import { getTokenMock } from "@/utils/testHelper/getToken.mock"
 
 // ---------------------------------------------------------------------------
 // Helper

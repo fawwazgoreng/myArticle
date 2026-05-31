@@ -18,7 +18,7 @@ export type category = {
         created_at: Date;
         author: {
             id: string;
-            username: string;
+            name: string;
         };
     }[];
 };

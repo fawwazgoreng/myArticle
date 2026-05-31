@@ -60,7 +60,7 @@ export default class WriteArticle implements ArticleRepositoryWrite {
             updated_at: article.updated_at,
             author: {
                 id: article.author_id,
-                username: article.author.map(c => c.username)
+                name: article.author.name
             },
             category: article.category.map((c: any) => {
                 return {

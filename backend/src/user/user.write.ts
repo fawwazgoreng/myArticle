@@ -28,7 +28,8 @@ export default class UserWrite {
             ...validated,
             password: hashed,
             roles: req.roles,
-            is_verify: false
+            is_verify: false,
+            emailVerified: false,
         };
 
         // Persist the new admin record to the database
@@ -56,7 +57,7 @@ export default class UserWrite {
         // Return sanitized admin data (excluding sensitive fields like password)getToken
         return {
             id: admin.id,
-            username: admin.username,
+            name: admin.name,
             email: admin.email,
             roles: admin.roles,
         };

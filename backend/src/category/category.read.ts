@@ -115,7 +115,7 @@ export default class ReadCategory {
                     created_at: Date;
                     author: {
                         id: string;
-                        username: string;
+                        name: string;
                     };
                 }[],
             },

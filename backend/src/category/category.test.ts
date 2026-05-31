@@ -50,7 +50,7 @@ mock.module("@infra/database/prisma/prisma", () => ({
                                     title: "Mock Title",
                                     content: "Mock Content",
                                     base_views: 100,
-                                    author: { id: 1, username: "admin" }
+                                    author: { id: 1, name: "admin" }
                                 }
                             }
                         ]

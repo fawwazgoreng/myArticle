@@ -24,7 +24,7 @@ export default class CommentModel {
                     user: {
                         select: {
                             id: true,
-                            username: true,
+                            name: true,
                             roles: true,
                         },
                     },
@@ -52,7 +52,7 @@ export default class CommentModel {
                 user: {
                     select: {
                         id: true,
-                        username: true,
+                        name: true,
                         roles: true,
                     },
                 },
@@ -87,7 +87,7 @@ export default class CommentModel {
                 user: {
                     select: {
                         id: true,
-                        username: true,
+                        name: true,
                         roles: true
                     }
                 }
@@ -111,7 +111,7 @@ export default class CommentModel {
                 user: {
                     select: {
                         id: true,
-                        username: true,
+                        name: true,
                         roles: true
                     }
                 }
