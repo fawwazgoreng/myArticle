@@ -11,7 +11,7 @@ export type comment = {
     article_id: number;
     user: {
         id: string;
-        username: string;
+        name: string;
         roles: "admin" | "writer" | "user"
     };
 };

@@ -81,7 +81,7 @@ export default class ArticleModel implements ArticleRepositoryModel {
                 author: {
                     select: {
                         id: true,
-                        username: true,
+                        name: true,
                     },
                 },
                 category: {

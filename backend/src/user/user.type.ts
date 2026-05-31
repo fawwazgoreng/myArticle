@@ -5,11 +5,12 @@ export interface loginRequest {
 }
 
 export interface registerType {
-    username: string,
+    name: string,
     email: string,
     password: string,
-    roles: "admin" | "writer" | "user";
-    is_verify: boolean
+    roles: "admin" | "writer" | "user",
+    is_verify: boolean,
+    emailVerified: boolean,
 }
 
 export interface monitoring {
@@ -30,7 +31,7 @@ export interface session_audit_trail extends monitoring {
 
 export type userType = {
     id: string,
-    username: string,
+    name: string,
     email: string,
     password: string,
     created_at: Date,

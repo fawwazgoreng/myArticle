@@ -61,7 +61,7 @@ export default class CategoryModel {
                                     author: {
                                         select: {
                                             id: true,
-                                            username: true,
+                                            name: true,
                                         },
                                     },
                                 },

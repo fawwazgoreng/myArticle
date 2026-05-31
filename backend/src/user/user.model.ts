@@ -12,7 +12,7 @@ export default class UserModel {
             select: {
                 id: true,
                 email: true,
-                username: true,
+                name: true,
                 password: true,
                 roles: true,
             },
@@ -37,7 +37,7 @@ export default class UserModel {
             select: {
                 id: true,
                 email: true,
-                username: true,
+                name: true,
                 roles: true,
             },
         });
@@ -49,7 +49,7 @@ export default class UserModel {
             data: req,
             select: {
                 id: true,
-                username: true,
+                name: true,
                 email: true,
                 roles: true,
             },
