@@ -1,10 +1,11 @@
 {
   // https://nuxt.com/docs/guide/concepts/typescript
   "compilerOptions": {
+    "types": ["node"],
       "baseUrl": ".",
       "paths": {
           "@/*": ["./app/*"]
-      }
+      },
   },
   "include": ["./app/*" , "*.vue"],
   "files": [],
