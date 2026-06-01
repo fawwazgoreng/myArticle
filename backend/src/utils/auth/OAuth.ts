@@ -3,6 +3,7 @@ import { prismaAdapter } from "@better-auth/prisma-adapter";
 import { env } from "@/config";
 import prisma from "@/infrastructure/database/prisma/prisma";
 import { logger } from "@/infrastructure/logger/log";
+import { userType } from "@/user/user.type";
 
 export const OAuth = betterAuth({
     baseURL: {
@@ -30,6 +31,14 @@ export const OAuth = betterAuth({
     database: prismaAdapter(prisma, { provider: "postgresql" }),
     user: {
         modelName: "user",
+        create: (user : userType) => {
+            return {
+                ...user,
+                emailVerified: true,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            }
+        },
         fields: {
             name: "name",
             emailVerified: "emailVerified",
@@ -37,8 +46,32 @@ export const OAuth = betterAuth({
             updatedAt: "updatedAt",
         },
     },
+    databaseHooks: {
+        session: {
+            create: {
+                after: async (session) => {
+                    await prisma.session_audit_trail.create({
+                        data: {
+                            userId: session.userId,
+                            ip_address: session.ipAddress ?? "",
+                            device_type: session.userAgent ?? "",
+                            event_type: "login",
+                            success: true,
+                            failure_session: null,
+                            created_at: new Date(),
+                            updated_at: new Date(),
+                        },
+                    })
+                }
+          }
+      }  
+    },
     session: {
         modelName: "session",
+        expiresIn: 60 * 60 * 24 * 30,
+        cookieCache: {
+          enabled: false,
+        },
         fields: {
             userId: "userId",
             token: "token",
@@ -80,10 +113,10 @@ export const OAuth = betterAuth({
         },
     },
     socialProviders: {
-        google: {
-            clientId: env.GOOGLE_CLIENT_ID,
-            clientSecret: env.GOOGLE_CLIENT_SECRET,
-        },
+        // google: {
+        //     clientId: env.GOOGLE_CLIENT_ID,
+        //     clientSecret: env.GOOGLE_CLIENT_SECRET,
+        // },
         github: {
             clientId: env.GITHUB_CLIENT_ID,
             clientSecret: env.GITHUB_CLIENT_SECRET,

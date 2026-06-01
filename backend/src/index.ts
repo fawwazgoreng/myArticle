@@ -194,7 +194,7 @@ app.onError(async (error: any, c) => {
 
 // Start Bun server with TLS
 export default {
-    port: env.APP_URL ?? 3000,
+    port: env.APP_PORT ?? 3000,
     fetch: app.fetch,
     tls: {
         cert: Bun.file("./localhost.pem"),

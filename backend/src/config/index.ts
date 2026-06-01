@@ -9,6 +9,7 @@ const envTEST = z.object({
     "NODE_ENV": z.enum(["development" , "production" , "debugging" , "test"]),
     "APP_NAME": z.string(),
     "APP_URL": z.url(),
+    "APP_PORT": z.string(),
     "REDIS_PORT":z.string(),
     "REDIS_DB":z.string(),
     "REDIS_HOST":z.string(),
@@ -18,8 +19,8 @@ const envTEST = z.object({
     "ELASTICSEARCH_URL": z.string(),
     "ELASTICSEARCH_API_KEY": z.string(),
     "BETTER_AUTH_SECRET": z.string(),
-    "GOOGLE_CLIENT_ID": z.string(),
-    "GOOGLE_CLIENT_SECRET": z.string(),
+    // "GOOGLE_CLIENT_ID": z.string(),
+    // "GOOGLE_CLIENT_SECRET": z.string(),
     "GITHUB_CLIENT_ID": z.string(),
     "GITHUB_CLIENT_SECRET": z.string(),
 });
