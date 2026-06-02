@@ -44,6 +44,10 @@ services:
             dockerfile: Dockerfile
         container_name: myArticle_web
         restart: always
+        volumes:
+          - .:app
+          - /app/node_modules
+          - /app/.nuxt
         ports:
             - "80:3000"
         environment:
