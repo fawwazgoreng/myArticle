@@ -103,8 +103,14 @@
       "#imports": [
         "./imports"
       ],
+      "#tailwind-config": [
+        "./tailwind/expose"
+      ],
+      "#tailwind-config/*": [
+        "./tailwind/expose/*"
+      ],
       "#app-manifest": [
-        "./manifest/meta/f0ecdd88-c0d1-4ff0-9ff1-080d12bf000b"
+        "./manifest/meta/5bc72d91-32e7-4bd6-a278-b1de849fc30b"
       ],
       "#components": [
         "./components"

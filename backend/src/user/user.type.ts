@@ -9,7 +9,6 @@ export interface registerType {
     email: string,
     password: string,
     roles: "admin" | "writer" | "user",
-    is_verify: boolean,
     emailVerified: boolean,
 }
 

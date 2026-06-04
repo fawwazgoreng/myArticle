@@ -1,5 +1,6 @@
 /// <reference types="@nuxtjs/tailwindcss" />
 /// <reference types="@pinia/nuxt" />
+/// <reference types="@nuxt/devtools" />
 /// <reference path="types/nitro-layouts.d.ts" />
 /// <reference path="types/builder-env.d.ts" />
 /// <reference path="types/plugins.d.ts" />
@@ -14,6 +15,7 @@
 /// <reference path="imports.d.ts" />
 /// <reference path="types/imports.d.ts" />
 /// <reference path="schema/nuxt.schema.d.ts" />
+/// <reference path="types/tailwind.config.d.ts" />
 /// <reference path="types/nitro.d.ts" />
 
 export {}

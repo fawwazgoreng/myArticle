@@ -70,7 +70,7 @@ model Session {
 
 model Session_audit_trail {
     id              Int      @id @default(autoincrement())
-    admin_id        String
+    userId          String
     event_type      String
     device_type     String
     ip_address      String
@@ -78,7 +78,7 @@ model Session_audit_trail {
     failure_session String?
     created_at      DateTime @default(now())
     updated_at      DateTime @default(now())
-    admin           User?    @relation(fields: [admin_id], references: [id])
+    user           User?    @relation(fields: [userId], references: [id])
 
     @@map("session_audit_trail")
 }

@@ -28,7 +28,6 @@ export default class UserWrite {
             ...validated,
             password: hashed,
             roles: req.roles,
-            is_verify: false,
             emailVerified: false,
         };
 

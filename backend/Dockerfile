@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:24-alpine
 
 WORKDIR /app
 
@@ -8,4 +8,4 @@ RUN npm install
 
 COPY . .
 
-CMD ["node", "src/index.js"]
+CMD ["npx", "ts-node" , "-r" , "tsconfig-paths/register" , "./src/index.ts"]

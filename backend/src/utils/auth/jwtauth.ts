@@ -44,7 +44,7 @@ export const getUserHasUsed = async (c: Context , event_type : "login" | "logout
 export const signToken = async (admin: userType) => {
     // const hashedKey = await crypto.subtle.digest("SHA-256", encode(key));
     const payload = {
-        username: admin.username,
+        name: admin.name,
         role: admin.roles,
         exp: Math.floor(Date.now() / 1000) + 60 * 15,
         email: admin.email,

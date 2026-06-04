@@ -16,6 +16,7 @@ import { env } from "@/config";
 import redis from "./infrastructure/redis/redis";
 import elasticSearchClient from "./infrastructure/elasticSearch";
 import commentRoute from "./comment/comment.route";
+import authRouter from "./utils/auth/auth.route";
 
 type Variables = {
     requestId: string;
@@ -127,6 +128,7 @@ app.route("/article", index)
     .route('/comment' , commentRoute)
     .route("/category", category)
     .route("/", admin)
+    .route("/", authRouter)
 
     // Serve static files from /public directory
     .use(
@@ -192,7 +194,7 @@ app.onError(async (error: any, c) => {
 
 // Start Bun server with TLS
 export default {
-    port: 3000,
+    port: env.APP_PORT ?? 3000,
     fetch: app.fetch,
     tls: {
         cert: Bun.file("./localhost.pem"),
