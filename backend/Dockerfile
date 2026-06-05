@@ -8,4 +8,6 @@ RUN npm install
 
 COPY . .
 
-CMD ["npx", "ts-node" , "-r" , "tsconfig-paths/register" , "./src/index.ts"]
+RUN npm run build
+
+CMD ["npm" , "run", "start"]
